@@ -1,23 +1,29 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.InteropServices;
 
 namespace School.Domain.Entities
 {
     public class StudentSubject
     {
         [Key]
-        public int StudID { get; set; }
-        [Key]
-        public int SubID { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
+        public int StudentID { get; set; }
+
+        public int SubjectID { get; set; }
+
+        [Column(TypeName = "decimal(5, 2)")]
         public decimal? grade { get; set; }
 
-        [ForeignKey("StudID")]
-        [InverseProperty("StudentSubject")]
+        [ForeignKey("StudentID")]
+        [InverseProperty("StudentSubjects")]
         public virtual Student? Student { get; set; }
 
-        [ForeignKey("SubID")]
+        [ForeignKey("SubjectID")]
         [InverseProperty("StudentsSubjects")]
-        public virtual Subjects? Subject { get; set; }
+        public virtual Subject? Subject { get; set; }
 
     }
 }

@@ -3,16 +3,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace School.Domain.Entities
 {
-    public class Subjects 
+    public class Subject 
     {
-        public Subjects()
+        public Subject()
         {
             StudentsSubjects = new HashSet<StudentSubject>();
             DepartmetsSubjects = new HashSet<DepartmetSubject>();
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int SubID { get; set; }
+        public int ID { get; set; }
         [StringLength(500)]
         public string? SubjectNameAr { get; set; }
         public string? SubjectNameEn { get; set; }

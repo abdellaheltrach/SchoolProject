@@ -7,16 +7,19 @@ namespace School.Domain.Entities
     public class DepartmetSubject
     {
         [Key]
-        public int DID { get; set; }
-        [Key]
-        public int SubID { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
-        [ForeignKey("DID")]
+        public int DepartementID { get; set; }
+
+        public int SubjectID { get; set; }
+
+        [ForeignKey("DepartementID")]
         [InverseProperty("DepartmentSubjects")]
         public virtual Department? Department { get; set; }
 
-        [ForeignKey("SubID")]
+        [ForeignKey("SubjectID")]
         [InverseProperty("DepartmetsSubjects")]
-        public virtual Subjects? Subject { get; set; }
+        public virtual Subject? Subject { get; set; }
     }
 }

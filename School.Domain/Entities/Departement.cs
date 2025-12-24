@@ -13,7 +13,7 @@ namespace School.Domain.Entities
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int DID { get; set; }
+        public int ID { get; set; }
         public string? DNameAr { get; set; }
         [StringLength(200)]
         public string? DNameEn { get; set; }
@@ -24,7 +24,6 @@ namespace School.Domain.Entities
         public virtual ICollection<Student> Students { get; set; }
         [InverseProperty("Department")]
         public virtual ICollection<DepartmetSubject> DepartmentSubjects { get; set; }
-        [InverseProperty("department")]
 
  
 

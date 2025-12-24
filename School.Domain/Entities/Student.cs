@@ -7,7 +7,7 @@ namespace School.Domain.Entities
     {
         public Student()
         {
-            StudentSubject = new HashSet<StudentSubject>();
+            StudentSubjects = new HashSet<StudentSubject>();
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -24,6 +24,6 @@ namespace School.Domain.Entities
         [InverseProperty("Students")]
         public virtual Department? Department { get; set; }
         [InverseProperty("Student")]
-        public virtual ICollection<StudentSubject> StudentSubject { get; set; }
+        public virtual ICollection<StudentSubject> StudentSubjects { get; set; }
     }
 }

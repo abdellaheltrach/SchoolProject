@@ -1,6 +1,6 @@
 ﻿namespace School.Service
 {
-    public class Class1
+    public class ServiceDependencies
     {
 
     }
