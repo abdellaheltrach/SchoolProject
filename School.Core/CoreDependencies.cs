@@ -11,7 +11,11 @@ namespace School.Core
             services.AddMediatR(Configuration => Configuration.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
 
 
+            //Congigurations of the auto mapper
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
             return services;
+            
         }
 
     }

@@ -22,7 +22,7 @@ namespace School.Infrastructure.Repositories
         #region Methods
         public async Task<List<Student>> GetAllStudentListAsync()
         {
-            return await _context.students.ToListAsync();
+            return await _context.students.Include(s=>s.Department).ToListAsync();
         }
         #endregion
     }

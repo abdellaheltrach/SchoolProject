@@ -13,11 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Students\Queries\" />
-    <Folder Include="Mapping\" />
+    <Folder Include="Features\Students\Commands\" />
+    <Folder Include="Mapping\StudentMapping\CommandMapping\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="MediatR" Version="14.0.0" />
   </ItemGroup>
 

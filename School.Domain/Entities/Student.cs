@@ -11,14 +11,14 @@ namespace School.Domain.Entities
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int StudID { get; set; }
+        public int StudentID { get; set; }
         public string? NameAr { get; set; }
         public string? NameEn { get; set; }
         [StringLength(500)]
         public string? Address { get; set; }
         [StringLength(500)]
         public string? Phone { get; set; }
-        public int? DID { get; set; }
+        public int? DepartementID { get; set; }
 
         [ForeignKey("DID")]
         [InverseProperty("Students")]
