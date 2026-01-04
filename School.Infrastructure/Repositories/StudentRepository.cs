@@ -1,28 +1,29 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using School.Domain.Entities;
+using School.Infrastructure.Bases;
 using School.Infrastructure.Context;
 using School.Infrastructure.Reposetries.Interfaces;
 
 
 namespace School.Infrastructure.Repositories
 {
-    public class StudentRepository : IStudentRepository
+    public class StudentRepository : GenericRepositoryAsync<Student>, IStudentRepository
     {
         #region Fields
-        private readonly AppDbContext _context;
+        private readonly DbSet<Student> _Students;
         #endregion
 
         #region Constructors
-        public StudentRepository(AppDbContext context)
+        public StudentRepository(AppDbContext context): base(context) 
         {
-            this._context = context;
+            _Students = context.Set<Student>();
         }
         #endregion
 
         #region Methods
         public async Task<List<Student>> GetAllStudentListAsync()
         {
-            return await _context.students.Include(s=>s.Department).ToListAsync();
+            return await _Students.Include(s=>s.Department).ToListAsync();
         }
         #endregion
     }
