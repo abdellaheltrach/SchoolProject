@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using School.Core.ApiResponse;
 using School.Core.Features.Students.Queries.Models;
 using School.Core.Features.Students.Queries.Response;
 using School.Service.Services.Interfaces;
@@ -7,7 +8,7 @@ using School.Service.Services.Interfaces;
 
 namespace School.Core.Features.Students.Queries.Hundlers
 {
-    public class StudentHundler :  IRequestHandler<GetStudentListQuery, List<GetStudentListResponse>>
+    public class StudentHundler : ApiResponseHandler,  IRequestHandler<GetStudentListQuery,ApiResponse< List<GetStudentListResponse>>>
     {
         #region Fields
         private readonly IStudentService _studentService;
@@ -22,11 +23,11 @@ namespace School.Core.Features.Students.Queries.Hundlers
         }
         #endregion
         #region Hunder
-        public async Task<List<GetStudentListResponse>> Handle(GetStudentListQuery request, CancellationToken cancellationToken)
+        public async Task<ApiResponse< List<GetStudentListResponse>>> Handle(GetStudentListQuery request, CancellationToken cancellationToken)
         {
             var studentList = await _studentService.GetAllStudentListAsync();
             var studentListResponseMapper = _mapper.Map<List<GetStudentListResponse>>(studentList);
-            return studentListResponseMapper;
+            return Success( studentListResponseMapper);
         }
 
  
