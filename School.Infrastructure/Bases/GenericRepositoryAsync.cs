@@ -9,8 +9,7 @@ namespace School.Infrastructure.Bases
 {
     public class GenericRepositoryAsync<T>: IGenericRepositoryAsync<T> where T : class
     {
-        #region Vars / Props
-
+        #region Fields
         protected readonly AppDbContext _dbContext;
 
         #endregion
@@ -24,9 +23,6 @@ namespace School.Infrastructure.Bases
         #endregion
 
 
-        #region Methods
-
-        #endregion
 
         #region Actions
         public virtual async Task<T> GetByIdAsync(int id)
@@ -39,6 +35,12 @@ namespace School.Infrastructure.Bases
         public IQueryable<T> GetTableNoTracking()
         {
             return _dbContext.Set<T>().AsNoTracking().AsQueryable();
+        }
+
+        public IQueryable<T> GetTableAsTracking()
+        {
+            return _dbContext.Set<T>().AsQueryable();
+
         }
 
 
@@ -61,6 +63,12 @@ namespace School.Infrastructure.Bases
             _dbContext.Set<T>().Update(entity);
             await _dbContext.SaveChangesAsync();
 
+        }
+
+        public virtual async Task UpdateRangeAsync(ICollection<T> entities)
+        {
+            _dbContext.Set<T>().UpdateRange(entities);
+            await _dbContext.SaveChangesAsync();
         }
 
         public virtual async Task DeleteAsync(T entity)
@@ -103,17 +111,7 @@ namespace School.Infrastructure.Bases
 
         }
 
-        public IQueryable<T> GetTableAsTracking()
-        {
-            return _dbContext.Set<T>().AsQueryable();
 
-        }
-
-        public virtual async Task UpdateRangeAsync(ICollection<T> entities)
-        {
-            _dbContext.Set<T>().UpdateRange(entities);
-            await _dbContext.SaveChangesAsync();
-        }
         #endregion
     }
 }

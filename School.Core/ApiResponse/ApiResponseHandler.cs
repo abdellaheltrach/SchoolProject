@@ -1,8 +1,4 @@
-﻿using Azure;
-using School.Core.Resources;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 
 namespace School.Core.ApiResponse
 {

@@ -1,4 +1,5 @@
-﻿using School.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using School.Domain.Entities;
 using School.Infrastructure.Reposetries.Interfaces;
 using School.Service.Services.Interfaces;
 using System;
@@ -25,6 +26,12 @@ namespace School.Service.Services
         public async Task<List<Student>> GetAllStudentListAsync()
         {
             return await _studentRepository.GetAllStudentListAsync();
+        }
+
+        public async Task<Student> GetStudentByIDAsync(int ID)
+        {
+            var student = _studentRepository.GetTableNoTracking().Include(s=>s.Department).Where(s=>s.StudentID.Equals(ID)).FirstOrDefault();
+            return student;
         }
         #endregion
 

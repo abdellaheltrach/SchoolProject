@@ -8,5 +8,6 @@ namespace School.Service.Services.Interfaces
     public interface IStudentService
     {
         Task<List<Student>> GetAllStudentListAsync();
+        Task<Student> GetStudentByIDAsync(int ID);
     }
 }

@@ -1,0 +1,26 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace School.Domain.AppRoutes
+{
+    public static class AppRouter
+    {
+        private const string SignleRoute = "/{Id}";
+
+        private const string root = "Api";
+        private const string version = "V1";
+        private const string Rule = root + "/" + version + "/";
+
+
+
+        public static class StudentRouting
+        {
+            private const string Prefix = Rule + "Student";
+            public const string GetStudentList = Prefix + "/List";
+            public const string GetStudentByID = Prefix + SignleRoute;
+
+
+        }
+    }
+}

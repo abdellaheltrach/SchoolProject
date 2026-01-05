@@ -20,7 +20,7 @@ namespace School.Domain.Entities
         public string? Phone { get; set; }
         public int? DepartementID { get; set; }
 
-        [ForeignKey("DID")]
+        [ForeignKey("DepartementID")]
         [InverseProperty("Students")]
         public virtual Department? Department { get; set; }
         [InverseProperty("Student")]
