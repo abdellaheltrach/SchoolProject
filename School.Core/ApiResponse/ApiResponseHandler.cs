@@ -17,7 +17,7 @@ namespace School.Core.ApiResponse
                 Message = "Deleted Successfully"
             };
         }
-        public ApiResponse<T> Success<T>(T entity,string message = "Action executed successfully", object Meta = null)
+        public ApiResponse<T> Success<T>(T entity, string message = "Action executed successfully", object Meta = null)
         {
             return new ApiResponse<T>()
             {
@@ -56,6 +56,17 @@ namespace School.Core.ApiResponse
                 Message = message == null ? "Not Found" : message
             };
         }
+
+        public ApiResponse<T> UnprocessableEntity<T>(string message = null)
+        {
+            return new ApiResponse<T>()
+            {
+                StatusCode = System.Net.HttpStatusCode.UnprocessableEntity,
+                Succeeded = false,
+                Message = message == null ? "Unprocessable Entity" : message
+            };
+        }
+
 
         public ApiResponse<T> Created<T>(T entity, object Meta = null)
         {

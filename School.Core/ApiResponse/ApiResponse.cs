@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
+﻿using System.Net;
 
 namespace School.Core.ApiResponse
 {
@@ -18,7 +15,7 @@ namespace School.Core.ApiResponse
 
         public ApiResponse()
         {
-            
+
         }
         public ApiResponse(T data, string message = null)
         {

@@ -1,6 +1,8 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using School.Core.Features.Students.Commands.Models;
 using School.Core.Features.Students.Queries.Models;
 using School.Domain.AppRoutes;
 
@@ -33,5 +35,12 @@ namespace School.Api.Controllers
             return Ok(Reponse);
         }
 
+
+        [HttpPost(AppRouter.StudentRouting.AddStudent)]
+        public async Task<IActionResult> Create([FromBody] AddStudentCommand command)
+        {
+            var response = await _mediator.Send(command);
+            return Ok(response);
+        }
     }
 }

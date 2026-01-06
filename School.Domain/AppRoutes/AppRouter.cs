@@ -19,6 +19,8 @@ namespace School.Domain.AppRoutes
             private const string Prefix = Rule + "Student";
             public const string GetStudentList = Prefix + "/List";
             public const string GetStudentByID = Prefix + SignleRoute;
+            public const string AddStudent = Prefix + "/Add";
+
 
 
         }

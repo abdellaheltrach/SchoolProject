@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 namespace School.Core
 {
@@ -15,7 +14,7 @@ namespace School.Core
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             return services;
-            
+
         }
 
     }

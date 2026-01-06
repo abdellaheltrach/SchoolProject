@@ -33,6 +33,20 @@ namespace School.Service.Services
             var student = _studentRepository.GetTableNoTracking().Include(s=>s.Department).Where(s=>s.StudentID.Equals(ID)).FirstOrDefault();
             return student;
         }
+
+        public async Task<(bool success, string message)> AddStudentAsync(Student student)
+        {
+            //student is already in the system 
+            var existingStudent = _studentRepository.GetTableNoTracking().Where(s => s.NameEn.Equals(student.NameEn)).FirstOrDefault();
+            if (existingStudent != null) 
+            {
+                return (false, "The student already exists!");
+            }
+            //Student not in the System
+            await _studentRepository.AddAsync(student);
+
+            return (true, "Student Added Successfully!");
+        }
         #endregion
 
 

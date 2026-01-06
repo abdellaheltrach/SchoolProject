@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-
-namespace School.Core.Features.Students.Queries.Response
+﻿namespace School.Core.Features.Students.Queries.Response
 {
     public class GetStudentListResponse
     {

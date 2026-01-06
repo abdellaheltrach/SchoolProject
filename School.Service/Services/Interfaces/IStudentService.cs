@@ -9,5 +9,6 @@ namespace School.Service.Services.Interfaces
     {
         Task<List<Student>> GetAllStudentListAsync();
         Task<Student> GetStudentByIDAsync(int ID);
+        Task<(bool success, string message)> AddStudentAsync(Student student);
     }
 }
