@@ -1,7 +1,6 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using School.Api.Base;
 using School.Core.Features.Students.Commands.Models;
 using School.Core.Features.Students.Queries.Models;
 using School.Domain.AppRoutes;
@@ -10,13 +9,11 @@ namespace School.Api.Controllers
 {
 
     [ApiController]
-    public class StudentController : ControllerBase
+    public class StudentController : AppBaseController
     {
-        private readonly IMediator _mediator;
-
-        public StudentController(IMediator mediator)
+        public StudentController(IMediator mediator) : base(mediator)
         {
-            this._mediator = mediator;
+
         }
 
 
@@ -25,14 +22,14 @@ namespace School.Api.Controllers
         public async Task<IActionResult> GetStudentList()
         {
             var Reponse = await _mediator.Send(new GetStudentListQuery());
-            return Ok(Reponse);
+            return NewResult(Reponse);
         }
 
         [HttpGet(AppRouter.StudentRouting.GetStudentByID)]
         public async Task<IActionResult> GetStudentById(int Id)
         {
             var Reponse = await _mediator.Send(new GetStudentByIdQuery(Id));
-            return Ok(Reponse);
+            return NewResult(Reponse);
         }
 
 
@@ -40,7 +37,7 @@ namespace School.Api.Controllers
         public async Task<IActionResult> Create([FromBody] AddStudentCommand command)
         {
             var response = await _mediator.Send(command);
-            return Ok(response);
+            return NewResult(response);
         }
     }
 }
