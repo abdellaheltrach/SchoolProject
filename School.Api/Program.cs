@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using School.Core;
+using School.Core.MiddleWare;
 using School.Infrastructure;
 using School.Infrastructure.Context;
 using School.Service;
@@ -35,6 +36,7 @@ if (app.Environment.IsDevelopment())
 
 
 
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 
