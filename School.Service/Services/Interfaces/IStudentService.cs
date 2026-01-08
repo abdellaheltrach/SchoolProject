@@ -1,7 +1,4 @@
 ﻿using School.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace School.Service.Services.Interfaces
 {
@@ -10,5 +7,10 @@ namespace School.Service.Services.Interfaces
         Task<List<Student>> GetAllStudentListAsync();
         Task<Student> GetStudentByIDAsync(int ID);
         Task<(bool success, string message)> AddStudentAsync(Student student);
+        Task<string> EditAsync(Student student);
+
+        Task<bool> IsNameArExistExcludeSelf(string nameAr, int id);
+        Task<bool> IsNameEnExistExcludeSelf(string nameEn, int id);
+
     }
 }

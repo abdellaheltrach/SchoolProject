@@ -11,7 +11,8 @@ namespace School.Core.Mapping.StudentMapping
 
             GetStudentByIdMapping();
 
-            AddStudentMapping();
+            AddStudentCommandMapping();
+            EditStudentCommandMapping();
         }
     }
 }

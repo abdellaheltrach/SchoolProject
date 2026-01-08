@@ -13,11 +13,11 @@ namespace School.Core
             services.AddMediatR(Configuration => Configuration.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
 
 
-            //Congigurations of the auto mapper
+            //registering of the auto mapper
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 
-            // Get Validators
+            // registering Validators
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             // registering ValidationBehavior in dependency injection container
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));

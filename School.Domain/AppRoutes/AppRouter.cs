@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace School.Domain.AppRoutes
+﻿namespace School.Domain.AppRoutes
 {
     public static class AppRouter
     {
@@ -20,6 +16,7 @@ namespace School.Domain.AppRoutes
             public const string GetStudentList = Prefix + "/List";
             public const string GetStudentByID = Prefix + SignleRoute;
             public const string AddStudent = Prefix + "/Add";
+            public const string EditStudent = Prefix + "/Edit";
 
 
 

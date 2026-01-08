@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using School.Core.ApiResponse;
 using System.Net;
@@ -41,12 +40,19 @@ namespace School.Core.MiddleWare
                         response.StatusCode = (int)HttpStatusCode.Unauthorized;
                         break;
 
-                    case ValidationException e:
+
+
+                    case FluentValidation.ValidationException e:
                         // custom validation error
                         responseModel.Message = error.Message;
                         responseModel.StatusCode = HttpStatusCode.UnprocessableEntity;
                         response.StatusCode = (int)HttpStatusCode.UnprocessableEntity;
+                        responseModel.Errors = e.Errors
+                                                .Select(e => $"{e.PropertyName}: {e.ErrorMessage}")
+                                                .ToList();
                         break;
+
+
                     case KeyNotFoundException e:
                         // not found error
                         responseModel.Message = error.Message;
@@ -54,12 +60,15 @@ namespace School.Core.MiddleWare
                         response.StatusCode = (int)HttpStatusCode.NotFound;
                         break;
 
+
                     case DbUpdateException e:
                         // can't update error
                         responseModel.Message = e.Message;
                         responseModel.StatusCode = HttpStatusCode.BadRequest;
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
+
+
                     case Exception e:
                         if (e.GetType().ToString() == "ApiException")
                         {

@@ -6,7 +6,7 @@ namespace School.Core.Mapping.StudentMapping
 {
     public partial class StudentProfile : Profile
     {
-        public void AddStudentMapping()
+        public void AddStudentCommandMapping()
         {
             CreateMap<AddStudentCommand, Student>()
                 .ForMember(dest => dest.DepartementID, opt => opt.MapFrom(src => src.DepartementID));
