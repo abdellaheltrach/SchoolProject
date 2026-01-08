@@ -25,9 +25,15 @@ namespace School.Service.Services
             return await _studentRepository.GetAllStudentListAsync();
         }
 
-        public async Task<Student> GetStudentByIDAsync(int ID)
+        public async Task<Student> GetStudentByIdWithNoTrachingAsync(int ID)
         {
             var student = _studentRepository.GetTableNoTracking().Include(s => s.Department).Where(s => s.StudentID.Equals(ID)).FirstOrDefault();
+            return student;
+        }
+
+        public async Task<Student> GetStudentByIdWithTrachingAsync(int ID)
+        {
+            var student = await _studentRepository.GetByIdAsync(ID);
             return student;
         }
 
@@ -65,6 +71,22 @@ namespace School.Service.Services
             var student = await _studentRepository.GetTableNoTracking().Where(x => x.NameAr.Equals(nameEn) & !x.StudentID.Equals(id)).FirstOrDefaultAsync();
             if (student == null) return false;
             return true;
+        }
+
+        public async Task<bool> DeleteAsync(Student student)
+        {
+            var trans = _studentRepository.BeginTransaction();
+            try
+            {
+                await _studentRepository.DeleteAsync(student);
+                await trans.CommitAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await trans.RollbackAsync();
+                return false;
+            }
         }
 
 

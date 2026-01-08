@@ -9,6 +9,7 @@ namespace School.Core.Features.Students.Commands.Handlers
 {
     public class StudentCommandHundler : ApiResponseHandler, IRequestHandler<AddStudentCommand, ApiResponse<string>>
                                                           , IRequestHandler<EditStudentCommand, ApiResponse<string>>
+                                                            , IRequestHandler<DeleteStudentCommand, ApiResponse<string>>
     {
         #region Fields
         private readonly IStudentService _studentService;
@@ -45,7 +46,7 @@ namespace School.Core.Features.Students.Commands.Handlers
         public async Task<ApiResponse<string>> Handle(EditStudentCommand request, CancellationToken cancellationToken)
         {
             //Check if the Id is Exist Or not
-            var student = await _studentService.GetStudentByIDAsync(request.StudentID);
+            var student = await _studentService.GetStudentByIdWithNoTrachingAsync(request.StudentID);
             //return NotFound
             if (student == null) return NotFound<string>();
             //mapping Between request and student
@@ -56,6 +57,18 @@ namespace School.Core.Features.Students.Commands.Handlers
             if (result == "Success") return Success("Updated Successfully");
             else return BadRequest<string>();
 
+        }
+
+        public async Task<ApiResponse<string>> Handle(DeleteStudentCommand request, CancellationToken cancellationToken)
+        {
+            //Check if the Id is Exist Or not
+            var student = await _studentService.GetStudentByIdWithTrachingAsync(request.Id);
+            //return NotFound
+            if (student == null) return NotFound<string>();
+            //Call service that make Delete
+            var result = await _studentService.DeleteAsync(student);
+            if (result) return Deleted<string>();
+            else return BadRequest<string>();
         }
         #endregion
     }

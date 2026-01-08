@@ -2,7 +2,6 @@
 {
     public static class AppRouter
     {
-        private const string SignleRoute = "/{Id}";
 
         private const string root = "Api";
         private const string version = "V1";
@@ -14,9 +13,10 @@
         {
             private const string Prefix = Rule + "Student";
             public const string GetStudentList = Prefix + "/List";
-            public const string GetStudentByID = Prefix + SignleRoute;
+            public const string GetStudentByID = Prefix + "/{Id}";
             public const string AddStudent = Prefix + "/Add";
             public const string EditStudent = Prefix + "/Edit";
+            public const string DeleteStudent = Prefix + "/{id}";
 
 
 

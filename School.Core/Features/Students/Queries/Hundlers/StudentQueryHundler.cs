@@ -35,7 +35,7 @@ namespace School.Core.Features.Students.Queries.Hundlers
 
         public async Task<ApiResponse<GetStudentByIdResponse>> Handle(GetStudentByIdQuery request, CancellationToken cancellationToken)
         {
-            var student = await _studentService.GetStudentByIDAsync(request.ID);
+            var student = await _studentService.GetStudentByIdWithNoTrachingAsync(request.ID);
             if (student == null)
             {
                 return NotFound<GetStudentByIdResponse>("Student not found!");
