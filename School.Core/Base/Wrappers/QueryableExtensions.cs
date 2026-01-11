@@ -15,7 +15,7 @@ namespace School.Core.Base.Wrappers
             //checks for valid page number and size
 
             pageNumber = Math.Max(1, pageNumber);
-            pageSize = Math.Clamp(pageSize, 1, 50);
+            pageSize = Math.Clamp(pageSize, 10, 50);
 
             int count = await source.AsNoTracking().CountAsync();
             if (count == 0) return PaginatedResult<T>.Success(new List<T>(), count, pageNumber, pageSize);

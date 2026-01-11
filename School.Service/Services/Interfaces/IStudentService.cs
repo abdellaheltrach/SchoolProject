@@ -1,4 +1,5 @@
 ﻿using School.Domain.Entities;
+using School.Domain.enums;
 
 namespace School.Service.Services.Interfaces
 {
@@ -14,7 +15,7 @@ namespace School.Service.Services.Interfaces
         Task<bool> IsNameEnExistExcludeSelf(string nameEn, int id);
         Task<bool> DeleteAsync(Student student);
 
-        IQueryable<Student> FilterStudentPaginatedQuerable(string ordering, string search, bool SortDesc);
+        IQueryable<Student> FilterStudentPaginatedQuerable(string search, StudentOrdringEnum orderingBy, bool SortDesc);
 
 
 

@@ -48,7 +48,7 @@ namespace School.Core.Features.Students.Queries.Hundlers
 
         public async Task<ApiResponse<PaginatedResult<GetStudentPaginatedListResponse>>> Handle(GetStudentPaginatedListQuery request, CancellationToken cancellationToken)
         {
-            var FilterQuery = _studentService.FilterStudentPaginatedQuerable(request.OrderBy, request.Search, request.SortDesc);
+            var FilterQuery = _studentService.FilterStudentPaginatedQuerable(request.Search, request.OrderBy, request.SortDesc);
             var PaginatedList = await _mapper.ProjectTo<GetStudentPaginatedListResponse>(FilterQuery).ToPaginatedListAsync(request.PageNumber, request.PageSize);
             PaginatedList.Meta = new { Count = PaginatedList.Data.Count() };
             return Success(PaginatedList);

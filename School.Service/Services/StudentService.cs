@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using School.Domain.Entities;
+using School.Domain.enums;
 using School.Infrastructure.Reposetries.Interfaces;
 using School.Service.Services.Interfaces;
 
@@ -89,7 +90,7 @@ namespace School.Service.Services
             }
         }
 
-        public IQueryable<Student> FilterStudentPaginatedQuerable(string ordering, string search, bool SortDesc = false)
+        public IQueryable<Student> FilterStudentPaginatedQuerable(string search, StudentOrdringEnum orderingBy, bool SortDesc)
         {
             var querable = _studentRepository.GetTableNoTracking().Include(x => x.Department).AsQueryable();
             if (search != null)
@@ -97,27 +98,31 @@ namespace School.Service.Services
                 querable = querable.Where(x => x.NameAr.Contains(search) || x.NameEn.Contains(search) || x.Address.Contains(search));
             }
 
-            ordering = string.IsNullOrWhiteSpace(ordering) ? "StudentID" : ordering;
 
 
-            switch (ordering)
+            switch (orderingBy)
             {
-                case "StudentID":
+                case StudentOrdringEnum.StudentID:
                     querable = SortDesc ? querable.OrderByDescending(x => x.StudentID) : querable.OrderBy(x => x.StudentID);
                     break;
-                case "NameAr":
+                case StudentOrdringEnum.NameAr:
                     querable = SortDesc ? querable.OrderByDescending(x => x.NameAr) : querable.OrderBy(x => x.NameAr);
                     break;
-                case "Address":
+                case StudentOrdringEnum.NameEn:
+                    querable = SortDesc ? querable.OrderByDescending(x => x.NameEn) : querable.OrderBy(x => x.NameEn);
+                    break;
+                case StudentOrdringEnum.Address:
                     querable = SortDesc ? querable.OrderByDescending(x => x.Address) : querable.OrderBy(x => x.Address);
                     break;
-                case "DepartementID":
-                    querable = SortDesc ? querable.OrderByDescending(x => x.DepartementID) : querable.OrderBy(x => x.DepartementID);
+                case StudentOrdringEnum.DepartmentName:
+                    querable = SortDesc ? querable.OrderByDescending(x => x.Department) : querable.OrderBy(x => x.Department);
                     break;
             }
 
             return querable;
         }
+
+
 
 
         #endregion
