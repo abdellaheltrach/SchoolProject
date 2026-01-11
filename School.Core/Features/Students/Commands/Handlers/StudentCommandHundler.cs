@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
-using School.Core.ApiResponse;
+using School.Core.Base.ApiResponse;
 using School.Core.Features.Students.Commands.Models;
 using School.Domain.Entities;
 using School.Service.Services.Interfaces;

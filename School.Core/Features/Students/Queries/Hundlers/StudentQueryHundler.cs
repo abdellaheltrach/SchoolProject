@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
-using School.Core.ApiResponse;
+using School.Core.Base.ApiResponse;
+using School.Core.Base.Wrappers;
 using School.Core.Features.Students.Queries.Models;
 using School.Core.Features.Students.Queries.QueriesResponse;
 using School.Core.Features.Students.Queries.Response;
@@ -11,7 +12,8 @@ namespace School.Core.Features.Students.Queries.Hundlers
 {
     public class StudentQueryHundler : ApiResponseHandler,
         IRequestHandler<GetStudentListQuery, ApiResponse<List<GetStudentListResponse>>>,
-        IRequestHandler<GetStudentByIdQuery, ApiResponse<GetStudentByIdResponse>>
+        IRequestHandler<GetStudentByIdQuery, ApiResponse<GetStudentByIdResponse>>,
+        IRequestHandler<GetStudentPaginatedListQuery, ApiResponse<PaginatedResult<GetStudentPaginatedListResponse>>>
     {
         #region Fields
         private readonly IStudentService _studentService;
@@ -42,6 +44,14 @@ namespace School.Core.Features.Students.Queries.Hundlers
             }
             var studentResponseMapper = _mapper.Map<GetStudentByIdResponse>(student);
             return Success(studentResponseMapper);
+        }
+
+        public async Task<ApiResponse<PaginatedResult<GetStudentPaginatedListResponse>>> Handle(GetStudentPaginatedListQuery request, CancellationToken cancellationToken)
+        {
+            var FilterQuery = _studentService.FilterStudentPaginatedQuerable(request.OrderBy, request.Search, request.SortDesc);
+            var PaginatedList = await _mapper.ProjectTo<GetStudentPaginatedListResponse>(FilterQuery).ToPaginatedListAsync(request.PageNumber, request.PageSize);
+            PaginatedList.Meta = new { Count = PaginatedList.Data.Count() };
+            return Success(PaginatedList);
         }
 
 

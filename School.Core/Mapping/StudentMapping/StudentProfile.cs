@@ -8,8 +8,8 @@ namespace School.Core.Mapping.StudentMapping
         public StudentProfile()
         {
             GetStudentListMapping();
-
             GetStudentByIdMapping();
+            GetStudentPaginationMapping();
 
             AddStudentCommandMapping();
             EditStudentCommandMapping();

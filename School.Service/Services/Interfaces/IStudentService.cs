@@ -14,6 +14,8 @@ namespace School.Service.Services.Interfaces
         Task<bool> IsNameEnExistExcludeSelf(string nameEn, int id);
         Task<bool> DeleteAsync(Student student);
 
+        IQueryable<Student> FilterStudentPaginatedQuerable(string ordering, string search, bool SortDesc);
+
 
 
     }

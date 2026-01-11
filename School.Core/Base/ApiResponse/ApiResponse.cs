@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace School.Core.ApiResponse
+namespace School.Core.Base.ApiResponse
 {
     public class ApiResponse<T>
     {

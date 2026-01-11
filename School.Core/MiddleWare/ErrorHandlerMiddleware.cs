@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using School.Core.ApiResponse;
+using School.Core.Base.ApiResponse;
 using System.Net;
 using System.Text.Json;
 

@@ -25,6 +25,13 @@ namespace School.Api.Controllers
             return NewResult(Reponse);
         }
 
+        [HttpGet(AppRouter.StudentRouting.Paginated)]
+        public async Task<IActionResult> Paginated([FromQuery] GetStudentPaginatedListQuery query)
+        {
+            var response = await _mediator.Send(query);
+            return Ok(response);
+        }
+
         [HttpGet(AppRouter.StudentRouting.GetStudentByID)]
         public async Task<IActionResult> GetStudentById(int Id)
         {
@@ -53,5 +60,7 @@ namespace School.Api.Controllers
         {
             return NewResult(await _mediator.Send(new DeleteStudentCommand(id)));
         }
+
+
     }
 }

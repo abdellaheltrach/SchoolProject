@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using School.Core.ApiResponse;
+using School.Core.Base.ApiResponse;
 
 namespace School.Core.Features.Students.Commands.Models
 {
