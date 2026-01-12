@@ -117,7 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BadRequest" xml:space="preserve">
+    <value>Request is not valid</value>
+  </data>
+  <data name="CreateSuccess" xml:space="preserve">
+    <value>The resource has been created successfully.</value>
+  </data>
+  <data name="DeleteSuccess" xml:space="preserve">
+    <value>Deleted Successfully</value>
+  </data>
   <data name="NotFound" xml:space="preserve">
     <value>Not Found</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Action executed successfully</value>
+  </data>
+  <data name="UnAuthorized" xml:space="preserve">
+    <value>You are not Authorized To Access This Resources</value>
+  </data>
+  <data name="UnprocessableEntity" xml:space="preserve">
+    <value>The request is valid, but one or more fields contain invalid data.</value>
   </data>
 </root>

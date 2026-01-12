@@ -24,12 +24,15 @@ namespace School.Core.Features.Students.Queries.Hundlers
 
         #endregion
         #region Constructors
-        public StudentQueryHundler(IStudentService studentService, IMapper mapper, IStringLocalizer<SharedResources> stringLocalizer)
+        public StudentQueryHundler(IStudentService studentService,
+                                        IMapper mapper,
+                                        IStringLocalizer<SharedResources> stringLocalizer) : base(stringLocalizer)
         {
             _studentService = studentService;
             _mapper = mapper;
             _stringLocalizer = stringLocalizer;
         }
+
         #endregion
         #region Hunder
         public async Task<ApiResponse<List<GetStudentListResponse>>> Handle(GetStudentListQuery request, CancellationToken cancellationToken)

@@ -1,47 +1,52 @@
-﻿namespace School.Core.Base.ApiResponse
+﻿using Microsoft.Extensions.Localization;
+using School.Core.Resources;
+
+namespace School.Core.Base.ApiResponse
 {
     public class ApiResponseHandler
     {
-        public ApiResponseHandler()
-        {
+        private readonly IStringLocalizer<SharedResources> _stringLocalizer;
 
+        public ApiResponseHandler(IStringLocalizer<SharedResources> stringLocalizer)
+        {
+            _stringLocalizer = stringLocalizer;
         }
-        public ApiResponse<T> Deleted<T>()
+        public ApiResponse<T> Deleted<T>(string message = null)
         {
             return new ApiResponse<T>()
             {
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Succeeded = true,
-                Message = "Deleted Successfully"
+                Message = message == null ? _stringLocalizer[SharedResourceskeys.DeleteSuccess] : message
             };
         }
-        public ApiResponse<T> Success<T>(T entity, string message = "Action executed successfully", object Meta = null)
+        public ApiResponse<T> Success<T>(T entity, string message = null, object Meta = null)
         {
             return new ApiResponse<T>()
             {
                 Data = entity,
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Succeeded = true,
-                Message = message,
+                Message = message == null ? _stringLocalizer[SharedResourceskeys.Success] : message,
                 Meta = Meta
             };
         }
-        public ApiResponse<T> Unauthorized<T>()
+        public ApiResponse<T> Unauthorized<T>(string message = null)
         {
             return new ApiResponse<T>()
             {
                 StatusCode = System.Net.HttpStatusCode.Unauthorized,
                 Succeeded = true,
-                Message = "UnAuthorized"
+                Message = message == null ? _stringLocalizer[SharedResourceskeys.UnAuthorized] : message
             };
         }
-        public ApiResponse<T> BadRequest<T>(string Message = null)
+        public ApiResponse<T> BadRequest<T>(string message = null)
         {
             return new ApiResponse<T>()
             {
                 StatusCode = System.Net.HttpStatusCode.BadRequest,
                 Succeeded = false,
-                Message = Message == null ? "Bad Request" : Message
+                Message = message == null ? _stringLocalizer[SharedResourceskeys.BadRequest] : message
             };
         }
 
@@ -51,7 +56,7 @@
             {
                 StatusCode = System.Net.HttpStatusCode.NotFound,
                 Succeeded = false,
-                Message = message == null ? "Not Found" : message
+                Message = message == null ? _stringLocalizer[SharedResourceskeys.NotFound] : message
             };
         }
 
@@ -61,19 +66,19 @@
             {
                 StatusCode = System.Net.HttpStatusCode.UnprocessableEntity,
                 Succeeded = false,
-                Message = message == null ? "Unprocessable Entity" : message
+                Message = message == null ? _stringLocalizer[SharedResourceskeys.UnprocessableEntity] : message
             };
         }
 
 
-        public ApiResponse<T> Created<T>(T entity, object Meta = null)
+        public ApiResponse<T> Created<T>(T entity, string message = null, object Meta = null)
         {
             return new ApiResponse<T>()
             {
                 Data = entity,
                 StatusCode = System.Net.HttpStatusCode.Created,
                 Succeeded = true,
-                Message = "Created",
+                Message = message == null ? _stringLocalizer[SharedResourceskeys.CreateSuccess] : message,
                 Meta = Meta
             };
         }

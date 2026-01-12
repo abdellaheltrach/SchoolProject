@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Localization;
 using School.Core.Base.ApiResponse;
 using School.Core.Features.Students.Commands.Models;
+using School.Core.Resources;
 using School.Domain.Entities;
 using School.Service.Services.Interfaces;
 
@@ -14,13 +16,16 @@ namespace School.Core.Features.Students.Commands.Handlers
         #region Fields
         private readonly IStudentService _studentService;
         private readonly IMapper _mapper;
+        private readonly IStringLocalizer<SharedResources> _stringLocalizer;
 
         #endregion
         #region Constructors
-        public StudentCommandHundler(IStudentService studentService, IMapper mapper)
+        public StudentCommandHundler(IStudentService studentService, IMapper mapper,
+              IStringLocalizer<SharedResources> stringLocalizer) : base(stringLocalizer)
         {
             _studentService = studentService;
             _mapper = mapper;
+            _stringLocalizer = stringLocalizer;
         }
         #endregion
 
