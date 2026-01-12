@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Localization;
 using School.Core.Base.ApiResponse;
 using School.Core.Base.Wrappers;
 using School.Core.Features.Students.Queries.Models;
 using School.Core.Features.Students.Queries.QueriesResponse;
 using School.Core.Features.Students.Queries.Response;
+using School.Core.Resources;
 using School.Service.Services.Interfaces;
 
 
@@ -18,13 +20,15 @@ namespace School.Core.Features.Students.Queries.Hundlers
         #region Fields
         private readonly IStudentService _studentService;
         private readonly IMapper _mapper;
+        private readonly IStringLocalizer<SharedResources> _stringLocalizer;
 
         #endregion
         #region Constructors
-        public StudentQueryHundler(IStudentService studentService, IMapper mapper)
+        public StudentQueryHundler(IStudentService studentService, IMapper mapper, IStringLocalizer<SharedResources> stringLocalizer)
         {
             _studentService = studentService;
             _mapper = mapper;
+            _stringLocalizer = stringLocalizer;
         }
         #endregion
         #region Hunder
@@ -40,7 +44,7 @@ namespace School.Core.Features.Students.Queries.Hundlers
             var student = await _studentService.GetStudentByIdWithNoTrachingAsync(request.ID);
             if (student == null)
             {
-                return NotFound<GetStudentByIdResponse>("Student not found!");
+                return NotFound<GetStudentByIdResponse>(_stringLocalizer[SharedResourceskeys.NotFound]);
             }
             var studentResponseMapper = _mapper.Map<GetStudentByIdResponse>(student);
             return Success(studentResponseMapper);
