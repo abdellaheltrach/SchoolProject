@@ -118,16 +118,22 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BadRequest" xml:space="preserve">
-    <value>هذا الطلب لا يمكن فهمه</value>
+    <value>تعذر معالجة الطلب بسبب بيانات غير صحيحة.</value>
   </data>
   <data name="CreateSuccess" xml:space="preserve">
     <value>تم إنشاء المورد بنجاح</value>
   </data>
+  <data name="DatabaseUpdateError" xml:space="preserve">
+    <value>حدث خطأ أثناء حفظ البيانات. يرجى المحاولة مرة أخرى.</value>
+  </data>
   <data name="DeleteSuccess" xml:space="preserve">
     <value>تم الحذف بنجاح</value>
   </data>
+  <data name="InternalServerError" xml:space="preserve">
+    <value>حدث خطأ غير متوقع. يرجى التواصل مع الدعم إذا استمرت المشكلة.</value>
+  </data>
   <data name="NotFound" xml:space="preserve">
-    <value>غير متوفر</value>
+    <value>المورد المطلوب غير موجود.</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>تم تنفيذ العملية بنجاح</value>
@@ -136,7 +142,9 @@
     <value>لا تملك الصلاحية للوصول لتلك المصادر</value>
   </data>
   <data name="UnprocessableEntity" xml:space="preserve">
-    <value>الطلب صالح، ولكن يوجد خطأ في واحد أو أكثر من الحقول المدخلة.
-</value>
+    <value>الطلب صالح، ولكن يوجد خطأ في واحد أو أكثر من الحقول المدخلة.</value>
+  </data>
+  <data name="ValidationFailed" xml:space="preserve">
+    <value>حدثت أخطاء في التحقق من صحة البيانات.</value>
   </data>
 </root>

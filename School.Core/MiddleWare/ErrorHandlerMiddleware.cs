@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using School.Core.Base.ApiResponse;
+using School.Core.Resources;
 using System.Net;
 using System.Text.Json;
 
@@ -12,10 +14,12 @@ namespace School.Core.MiddleWare
     public class ErrorHandlerMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly IStringLocalizer<SharedResources> _localizer;
 
-        public ErrorHandlerMiddleware(RequestDelegate next)
+        public ErrorHandlerMiddleware(RequestDelegate next, IStringLocalizer<SharedResources> stringLocalizer)
         {
             _next = next;
+            _localizer = stringLocalizer;
         }
 
         public async Task Invoke(HttpContext context)
@@ -33,64 +37,56 @@ namespace School.Core.MiddleWare
 
                 switch (error)
                 {
-                    case UnauthorizedAccessException e:
-                        // custom application error
-                        responseModel.Message = error.Message;
+                    case UnauthorizedAccessException:
+                        responseModel.Message = _localizer[SharedResourceskeys.UnAuthorized];
                         responseModel.StatusCode = HttpStatusCode.Unauthorized;
                         response.StatusCode = (int)HttpStatusCode.Unauthorized;
                         break;
 
-
-
-                    case FluentValidation.ValidationException e:
-                        // custom validation error
-                        responseModel.Message = error.Message;
+                    case FluentValidation.ValidationException validationEx:
+                        responseModel.Message = _localizer[SharedResourceskeys.ValidationFailed];
                         responseModel.StatusCode = HttpStatusCode.UnprocessableEntity;
                         response.StatusCode = (int)HttpStatusCode.UnprocessableEntity;
-                        responseModel.Errors = e.Errors
-                                                .Select(e => $"{e.PropertyName}: {e.ErrorMessage}")
-                                                .ToList();
+                        responseModel.Errors = validationEx.Errors
+                            .Select(x => $"{x.PropertyName}: {x.ErrorMessage}")
+                            .ToList();
                         break;
 
-
-                    case KeyNotFoundException e:
-                        // not found error
-                        responseModel.Message = error.Message;
+                    case KeyNotFoundException:
+                        responseModel.Message = _localizer[SharedResourceskeys.NotFound];
                         responseModel.StatusCode = HttpStatusCode.NotFound;
                         response.StatusCode = (int)HttpStatusCode.NotFound;
                         break;
 
-
-                    case DbUpdateException e:
-                        // can't update error
-                        responseModel.Message = e.Message;
+                    case DbUpdateException:
+                        responseModel.Message = _localizer[SharedResourceskeys.DatabaseUpdateError];
                         responseModel.StatusCode = HttpStatusCode.BadRequest;
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
 
+                    case Exception e when e.GetType().Name == "ApiException":
+                        responseModel.Message = _localizer[SharedResourceskeys.BadRequest];
+                        if (e.InnerException != null)
+                            responseModel.Message += $"\n{e.InnerException.Message}";
+                        responseModel.StatusCode = HttpStatusCode.BadRequest;
+                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        break;
 
                     case Exception e:
-                        if (e.GetType().ToString() == "ApiException")
-                        {
-                            responseModel.Message += e.Message;
-                            responseModel.Message += e.InnerException == null ? "" : "\n" + e.InnerException.Message;
-                            responseModel.StatusCode = HttpStatusCode.BadRequest;
-                            response.StatusCode = (int)HttpStatusCode.BadRequest;
-                        }
-                        responseModel.Message = e.Message;
-                        responseModel.Message += e.InnerException == null ? "" : "\n" + e.InnerException.Message;
-
+                        responseModel.Message = _localizer[SharedResourceskeys.InternalServerError];
+                        if (e.InnerException != null)
+                            responseModel.Message += $"\n{e.InnerException.Message}";
                         responseModel.StatusCode = HttpStatusCode.InternalServerError;
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         break;
 
                     default:
-                        // unhandled error
-                        responseModel.Message = error.Message;
+                        responseModel.Message = _localizer[SharedResourceskeys.InternalServerError];
                         responseModel.StatusCode = HttpStatusCode.InternalServerError;
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         break;
                 }
+
                 var result = JsonSerializer.Serialize(responseModel);
 
                 await response.WriteAsync(result);

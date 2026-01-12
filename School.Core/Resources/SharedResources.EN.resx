@@ -118,16 +118,22 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BadRequest" xml:space="preserve">
-    <value>Request is not valid</value>
+    <value>The request could not be processed due to invalid input.</value>
   </data>
   <data name="CreateSuccess" xml:space="preserve">
     <value>The resource has been created successfully.</value>
   </data>
+  <data name="DatabaseUpdateError" xml:space="preserve">
+    <value>An error occurred while saving data. Please try again.</value>
+  </data>
   <data name="DeleteSuccess" xml:space="preserve">
     <value>Deleted Successfully</value>
   </data>
+  <data name="InternalServerError" xml:space="preserve">
+    <value>An unexpected error occurred. Please contact support if the problem persists.</value>
+  </data>
   <data name="NotFound" xml:space="preserve">
-    <value>Not Found</value>
+    <value>The requested resource was not found.</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>Action executed successfully</value>
@@ -137,5 +143,8 @@
   </data>
   <data name="UnprocessableEntity" xml:space="preserve">
     <value>The request is valid, but one or more fields contain invalid data.</value>
+  </data>
+  <data name="ValidationFailed" xml:space="preserve">
+    <value>One or more validation errors occurred.</value>
   </data>
 </root>
