@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Address" xml:space="preserve">
+    <value>العنوان</value>
+  </data>
   <data name="AddressMaxLength" xml:space="preserve">
     <value>العنوان يجب ألا يزيد عن 100 حرف.</value>
   </data>
@@ -135,11 +138,17 @@
   <data name="DeleteSuccess" xml:space="preserve">
     <value>تم الحذف بنجاح</value>
   </data>
+  <data name="DepartementID" xml:space="preserve">
+    <value>القسم</value>
+  </data>
   <data name="DepartementIDRequired" xml:space="preserve">
     <value>معرف القسم مطلوب.</value>
   </data>
   <data name="InternalServerError" xml:space="preserve">
     <value>حدث خطأ غير متوقع. يرجى التواصل مع الدعم إذا استمرت المشكلة.</value>
+  </data>
+  <data name="NameAr" xml:space="preserve">
+    <value>الاسم بالعربية</value>
   </data>
   <data name="NameArExists" xml:space="preserve">
     <value>الاسم (عربي) موجود مسبقًا!</value>
@@ -149,6 +158,9 @@
   </data>
   <data name="NameArRequired" xml:space="preserve">
     <value>الاسم (عربي) مطلوب.</value>
+  </data>
+  <data name="NameEn" xml:space="preserve">
+    <value>الاسم بالإنجليزية</value>
   </data>
   <data name="NameEnExists" xml:space="preserve">
     <value>الاسم (إنجليزي) موجود مسبقًا!</value>
@@ -161,6 +173,12 @@
   </data>
   <data name="NotFound" xml:space="preserve">
     <value>المورد المطلوب غير موجود.</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>الهاتف</value>
+  </data>
+  <data name="StudentID" xml:space="preserve">
+    <value>معرف الطالب</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>تم تنفيذ العملية بنجاح</value>

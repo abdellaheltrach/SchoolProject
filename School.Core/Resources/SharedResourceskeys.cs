@@ -32,6 +32,16 @@
         public const string NameArExists = "NameArExists";
         public const string NameEnExists = "NameEnExists";
 
+        //properties names
+        public const string NameAr = "NameAr";
+        public const string NameEn = "NameEn";
+        public const string Address = "Address";
+        public const string DepartementID = "DepartementID";
+        public const string Phone = "Phone";
+        public const string StudentID = "StudentID";
+
+
+
 
 
 
