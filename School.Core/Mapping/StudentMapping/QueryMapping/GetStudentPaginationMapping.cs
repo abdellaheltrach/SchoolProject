@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using School.Core.Features.Students.Queries.QueriesResponse;
+using School.Core.Helpers;
 using School.Domain.Entities;
 
 namespace School.Core.Mapping.StudentMapping
@@ -10,7 +11,9 @@ namespace School.Core.Mapping.StudentMapping
         {
             CreateMap<Student, GetStudentPaginatedListResponse>()
             .ForMember(response => response.DepartementName,
-            options => options.MapFrom(src => src.Department != null ? src.Department.DNameEn : "No Department"));
+            options => options.MapFrom(src => src.Department != null ?
+            LocalizationHelper.GetLocalizedName(src.Department.DepartmentNameAr, src.Department.DepartmentNameEn)
+            : "No Department"));
 
         }
     }

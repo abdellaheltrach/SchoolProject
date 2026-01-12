@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace School.Domain.Entities
 {
-    public partial class Department 
+    public partial class Department
     {
         public Department()
         {
@@ -14,9 +14,9 @@ namespace School.Domain.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
-        public string? DNameAr { get; set; }
+        public string? DepartmentNameAr { get; set; }
         [StringLength(200)]
-        public string? DNameEn { get; set; }
+        public string? DepartmentNameEn { get; set; }
 
         public int? InsManager { get; set; }
 
@@ -25,7 +25,7 @@ namespace School.Domain.Entities
         [InverseProperty("Department")]
         public virtual ICollection<DepartmetSubject> DepartmentSubjects { get; set; }
 
- 
+
 
     }
 }

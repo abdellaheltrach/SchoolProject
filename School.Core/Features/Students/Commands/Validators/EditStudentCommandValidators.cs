@@ -16,6 +16,9 @@ namespace School.Core.Features.Students.Commands.Validitor
         #region constructor
         public EditStudentCommandValidators(IStudentService studentService, IStringLocalizer<SharedResources> localizer)
         {
+            _studentService = studentService;
+            _localizer = localizer;
+
             ApplyValidationRules();
             ApplyCustomValidationRules();
             _studentService = studentService;
