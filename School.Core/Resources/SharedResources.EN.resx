@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddressMaxLength" xml:space="preserve">
+    <value>Address must not exceed 100 chars</value>
+  </data>
+  <data name="AddressRequired" xml:space="preserve">
+    <value>Address is required.</value>
+  </data>
   <data name="BadRequest" xml:space="preserve">
     <value>The request could not be processed due to invalid input.</value>
   </data>
@@ -129,8 +135,29 @@
   <data name="DeleteSuccess" xml:space="preserve">
     <value>Deleted Successfully</value>
   </data>
+  <data name="DepartementIDRequired" xml:space="preserve">
+    <value>Department ID is required.</value>
+  </data>
   <data name="InternalServerError" xml:space="preserve">
     <value>An unexpected error occurred. Please contact support if the problem persists.</value>
+  </data>
+  <data name="NameArExists" xml:space="preserve">
+    <value>Name (Arabic) already exists!</value>
+  </data>
+  <data name="NameArMaxLength" xml:space="preserve">
+    <value>Name (Arabic) must not exceed 100 chars</value>
+  </data>
+  <data name="NameArRequired" xml:space="preserve">
+    <value>Name (Arabic) is required.</value>
+  </data>
+  <data name="NameEnExists" xml:space="preserve">
+    <value>Name (English) already exists!</value>
+  </data>
+  <data name="NameEnMaxLength" xml:space="preserve">
+    <value>Name (English) must not exceed 100 chars</value>
+  </data>
+  <data name="NameEnRequired" xml:space="preserve">
+    <value>Name (English) is required.</value>
   </data>
   <data name="NotFound" xml:space="preserve">
     <value>The requested resource was not found.</value>

@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddressMaxLength" xml:space="preserve">
+    <value>العنوان يجب ألا يزيد عن 100 حرف.</value>
+  </data>
+  <data name="AddressRequired" xml:space="preserve">
+    <value>العنوان مطلوب.</value>
+  </data>
   <data name="BadRequest" xml:space="preserve">
     <value>تعذر معالجة الطلب بسبب بيانات غير صحيحة.</value>
   </data>
@@ -129,8 +135,29 @@
   <data name="DeleteSuccess" xml:space="preserve">
     <value>تم الحذف بنجاح</value>
   </data>
+  <data name="DepartementIDRequired" xml:space="preserve">
+    <value>معرف القسم مطلوب.</value>
+  </data>
   <data name="InternalServerError" xml:space="preserve">
     <value>حدث خطأ غير متوقع. يرجى التواصل مع الدعم إذا استمرت المشكلة.</value>
+  </data>
+  <data name="NameArExists" xml:space="preserve">
+    <value>الاسم (عربي) موجود مسبقًا!</value>
+  </data>
+  <data name="NameArMaxLength" xml:space="preserve">
+    <value>الاسم (عربي) يجب ألا يزيد عن 100 حرف.</value>
+  </data>
+  <data name="NameArRequired" xml:space="preserve">
+    <value>الاسم (عربي) مطلوب.</value>
+  </data>
+  <data name="NameEnExists" xml:space="preserve">
+    <value>الاسم (إنجليزي) موجود مسبقًا!</value>
+  </data>
+  <data name="NameEnMaxLength" xml:space="preserve">
+    <value>الاسم (إنجليزي) يجب ألا يزيد عن 100 حرف.</value>
+  </data>
+  <data name="NameEnRequired" xml:space="preserve">
+    <value>الاسم (إنجليزي) مطلوب.</value>
   </data>
   <data name="NotFound" xml:space="preserve">
     <value>المورد المطلوب غير موجود.</value>

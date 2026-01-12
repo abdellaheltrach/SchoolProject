@@ -21,6 +21,19 @@
         public const string DatabaseUpdateError = "DatabaseUpdateError";
         public const string InternalServerError = "InternalServerError";
 
+        //validators error messages
+        public const string NameArRequired = "NameArRequired";
+        public const string NameArMaxLength = "NameArMaxLength";
+        public const string NameEnRequired = "NameEnRequired";
+        public const string NameEnMaxLength = "NameEnMaxLength";
+        public const string AddressRequired = "AddressRequired";
+        public const string AddressMaxLength = "AddressMaxLength";
+        public const string DepartementIDRequired = "DepartementIDRequired";
+        public const string NameArExists = "NameArExists";
+        public const string NameEnExists = "NameEnExists";
+
+
+
 
     }
 }
