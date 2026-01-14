@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.InteropServices;
 
 namespace School.Domain.Entities
 {
@@ -17,12 +16,12 @@ namespace School.Domain.Entities
         [Column(TypeName = "decimal(5, 2)")]
         public decimal? grade { get; set; }
 
-        [ForeignKey("StudentID")]
-        [InverseProperty("StudentSubjects")]
+        [ForeignKey(nameof(StudentID))]
+        [InverseProperty(nameof(Student.StudentSubjects))]
         public virtual Student? Student { get; set; }
 
-        [ForeignKey("SubjectID")]
-        [InverseProperty("StudentsSubjects")]
+        [ForeignKey(nameof(SubjectID))]
+        [InverseProperty(nameof(Subject.StudentsSubjects))]
         public virtual Subject? Subject { get; set; }
 
     }

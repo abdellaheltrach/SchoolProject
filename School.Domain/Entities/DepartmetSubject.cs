@@ -14,12 +14,12 @@ namespace School.Domain.Entities
 
         public int SubjectID { get; set; }
 
-        [ForeignKey("DepartementID")]
-        [InverseProperty("DepartmentSubjects")]
+        [ForeignKey(nameof(DepartementID))]
+        [InverseProperty(nameof(Department.DepartmentSubjects))]
         public virtual Department? Department { get; set; }
 
-        [ForeignKey("SubjectID")]
-        [InverseProperty("DepartmetsSubjects")]
+        [ForeignKey(nameof(SubjectID))]
+        [InverseProperty(nameof(Subject.DepartmetsSubjects))]
         public virtual Subject? Subject { get; set; }
     }
 }

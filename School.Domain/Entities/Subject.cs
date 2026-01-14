@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace School.Domain.Entities
 {
-    public class Subject 
+    public class Subject
     {
         public Subject()
         {
@@ -15,11 +15,12 @@ namespace School.Domain.Entities
         public int ID { get; set; }
         [StringLength(500)]
         public string? SubjectNameAr { get; set; }
+        [StringLength(500)]
         public string? SubjectNameEn { get; set; }
         public int? Period { get; set; }
-        [InverseProperty("Subject")]
+        [InverseProperty(nameof(StudentSubject.Subject))]
         public virtual ICollection<StudentSubject> StudentsSubjects { get; set; }
-        [InverseProperty("Subject")]
+        [InverseProperty(nameof(DepartmetSubject.Subject))]
         public virtual ICollection<DepartmetSubject> DepartmetsSubjects { get; set; }
 
     }

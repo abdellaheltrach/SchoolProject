@@ -20,9 +20,9 @@ namespace School.Domain.Entities
 
         public int? InsManager { get; set; }
 
-        [InverseProperty("Department")]
+        [InverseProperty(nameof(Student.Department))]
         public virtual ICollection<Student> Students { get; set; }
-        [InverseProperty("Department")]
+        [InverseProperty(nameof(DepartmetSubject.Department))]
         public virtual ICollection<DepartmetSubject> DepartmentSubjects { get; set; }
 
 
