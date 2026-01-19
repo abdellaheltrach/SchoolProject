@@ -1,8 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using School.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace School.Infrastructure.Context
 {
@@ -10,7 +7,7 @@ namespace School.Infrastructure.Context
     {
         public AppDbContext()
         {
-            
+
         }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -20,6 +17,17 @@ namespace School.Infrastructure.Context
         public DbSet<DepartmetSubject> departmetSubjects { get; set; }
         public DbSet<Subject> subjects { get; set; }
         public DbSet<StudentSubject> studentSubjects { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Instructor>()
+            .HasOne(i => i.Supervisor)
+            .WithMany(i => i.Subordinates)
+            .HasForeignKey(i => i.SupervisorId)
+            .OnDelete(DeleteBehavior.SetNull);
+        }
     }
 
 }

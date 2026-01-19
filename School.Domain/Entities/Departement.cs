@@ -10,6 +10,7 @@ namespace School.Domain.Entities
         {
             Students = new HashSet<Student>();
             DepartmentSubjects = new HashSet<DepartmetSubject>();
+            Instructors = new HashSet<Instructor>();
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -18,14 +19,20 @@ namespace School.Domain.Entities
         [StringLength(200)]
         public string? DepartmentNameEn { get; set; }
 
-        public int? InsManager { get; set; }
+        public int? InstructorManagerId { get; set; }
 
         [InverseProperty(nameof(Student.Department))]
         public virtual ICollection<Student> Students { get; set; }
+
         [InverseProperty(nameof(DepartmetSubject.Department))]
         public virtual ICollection<DepartmetSubject> DepartmentSubjects { get; set; }
 
+        [InverseProperty(nameof(InstructorManager.Department))]
+        public virtual ICollection<Instructor> Instructors { get; set; }
 
+        [ForeignKey(nameof(InstructorManagerId))]
+        [InverseProperty(nameof(InstructorManager.ManagedDepartment))]
+        public virtual Instructor? InstructorManager { get; set; }
 
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using School.Infrastructure.Context;
 
@@ -10,9 +11,11 @@ using School.Infrastructure.Context;
 namespace School.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260114161843_andInstructorAndInstructorSubjectTable")]
+    partial class andInstructorAndInstructorSubjectTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,7 +101,7 @@ namespace School.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("Salary")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(6, 2)");
 
                     b.Property<int?>("SupervisorId")
                         .HasColumnType("int");
@@ -222,7 +225,7 @@ namespace School.Infrastructure.Migrations
             modelBuilder.Entity("School.Domain.Entities.Department", b =>
                 {
                     b.HasOne("School.Domain.Entities.Instructor", "InstructorManager")
-                        .WithOne("ManagedDepartment")
+                        .WithOne("departmentManager")
                         .HasForeignKey("School.Domain.Entities.Department", "InstructorManagerId");
 
                     b.Navigation("InstructorManager");
@@ -249,26 +252,25 @@ namespace School.Infrastructure.Migrations
 
             modelBuilder.Entity("School.Domain.Entities.Instructor", b =>
                 {
-                    b.HasOne("School.Domain.Entities.Department", "Department")
+                    b.HasOne("School.Domain.Entities.Department", "department")
                         .WithMany("Instructors")
                         .HasForeignKey("DepartementID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("School.Domain.Entities.Instructor", "Supervisor")
-                        .WithMany("Subordinates")
-                        .HasForeignKey("SupervisorId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Department");
+                        .WithMany("Instructors")
+                        .HasForeignKey("SupervisorId");
 
                     b.Navigation("Supervisor");
+
+                    b.Navigation("department");
                 });
 
             modelBuilder.Entity("School.Domain.Entities.InstructorSubject", b =>
                 {
-                    b.HasOne("School.Domain.Entities.Instructor", "Instructor")
-                        .WithMany("InstructorSubjects")
+                    b.HasOne("School.Domain.Entities.Instructor", "instructor")
+                        .WithMany("Ins_Subjects")
                         .HasForeignKey("InstructorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -279,9 +281,9 @@ namespace School.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Instructor");
-
                     b.Navigation("Subject");
+
+                    b.Navigation("instructor");
                 });
 
             modelBuilder.Entity("School.Domain.Entities.Student", b =>
@@ -323,11 +325,11 @@ namespace School.Infrastructure.Migrations
 
             modelBuilder.Entity("School.Domain.Entities.Instructor", b =>
                 {
-                    b.Navigation("InstructorSubjects");
+                    b.Navigation("Ins_Subjects");
 
-                    b.Navigation("ManagedDepartment");
+                    b.Navigation("Instructors");
 
-                    b.Navigation("Subordinates");
+                    b.Navigation("departmentManager");
                 });
 
             modelBuilder.Entity("School.Domain.Entities.Student", b =>

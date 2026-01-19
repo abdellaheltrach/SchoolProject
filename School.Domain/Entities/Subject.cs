@@ -22,6 +22,8 @@ namespace School.Domain.Entities
         public virtual ICollection<StudentSubject> StudentsSubjects { get; set; }
         [InverseProperty(nameof(DepartmetSubject.Subject))]
         public virtual ICollection<DepartmetSubject> DepartmetsSubjects { get; set; }
+        [InverseProperty(nameof(InstructorSubject.Subject))]
+        public virtual ICollection<InstructorSubject> Ins_Subjects { get; set; }
 
     }
 }
