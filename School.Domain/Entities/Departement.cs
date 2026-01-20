@@ -1,10 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-
-namespace School.Domain.Entities
+﻿namespace School.Domain.Entities
 {
-    public partial class Department
+    public class Department
     {
         public Department()
         {
@@ -12,27 +8,16 @@ namespace School.Domain.Entities
             DepartmentSubjects = new HashSet<DepartmetSubject>();
             Instructors = new HashSet<Instructor>();
         }
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; set; }
-        public string? DepartmentNameAr { get; set; }
-        [StringLength(200)]
-        public string? DepartmentNameEn { get; set; }
 
+        public int Id { get; set; }
+        public string? DepartmentNameAr { get; set; }
+        public string? DepartmentNameEn { get; set; }
         public int? InstructorManagerId { get; set; }
 
-        [InverseProperty(nameof(Student.Department))]
         public virtual ICollection<Student> Students { get; set; }
-
-        [InverseProperty(nameof(DepartmetSubject.Department))]
         public virtual ICollection<DepartmetSubject> DepartmentSubjects { get; set; }
-
-        [InverseProperty(nameof(InstructorManager.Department))]
         public virtual ICollection<Instructor> Instructors { get; set; }
-
-        [ForeignKey(nameof(InstructorManagerId))]
-        [InverseProperty(nameof(InstructorManager.ManagedDepartment))]
         public virtual Instructor? InstructorManager { get; set; }
-
     }
+
 }
