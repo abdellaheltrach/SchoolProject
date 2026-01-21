@@ -1,0 +1,24 @@
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using School.Api.Base;
+using School.Core.Features.Departement.Queries.Models;
+using School.Domain.AppRoutes;
+
+namespace School.Api.Controllers
+{
+
+    [ApiController]
+    public class DepartementController : AppBaseController
+    {
+        public DepartementController(IMediator mediator) : base(mediator)
+        {
+
+        }
+
+        [HttpGet(AppRouter.DepartmentRouting.GetDepartmentByID)]
+        public async Task<IActionResult> GetDepartmentByID([FromRoute] int Id)
+        {
+            return NewResult(await _mediator.Send(new GetDepartementByIdQuery(Id)));
+        }
+    }
+}

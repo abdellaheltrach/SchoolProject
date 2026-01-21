@@ -3,7 +3,7 @@ using School.Infrastructure.Bases;
 
 namespace School.Infrastructure.Repositories.Interfaces
 {
-    public interface IDepartementRepository : IGenericRepositoryAsync<Department>
+    public interface IDepartmentRepository : IGenericRepositoryAsync<Department>
     {
     }
 }

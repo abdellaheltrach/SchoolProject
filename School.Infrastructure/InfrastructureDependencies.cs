@@ -12,7 +12,7 @@ namespace School.Infrastructure
         {
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<ISubjectRepository, SubjectRepository>();
-            services.AddTransient<IDepartementRepository, DepartementRepository>();
+            services.AddTransient<IDepartmentRepository, DepartementRepository>();
             services.AddTransient<IInstructorRepository, InstructorRepository>();
 
 

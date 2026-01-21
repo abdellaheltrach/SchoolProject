@@ -6,7 +6,7 @@ using School.Infrastructure.Repositories.Interfaces;
 
 namespace School.Infrastructure.Repositories
 {
-    public class DepartementRepository : GenericRepositoryAsync<Department>, IDepartementRepository
+    public class DepartementRepository : GenericRepositoryAsync<Department>, IDepartmentRepository
     {
         #region Fields
         private readonly DbSet<Department> _Departement;

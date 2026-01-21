@@ -20,6 +20,12 @@
             public const string Paginated = Prefix + "/Paginated";
 
 
+        }
+        public static class DepartmentRouting
+        {
+            private const string Prefix = Rule + "Department";
+            public const string GetDepartmentByID = Prefix + "/{Id}";
+
 
 
         }
