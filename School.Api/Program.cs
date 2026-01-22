@@ -51,6 +51,21 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 #endregion
 
+#region AllowCORS
+var CORS = "_cors";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: CORS,
+                      policy =>
+                      {
+                          //policy.WithOrigins("http://example.com");
+                          policy.AllowAnyHeader();
+                          policy.AllowAnyMethod();
+                          policy.AllowAnyOrigin();
+                      });
+});
+
+#endregion
 
 var app = builder.Build();
 
@@ -73,6 +88,10 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 
 
 app.UseHttpsRedirection();
+
+#region Apply CORS
+app.UseCors(CORS);
+#endregion
 
 app.UseAuthorization();
 
