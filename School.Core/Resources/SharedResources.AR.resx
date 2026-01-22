@@ -171,6 +171,9 @@
   <data name="NameEnRequired" xml:space="preserve">
     <value>الاسم (إنجليزي) مطلوب.</value>
   </data>
+  <data name="PropNotExist" xml:space="preserve">
+    <value>{PropertyName} المحدد غير موجود.</value>
+  </data>
   <data name="NotFound" xml:space="preserve">
     <value>المورد المطلوب غير موجود.</value>
   </data>

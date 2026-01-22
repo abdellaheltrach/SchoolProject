@@ -13,6 +13,9 @@ namespace School.Core.Behaviors
         }
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
+
+
+
             if (_validators.Any())
             {
                 var context = new ValidationContext<TRequest>(request);
@@ -21,11 +24,8 @@ namespace School.Core.Behaviors
 
                 if (failures.Count != 0)
                 {
-                    var message = failures
-                        .Select(x => $"{x.PropertyName}: {x.ErrorMessage}")
-                        .FirstOrDefault();
-                    throw new ValidationException(message);
-
+                    // Throw FluentValidation.ValidationException with all errors
+                    throw new FluentValidation.ValidationException(failures);
                 }
             }
             return await next();

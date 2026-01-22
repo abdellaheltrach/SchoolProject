@@ -30,6 +30,13 @@ namespace School.Service.Services
                                                         .Include(x => x.InstructorManager).FirstOrDefaultAsync();
             return Department;
         }
+
+        public async Task<bool> IsDepartmentIdExist(int departmentId)
+        {
+            return await _departmentRepository.GetTableNoTracking().AnyAsync(x => x.Id.Equals(departmentId));
+        }
+
+
         #endregion
     }
 }

@@ -43,6 +43,7 @@ namespace School.Api.Controllers
         [HttpPost(AppRouter.StudentRouting.AddStudent)]
         public async Task<IActionResult> Create([FromBody] AddStudentCommand command)
         {
+            Console.WriteLine(command);
             var response = await _mediator.Send(command);
             return NewResult(response);
         }

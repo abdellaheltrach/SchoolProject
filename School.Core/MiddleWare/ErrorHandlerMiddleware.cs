@@ -44,11 +44,11 @@ namespace School.Core.MiddleWare
                         break;
 
                     case FluentValidation.ValidationException validationEx:
+                        responseModel.StatusCode = HttpStatusCode.BadRequest;
+                        responseModel.Succeeded = false;
                         responseModel.Message = _localizer[SharedResourceskeys.ValidationFailed];
-                        responseModel.StatusCode = HttpStatusCode.UnprocessableEntity;
-                        response.StatusCode = (int)HttpStatusCode.UnprocessableEntity;
                         responseModel.Errors = validationEx.Errors
-                            .Select(x => $"{x.PropertyName}: {x.ErrorMessage}")
+                            .Select(error => error.ErrorMessage)
                             .ToList();
                         break;
 

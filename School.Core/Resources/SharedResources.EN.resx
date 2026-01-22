@@ -171,6 +171,9 @@
   <data name="NameEnRequired" xml:space="preserve">
     <value>Name (English) is required.</value>
   </data>
+  <data name="PropNotExist" xml:space="preserve">
+    <value>The specified {PropertyName} does not exist.</value>
+  </data>
   <data name="NotFound" xml:space="preserve">
     <value>The requested resource was not found.</value>
   </data>

@@ -31,6 +31,8 @@
         public const string DepartementIDRequired = "DepartementIDRequired";
         public const string NameArExists = "NameArExists";
         public const string NameEnExists = "NameEnExists";
+        public const string PropNotExist = "PropNotExist";
+
 
         //properties names
         public const string NameAr = "NameAr";
