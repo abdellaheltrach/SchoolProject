@@ -16,9 +16,9 @@ namespace School.Api.Controllers
         }
 
         [HttpGet(AppRouter.DepartmentRouting.GetDepartmentByID)]
-        public async Task<IActionResult> GetDepartmentByID([FromRoute] int Id)
+        public async Task<IActionResult> GetDepartmentByID([FromQuery] GetDepartementByIdQuery Query)
         {
-            return NewResult(await _mediator.Send(new GetDepartementByIdQuery(Id)));
+            return NewResult(await _mediator.Send(Query));
         }
     }
 }

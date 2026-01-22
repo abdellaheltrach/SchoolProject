@@ -18,7 +18,7 @@ namespace School.Core.Mapping.DepartmentMapping
                  //need map between DepartmetSubject and SubjectResponse
                  .ForMember(dest => dest.SubjectList, opt => opt.MapFrom(src => src.DepartmentSubjects))
                  //need map between Student and StudentResponse
-                 .ForMember(dest => dest.StudentList, opt => opt.MapFrom(src => src.Students))
+                 /*.ForMember(dest => dest.StudentList, opt => opt.MapFrom(src => src.Students))*/
                  //need map between Instructor and InstructorResponse
                  .ForMember(dest => dest.InstructorList, opt => opt.MapFrom(src => src.Instructors));
 
@@ -26,9 +26,11 @@ namespace School.Core.Mapping.DepartmentMapping
                  .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                  .ForMember(dest => dest.Name, opt => opt.MapFrom(src => LocalizationHelper.GetLocalizedName(src.Subject.SubjectNameAr, src.Subject.SubjectNameEn)));
 
-            CreateMap<Student, StudentResponse>()
-                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.StudentID))
-                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => LocalizationHelper.GetLocalizedName(src.NameAr, src.NameEn)));
+            //removed because we changed the student list to a paginated List!!
+
+            //CreateMap<Student, StudentResponse>()
+            //     .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.StudentID))
+            //     .ForMember(dest => dest.Name, opt => opt.MapFrom(src => LocalizationHelper.GetLocalizedName(src.NameAr, src.NameEn)));
 
             CreateMap<Instructor, InstructorResponse>()
                  .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.InstructorId))

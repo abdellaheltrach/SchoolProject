@@ -1,4 +1,6 @@
-﻿namespace School.Core.Features.Departement.Queries.QueriesResponse
+﻿using School.Core.Base.Wrappers;
+
+namespace School.Core.Features.Departement.Queries.QueriesResponse
 {
     public class GetDepartmentByIdResponse
     {
@@ -10,7 +12,7 @@
 
         public List<SubjectResponse>? SubjectList { get; set; }
 
-        public List<StudentResponse>? StudentList { get; set; }
+        public PaginatedResult<StudentResponse>? StudentList { get; set; }
 
         public List<InstructorResponse>? InstructorList { get; set; }
     }

@@ -24,7 +24,7 @@
         public static class DepartmentRouting
         {
             private const string Prefix = Rule + "Department";
-            public const string GetDepartmentByID = Prefix + "/{Id}";
+            public const string GetDepartmentByID = Prefix + "/Id";
 
 
 

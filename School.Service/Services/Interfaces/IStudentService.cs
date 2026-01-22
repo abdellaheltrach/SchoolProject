@@ -16,6 +16,7 @@ namespace School.Service.Services.Interfaces
         Task<bool> DeleteAsync(Student student);
 
         IQueryable<Student> FilterStudentPaginatedQuerable(string search, StudentOrdringEnum orderingBy, bool SortDesc);
+        IQueryable<Student> GetStudentsByDepartmentIDQuerable(int DepartementId);
 
 
 

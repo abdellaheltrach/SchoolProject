@@ -6,11 +6,11 @@ namespace School.Core.Features.Departement.Queries.Models
 {
     public class GetDepartementByIdQuery : IRequest<ApiResponse<GetDepartmentByIdResponse>>
     {
-        public readonly int ID;
-        public GetDepartementByIdQuery(int Id)
-        {
-            ID = Id;
-        }
+        public int ID { get; set; }
+        public int StudentPageSize { get; set; }
+        public int StudentPageNumber { get; set; }
+
+
     }
 
 }
