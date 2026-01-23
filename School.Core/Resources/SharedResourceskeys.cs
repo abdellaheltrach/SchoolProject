@@ -1,10 +1,9 @@
 ﻿namespace School.Core.Resources
 {
-    public static class SharedResourceskeys
+    public static class SharedResourcesKeys
     {
 
-        //public const string AlreadyExists = "AlreadyExists";
-        //public const string UpdateSuccess = "UpdateSuccess";
+
 
 
         //api response hundler messages
@@ -16,22 +15,25 @@
         public const string DeleteSuccess = "DeleteSuccess";
         public const string CreateSuccess = "CreateSuccess";
 
+
         //validation error middleware messages
         public const string ValidationFailed = "ValidationFailed";
         public const string DatabaseUpdateError = "DatabaseUpdateError";
         public const string InternalServerError = "InternalServerError";
 
         //validators error messages
-        public const string NameArRequired = "NameArRequired";
-        public const string NameArMaxLength = "NameArMaxLength";
-        public const string NameEnRequired = "NameEnRequired";
-        public const string NameEnMaxLength = "NameEnMaxLength";
-        public const string AddressRequired = "AddressRequired";
-        public const string AddressMaxLength = "AddressMaxLength";
-        public const string DepartementIDRequired = "DepartementIDRequired";
-        public const string NameArExists = "NameArExists";
-        public const string NameEnExists = "NameEnExists";
+
+
+        public const string PasswordNotEqualConfirmationPassword = "PasswordNotEqualConfirmationPassword";
+        public const string PasswordTooWeak = "PasswordTooWeak";
+        public const string InvalidEmail = "InvalidEmail";
+
+        //generic validation messages
         public const string PropNotExist = "PropNotExist";
+        public const string PropRequired = "PropRequired";
+        public const string PropNotEmpty = "PropNotEmpty";
+        public const string PropMaxLengthis100 = "PropMaxLengthis100";
+        public const string PropAlreadyExists = "PropAlreadyExists";
 
 
         //properties names
@@ -42,6 +44,9 @@
         public const string Phone = "Phone";
         public const string StudentID = "StudentID";
 
+
+        //CQRS specific messages
+        public const string UserCreationFailed = "UserCreationFailed";
 
 
 

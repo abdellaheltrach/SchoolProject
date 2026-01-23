@@ -22,6 +22,8 @@
 
   <ItemGroup>
     <Folder Include="Features\Departement\Commands\" />
+    <Folder Include="Features\Users\Queries\Handlers\" />
+    <Folder Include="Features\Users\Queries\Models\" />
     <Folder Include="Mapping\DepartmentMapping\CommandMapping\" />
   </ItemGroup>
 

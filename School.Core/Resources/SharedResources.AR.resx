@@ -120,12 +120,6 @@
   <data name="Address" xml:space="preserve">
     <value>العنوان</value>
   </data>
-  <data name="AddressMaxLength" xml:space="preserve">
-    <value>العنوان يجب ألا يزيد عن 100 حرف.</value>
-  </data>
-  <data name="AddressRequired" xml:space="preserve">
-    <value>العنوان مطلوب.</value>
-  </data>
   <data name="BadRequest" xml:space="preserve">
     <value>تعذر معالجة الطلب بسبب بيانات غير صحيحة.</value>
   </data>
@@ -141,35 +135,14 @@
   <data name="DepartementID" xml:space="preserve">
     <value>القسم</value>
   </data>
-  <data name="DepartementIDRequired" xml:space="preserve">
-    <value>معرف القسم مطلوب.</value>
-  </data>
   <data name="InternalServerError" xml:space="preserve">
     <value>حدث خطأ غير متوقع. يرجى التواصل مع الدعم إذا استمرت المشكلة.</value>
   </data>
   <data name="NameAr" xml:space="preserve">
     <value>الاسم بالعربية</value>
   </data>
-  <data name="NameArExists" xml:space="preserve">
-    <value>الاسم (عربي) موجود مسبقًا!</value>
-  </data>
-  <data name="NameArMaxLength" xml:space="preserve">
-    <value>الاسم (عربي) يجب ألا يزيد عن 100 حرف.</value>
-  </data>
-  <data name="NameArRequired" xml:space="preserve">
-    <value>الاسم (عربي) مطلوب.</value>
-  </data>
   <data name="NameEn" xml:space="preserve">
     <value>الاسم بالإنجليزية</value>
-  </data>
-  <data name="NameEnExists" xml:space="preserve">
-    <value>الاسم (إنجليزي) موجود مسبقًا!</value>
-  </data>
-  <data name="NameEnMaxLength" xml:space="preserve">
-    <value>الاسم (إنجليزي) يجب ألا يزيد عن 100 حرف.</value>
-  </data>
-  <data name="NameEnRequired" xml:space="preserve">
-    <value>الاسم (إنجليزي) مطلوب.</value>
   </data>
   <data name="PropNotExist" xml:space="preserve">
     <value>{PropertyName} المحدد غير موجود.</value>
@@ -194,5 +167,29 @@
   </data>
   <data name="ValidationFailed" xml:space="preserve">
     <value>حدثت أخطاء في التحقق من صحة البيانات.</value>
+  </data>
+  <data name="PropRequired" xml:space="preserve">
+    <value>الحقل {PropertyName} مطلوب.</value>
+  </data>
+  <data name="PropNotEmpty" xml:space="preserve">
+    <value>الحقل {PropertyName} لا يجب أن يكون فارغًا.</value>
+  </data>
+  <data name="PropMaxLengthis100" xml:space="preserve">
+    <value>يجب ألا يتجاوز طول حقل {PropertyName} 100 حرفًا.</value>
+  </data>
+  <data name="PasswordNotEqualConfirmationPassword" xml:space="preserve">
+    <value>كلمة المرور وتأكيد كلمة المرور غير متطابقين.</value>
+  </data>
+  <data name="InvalidEmail" xml:space="preserve">
+    <value>يجب أن يكون البريدًا الإلكترونيً صالحًا.</value>
+  </data>
+  <data name="PropAlreadyExists" xml:space="preserve">
+    <value>{PropertyName} موجود مسبقًا.</value>
+  </data>
+  <data name="PasswordTooWeak" xml:space="preserve">
+    <value>كلمة المرور ضعيفة جدًا. يجب أن تحتوي على 8 أحرف على الأقل، بما في ذلك حرف كبير، حرف صغير، رقم، ورمز خاص.</value>
+  </data>
+  <data name="UserCreationFailed" xml:space="preserve">
+    <value>فشل إنشاء المستخدم. يرجى المحاولة مرة أخرى لاحقًا.</value>
   </data>
 </root>

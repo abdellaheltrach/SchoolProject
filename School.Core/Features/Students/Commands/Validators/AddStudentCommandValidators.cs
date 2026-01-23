@@ -33,19 +33,19 @@ namespace School.Core.Features.Students.Commands.Validitor
         {
 
             RuleFor(x => x.NameAr)
-                .NotEmpty().WithMessage(_localizer[SharedResourceskeys.NameArRequired])
-                .MaximumLength(100).WithMessage(_localizer[SharedResourceskeys.NameArMaxLength]);
+                .NotEmpty().WithMessage(_localizer[SharedResourcesKeys.PropRequired])
+                .MaximumLength(100).WithMessage(_localizer[SharedResourcesKeys.PropMaxLengthis100]);
 
             RuleFor(x => x.NameEn)
-    .NotEmpty().WithMessage(_localizer[SharedResourceskeys.NameEnRequired])
-    .MaximumLength(100).WithMessage(_localizer[SharedResourceskeys.NameEnMaxLength]);
+    .NotEmpty().WithMessage(_localizer[SharedResourcesKeys.PropRequired])
+    .MaximumLength(100).WithMessage(_localizer[SharedResourcesKeys.PropMaxLengthis100]);
 
             RuleFor(x => x.Address)
-                .NotEmpty().WithMessage(_localizer[SharedResourceskeys.AddressRequired])
-                .MaximumLength(100).WithMessage(_localizer[SharedResourceskeys.AddressMaxLength]);
+                .NotEmpty().WithMessage(_localizer[SharedResourcesKeys.PropRequired])
+                .MaximumLength(100).WithMessage(_localizer[SharedResourcesKeys.PropMaxLengthis100]);
 
             RuleFor(x => x.DepartementID)
-                .NotEmpty().WithMessage(_localizer[SharedResourceskeys.DepartementIDRequired]);
+                .NotEmpty().WithMessage(_localizer[SharedResourcesKeys.PropRequired]);
         }
 
         public void ApplyCustomValidationsRules()
@@ -53,7 +53,7 @@ namespace School.Core.Features.Students.Commands.Validitor
 
             RuleFor(x => x.DepartementID)
            .MustAsync(async (Key, CancellationToken) => await _departmentService.IsDepartmentIdExist(Key))
-           .WithMessage(_localizer[SharedResourceskeys.PropNotExist]);
+           .WithMessage(_localizer[SharedResourcesKeys.PropNotExist]);
 
         }
 

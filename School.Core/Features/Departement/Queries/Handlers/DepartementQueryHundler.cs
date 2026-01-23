@@ -42,7 +42,7 @@ namespace School.Core.Features.Departement.Queries.Hundlers
             //call departement service to get departement by id including related students , subjects , instructors
             var departement = await _DepartmentService.GetDepartmentByIdIncluding_DS_Subj_Ins_InsManger(request.ID);
             //check if departement is null return not found response
-            if (departement == null) return NotFound<GetDepartmentByIdResponse>(_stringLocalizer[SharedResourceskeys.NotFound]);
+            if (departement == null) return NotFound<GetDepartmentByIdResponse>(_stringLocalizer[SharedResourcesKeys.NotFound]);
             //map departement to GetDepartementByIdResponse
             var mapper = _mapper.Map<GetDepartmentByIdResponse>(departement);
 

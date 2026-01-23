@@ -29,5 +29,13 @@
 
 
         }
+        public static class UserRouting
+        {
+            private const string Prefix = Rule + "User";
+            public const string Create = Prefix + "/Create";
+
+
+
+        }
     }
 }
