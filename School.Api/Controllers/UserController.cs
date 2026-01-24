@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using School.Api.Base;
 using School.Core.Features.Users.Commands.Models;
+using School.Core.Features.Users.Queries.Models;
 using School.Domain.AppRoutes;
 
 namespace School.Api.Controllers
@@ -18,6 +19,13 @@ namespace School.Api.Controllers
         public async Task<IActionResult> Create([FromBody] AddUserCommand command)
         {
             var response = await _mediator.Send(command);
+            return NewResult(response);
+        }
+
+        [HttpGet(AppRouter.UserRouting.GetUserByID)]
+        public async Task<IActionResult> GetUserbyId([FromRoute] int Id)
+        {
+            var response = await _mediator.Send(new GetUserByIdQuery(Id));
             return NewResult(response);
         }
     }
