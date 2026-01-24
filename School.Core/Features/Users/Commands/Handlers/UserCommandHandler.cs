@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using School.Core.Base.ApiResponse;
 using School.Core.Features.Users.Commands.Models;
@@ -10,6 +11,7 @@ using School.Domain.Entities.Identity;
 namespace School.Core.Features.Users.Commands.Handlers
 {
     public class UserCommandHandler : ApiResponseHandler, IRequestHandler<AddUserCommand, ApiResponse<string>>
+                                                        , IRequestHandler<EditUserCommand, ApiResponse<string>>
     {
         #region Fields
         private readonly IStringLocalizer<SharedResources> _stringLocalizer;
@@ -43,6 +45,34 @@ namespace School.Core.Features.Users.Commands.Handlers
             }
             return Created<string>(null, null, new { id = NewidentityUser.Id });
 
+        }
+
+        public async Task<ApiResponse<string>> Handle(EditUserCommand request, CancellationToken cancellationToken)
+        {
+
+
+            //check if user is exist
+
+            var oldUser = await _userManager.FindByIdAsync(request.Id.ToString());
+
+
+
+            //if Not Exist notfound
+            if (oldUser == null) return NotFound<string>();
+            //mapping
+            var newUser = _mapper.Map(request, oldUser);
+
+            //if username is Exist
+            var getUserByUserName = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == newUser.UserName && x.Id != newUser.Id);
+            //username is Exist
+            if (getUserByUserName != null) return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.UserNameIsExist]);
+
+            //update
+            var result = await _userManager.UpdateAsync(newUser);
+            //result is not success
+            if (!result.Succeeded) return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.UpdateUserFailed]);
+            //message
+            return Success<string>(_stringLocalizer[SharedResourcesKeys.UserUpdated]);
         }
         #endregion
     }

@@ -45,8 +45,11 @@
         public const string StudentID = "StudentID";
 
 
-        //CQRS specific messages
+        //CQRS Handlers specific messages
         public const string UserCreationFailed = "UserCreationFailed";
+        public const string UserNameIsExist = "UserNameIsExist";
+        public const string UpdateUserFailed = "UpdateUserFailed";
+        public const string UserUpdated = "UserUpdated";
 
 
 

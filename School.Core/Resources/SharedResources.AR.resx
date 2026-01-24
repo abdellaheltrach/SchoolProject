@@ -192,4 +192,13 @@
   <data name="UserCreationFailed" xml:space="preserve">
     <value>فشل إنشاء المستخدم. يرجى المحاولة مرة أخرى لاحقًا.</value>
   </data>
+  <data name="UserNameIsExist" xml:space="preserve">
+    <value>اسم المستخدم موجود مسبقًا.</value>
+  </data>
+  <data name="UpdateUserFailed" xml:space="preserve">
+    <value>فشل تحديث بيانات المستخدم. يرجى المحاولة مرة أخرى لاحقًا.</value>
+  </data>
+  <data name="UserUpdated" xml:space="preserve">
+    <value>تم تحديث بيانات المستخدم بنجاح.</value>
+  </data>
 </root>
