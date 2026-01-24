@@ -12,6 +12,7 @@ namespace School.Core.Features.Users.Commands.Handlers
 {
     public class UserCommandHandler : ApiResponseHandler, IRequestHandler<AddUserCommand, ApiResponse<string>>
                                                         , IRequestHandler<EditUserCommand, ApiResponse<string>>
+                                                        , IRequestHandler<DeleteUserCommand, ApiResponse<string>>
     {
         #region Fields
         private readonly IStringLocalizer<SharedResources> _stringLocalizer;
@@ -73,6 +74,19 @@ namespace School.Core.Features.Users.Commands.Handlers
             if (!result.Succeeded) return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.UpdateUserFailed]);
             //message
             return Success<string>(_stringLocalizer[SharedResourcesKeys.UserUpdated]);
+        }
+
+        public async Task<ApiResponse<string>> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
+        {
+            //check if user is exist
+            var user = await _userManager.FindByIdAsync(request.Id.ToString());
+            //if Not Exist notfound
+            if (user == null) return NotFound<string>(SharedResourcesKeys.NotFound);
+            //Delete the User
+            var result = await _userManager.DeleteAsync(user);
+            //in case of Failure
+            if (!result.Succeeded) return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.DeletedFailed]);
+            return Success((string)_stringLocalizer[SharedResourcesKeys.Deleted]);
         }
         #endregion
     }

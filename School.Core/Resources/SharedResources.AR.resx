@@ -201,4 +201,13 @@
   <data name="UserUpdated" xml:space="preserve">
     <value>تم تحديث بيانات المستخدم بنجاح.</value>
   </data>
+  <data name="PropMustBeGreaterThanZero" xml:space="preserve">
+    <value>يجب أن تكون قيمة {PropertyName} أكبر من صفر.</value>
+  </data>
+  <data name="DeletedFailed" xml:space="preserve">
+    <value>فشل حذف السجل. يرجى المحاولة مرة أخرى لاحقًا.</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>تم حذف السجل بنجاح.</value>
+  </data>
 </root>
