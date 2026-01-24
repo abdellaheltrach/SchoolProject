@@ -13,6 +13,7 @@ namespace School.Core.Features.Users.Commands.Handlers
     public class UserCommandHandler : ApiResponseHandler, IRequestHandler<AddUserCommand, ApiResponse<string>>
                                                         , IRequestHandler<EditUserCommand, ApiResponse<string>>
                                                         , IRequestHandler<DeleteUserCommand, ApiResponse<string>>
+                                                        , IRequestHandler<ChangeUserPasswordCommand, ApiResponse<string>>
     {
         #region Fields
         private readonly IStringLocalizer<SharedResources> _stringLocalizer;
@@ -87,6 +88,25 @@ namespace School.Core.Features.Users.Commands.Handlers
             //in case of Failure
             if (!result.Succeeded) return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.DeletedFailed]);
             return Success((string)_stringLocalizer[SharedResourcesKeys.Deleted]);
+        }
+
+        public async Task<ApiResponse<string>> Handle(ChangeUserPasswordCommand request, CancellationToken cancellationToken)
+        {
+            //get user
+            var user = await _userManager.FindByIdAsync(request.Id.ToString());
+            //check if user is exist
+            //if Not Exist notfound
+            if (user == null) return NotFound<string>(_stringLocalizer[SharedResourcesKeys.NotFound]);
+
+            //Change User Password
+            var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+            //var user1=await _userManager.HasPasswordAsync(user);
+            //await _userManager.RemovePasswordAsync(user);
+            //await _userManager.AddPasswordAsync(user, request.NewPassword);
+
+            //result
+            if (!result.Succeeded) return BadRequest<string>(result.Errors.FirstOrDefault().Description);
+            return Success<string>(_stringLocalizer[SharedResourcesKeys.Success]);
         }
         #endregion
     }
