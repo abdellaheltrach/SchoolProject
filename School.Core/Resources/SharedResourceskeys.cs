@@ -14,6 +14,9 @@
         public const string UnprocessableEntity = "UnprocessableEntity";
         public const string DeleteSuccess = "DeleteSuccess";
         public const string CreateSuccess = "CreateSuccess";
+        public const string Deleted = "Deleted";
+        public const string DeletedFailed = "DeletedFailed";
+
 
 
         //validation error middleware messages
@@ -34,6 +37,7 @@
         public const string PropNotEmpty = "PropNotEmpty";
         public const string PropMaxLengthis100 = "PropMaxLengthis100";
         public const string PropAlreadyExists = "PropAlreadyExists";
+        public const string PropMustBeGreaterThanZero = "PropMustBeGreaterThanZero";
 
 
         //properties names
@@ -45,8 +49,11 @@
         public const string StudentID = "StudentID";
 
 
-        //CQRS specific messages
+        //CQRS Handlers specific messages
         public const string UserCreationFailed = "UserCreationFailed";
+        public const string UserNameIsExist = "UserNameIsExist";
+        public const string UpdateUserFailed = "UpdateUserFailed";
+        public const string UserUpdated = "UserUpdated";
 
 
 

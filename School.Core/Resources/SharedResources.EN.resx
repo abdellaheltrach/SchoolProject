@@ -192,4 +192,22 @@
   <data name="UserCreationFailed" xml:space="preserve">
     <value>Failed to create the user. Please try again later.</value>
   </data>
+  <data name="UserNameIsExist" xml:space="preserve">
+    <value>Username already exists.</value>
+  </data>
+  <data name="UpdateUserFailed" xml:space="preserve">
+    <value>Failed to update the user. Please try again later.</value>
+  </data>
+  <data name="UserUpdated" xml:space="preserve">
+    <value>User updated successfully.</value>
+  </data>
+  <data name="PropMustBeGreaterThanZero" xml:space="preserve">
+    <value>{PropertyName} must be greater than zero.</value>
+  </data>
+  <data name="DeletedFailed" xml:space="preserve">
+    <value>Failed to delete the record. Please try again later.</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>Record deleted successfully.</value>
+  </data>
 </root>
