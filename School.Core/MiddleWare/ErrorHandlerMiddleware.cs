@@ -70,14 +70,14 @@ namespace School.Core.MiddleWare
                 case UnauthorizedAccessException unauthorizedEx:
                     response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     responseModel.StatusCode = HttpStatusCode.Unauthorized;
-                    responseModel.Message = _localizer[SharedResourceskeys.UnAuthorized];
+                    responseModel.Message = _localizer[SharedResourcesKeys.UnAuthorized];
                     _logger.LogWarning(unauthorizedEx, "Unauthorized access attempt");
                     break;
 
                 case FluentValidation.ValidationException validationEx:
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     responseModel.StatusCode = HttpStatusCode.BadRequest;
-                    responseModel.Message = _localizer[SharedResourceskeys.ValidationFailed];
+                    responseModel.Message = _localizer[SharedResourcesKeys.ValidationFailed];
                     responseModel.Errors = validationEx.Errors
                         .Select(e => e.ErrorMessage)
                         .ToList();
@@ -87,7 +87,7 @@ namespace School.Core.MiddleWare
                 case ArgumentNullException argNullEx:
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     responseModel.StatusCode = HttpStatusCode.BadRequest;
-                    responseModel.Message = _localizer[SharedResourceskeys.BadRequest];
+                    responseModel.Message = _localizer[SharedResourcesKeys.BadRequest];
                     responseModel.Errors.Add(argNullEx.Message);
                     _logger.LogWarning(argNullEx, "Argument null error: {ParamName}", argNullEx.ParamName);
                     break;
@@ -95,7 +95,7 @@ namespace School.Core.MiddleWare
                 case ArgumentException argEx:
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     responseModel.StatusCode = HttpStatusCode.BadRequest;
-                    responseModel.Message = _localizer[SharedResourceskeys.BadRequest];
+                    responseModel.Message = _localizer[SharedResourcesKeys.BadRequest];
                     responseModel.Errors.Add(argEx.Message);
                     _logger.LogWarning(argEx, "Argument validation error: {Message}", argEx.Message);
                     break;
@@ -104,14 +104,14 @@ namespace School.Core.MiddleWare
                 case KeyNotFoundException notFoundEx:
                     response.StatusCode = (int)HttpStatusCode.NotFound;
                     responseModel.StatusCode = HttpStatusCode.NotFound;
-                    responseModel.Message = _localizer[SharedResourceskeys.NotFound];
+                    responseModel.Message = _localizer[SharedResourcesKeys.NotFound];
                     _logger.LogWarning(notFoundEx, "Resource not found");
                     break;
 
                 case DbUpdateException dbEx:
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     responseModel.StatusCode = HttpStatusCode.BadRequest;
-                    responseModel.Message = _localizer[SharedResourceskeys.DatabaseUpdateError];
+                    responseModel.Message = _localizer[SharedResourcesKeys.DatabaseUpdateError];
 
                     // Only show detailed error in development
                     if (_env.IsDevelopment() && dbEx.InnerException != null)
@@ -125,7 +125,7 @@ namespace School.Core.MiddleWare
                 case Exception e when e.GetType().Name == "ApiException":
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     responseModel.StatusCode = HttpStatusCode.BadRequest;
-                    responseModel.Message = _localizer[SharedResourceskeys.BadRequest];
+                    responseModel.Message = _localizer[SharedResourcesKeys.BadRequest];
 
                     // Only show inner exception in development
                     if (_env.IsDevelopment() && e.InnerException != null)
@@ -139,7 +139,7 @@ namespace School.Core.MiddleWare
                 default:
                     response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     responseModel.StatusCode = HttpStatusCode.InternalServerError;
-                    responseModel.Message = _localizer[SharedResourceskeys.InternalServerError];
+                    responseModel.Message = _localizer[SharedResourcesKeys.InternalServerError];
 
                     // Only show detailed error in development
                     if (_env.IsDevelopment())

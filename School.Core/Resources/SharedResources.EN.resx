@@ -120,12 +120,6 @@
   <data name="Address" xml:space="preserve">
     <value>Address</value>
   </data>
-  <data name="AddressMaxLength" xml:space="preserve">
-    <value>Address must not exceed 100 chars</value>
-  </data>
-  <data name="AddressRequired" xml:space="preserve">
-    <value>Address is required.</value>
-  </data>
   <data name="BadRequest" xml:space="preserve">
     <value>The request could not be processed due to invalid input.</value>
   </data>
@@ -141,35 +135,14 @@
   <data name="DepartementID" xml:space="preserve">
     <value>Departenent</value>
   </data>
-  <data name="DepartementIDRequired" xml:space="preserve">
-    <value>Department ID is required.</value>
-  </data>
   <data name="InternalServerError" xml:space="preserve">
     <value>An unexpected error occurred. Please contact support if the problem persists.</value>
   </data>
   <data name="NameAr" xml:space="preserve">
     <value>Arabic Name</value>
   </data>
-  <data name="NameArExists" xml:space="preserve">
-    <value>Name (Arabic) already exists!</value>
-  </data>
-  <data name="NameArMaxLength" xml:space="preserve">
-    <value>Name (Arabic) must not exceed 100 chars</value>
-  </data>
-  <data name="NameArRequired" xml:space="preserve">
-    <value>Name (Arabic) is required.</value>
-  </data>
   <data name="NameEn" xml:space="preserve">
     <value>English name</value>
-  </data>
-  <data name="NameEnExists" xml:space="preserve">
-    <value>Name (English) already exists!</value>
-  </data>
-  <data name="NameEnMaxLength" xml:space="preserve">
-    <value>Name (English) must not exceed 100 chars</value>
-  </data>
-  <data name="NameEnRequired" xml:space="preserve">
-    <value>Name (English) is required.</value>
   </data>
   <data name="PropNotExist" xml:space="preserve">
     <value>The specified {PropertyName} does not exist.</value>
@@ -194,5 +167,29 @@
   </data>
   <data name="ValidationFailed" xml:space="preserve">
     <value>One or more validation errors occurred.</value>
+  </data>
+  <data name="PropRequired" xml:space="preserve">
+    <value>{PropertyName} is required.</value>
+  </data>
+  <data name="PropNotEmpty" xml:space="preserve">
+    <value>{PropertyName} must not be empty.</value>
+  </data>
+  <data name="PropMaxLengthis100" xml:space="preserve">
+    <value>{PropertyName} must not exceed 100 characters.</value>
+  </data>
+  <data name="PasswordNotEqualConfirmationPassword" xml:space="preserve">
+    <value>Password and confirmation password do not match.</value>
+  </data>
+  <data name="InvalidEmail" xml:space="preserve">
+    <value>email address is not valid.</value>
+  </data>
+  <data name="PropAlreadyExists" xml:space="preserve">
+    <value>{PropertyName} already exists.</value>
+  </data>
+  <data name="PasswordTooWeak" xml:space="preserve">
+    <value>Password is too weak. It must contain at least 8 characters, including uppercase, lowercase, number, and special character.</value>
+  </data>
+  <data name="UserCreationFailed" xml:space="preserve">
+    <value>Failed to create the user. Please try again later.</value>
   </data>
 </root>

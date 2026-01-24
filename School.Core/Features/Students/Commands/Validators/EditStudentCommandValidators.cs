@@ -31,19 +31,19 @@ namespace School.Core.Features.Students.Commands.Validitor
         public void ApplyValidationRules()
         {
             RuleFor(x => x.NameAr)
-                .NotEmpty().WithMessage(_localizer[SharedResourceskeys.NameArRequired])
-                .MaximumLength(100).WithMessage(_localizer[SharedResourceskeys.NameArMaxLength]);
+                .NotEmpty().WithMessage(_localizer[SharedResourcesKeys.PropRequired])
+                .MaximumLength(100).WithMessage(_localizer[SharedResourcesKeys.PropMaxLengthis100]);
 
             RuleFor(x => x.NameEn)
-                .NotEmpty().WithMessage(_localizer[SharedResourceskeys.NameEnRequired])
-                .MaximumLength(100).WithMessage(_localizer[SharedResourceskeys.NameEnMaxLength]);
+                .NotEmpty().WithMessage(_localizer[SharedResourcesKeys.PropRequired])
+                .MaximumLength(100).WithMessage(_localizer[SharedResourcesKeys.PropMaxLengthis100]);
 
             RuleFor(x => x.Address)
-                .NotEmpty().WithMessage(_localizer[SharedResourceskeys.AddressRequired])
-                .MaximumLength(100).WithMessage(_localizer[SharedResourceskeys.AddressMaxLength]);
+                .NotEmpty().WithMessage(_localizer[SharedResourcesKeys.PropRequired])
+                .MaximumLength(100).WithMessage(_localizer[SharedResourcesKeys.PropMaxLengthis100]);
 
             RuleFor(x => x.DepartementID)
-                .NotEmpty().WithMessage(_localizer[SharedResourceskeys.DepartementIDRequired]);
+                .NotEmpty().WithMessage(_localizer[SharedResourcesKeys.PropRequired]);
         }
 
 
@@ -52,12 +52,12 @@ namespace School.Core.Features.Students.Commands.Validitor
             RuleFor(x => x.NameAr)
                 .MustAsync(async (model, key, cancellationToken) =>
                     !await _studentService.IsNameArExistExcludeSelf(key, model.StudentID))
-                .WithMessage(_localizer[SharedResourceskeys.NameArExists]);
+                .WithMessage(_localizer[SharedResourcesKeys.PropAlreadyExists]);
 
             RuleFor(x => x.NameEn)
                 .MustAsync(async (model, key, cancellationToken) =>
                     !await _studentService.IsNameEnExistExcludeSelf(key, model.StudentID))
-                .WithMessage(_localizer[SharedResourceskeys.NameEnExists]);
+                .WithMessage(_localizer[SharedResourcesKeys.PropAlreadyExists]);
         }
 
         #endregion

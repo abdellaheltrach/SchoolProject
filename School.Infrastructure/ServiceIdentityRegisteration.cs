@@ -5,20 +5,21 @@ using School.Domain.Entities.Identity;
 using School.Infrastructure.Context;
 namespace School.Infrastructure
 {
-    public static class ServiceRegisteration
+    public static class ServiceIdentityRegisteration
     {
-        public static IServiceCollection AddInfrastructureServiceRegisteration(this IServiceCollection services)
+        public static IServiceCollection AddIdentityServiceRegisteration(this IServiceCollection services)
         {
             //needed 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 
             services.AddIdentity<User, IdentityRole<int>>(option =>
             {
                 // Password settings.
+                //checked already by FluentValidation.
                 option.Password.RequireDigit = true;
                 option.Password.RequireLowercase = true;
                 option.Password.RequireNonAlphanumeric = true;
                 option.Password.RequireUppercase = true;
-                option.Password.RequiredLength = 6;
+                option.Password.RequiredLength = 8;
                 option.Password.RequiredUniqueChars = 1;
 
                 // Lockout settings.
@@ -29,7 +30,7 @@ namespace School.Infrastructure
                 // User settings.
                 option.User.AllowedUserNameCharacters =
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                option.User.RequireUniqueEmail = true;
+                option.User.RequireUniqueEmail = false;//added in FluentValidation
                 option.SignIn.RequireConfirmedEmail = true;
 
 

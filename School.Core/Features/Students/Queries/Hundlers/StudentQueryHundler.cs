@@ -47,7 +47,7 @@ namespace School.Core.Features.Students.Queries.Hundlers
             var student = await _studentService.GetStudentByIdWithNoTrachingAsync(request.ID);
             if (student == null)
             {
-                return NotFound<GetStudentByIdResponse>(_stringLocalizer[SharedResourceskeys.NotFound]);
+                return NotFound<GetStudentByIdResponse>(_stringLocalizer[SharedResourcesKeys.NotFound]);
             }
             var studentResponseMapper = _mapper.Map<GetStudentByIdResponse>(student);
             return Success(studentResponseMapper);
