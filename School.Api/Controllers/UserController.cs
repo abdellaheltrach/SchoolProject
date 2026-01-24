@@ -28,5 +28,12 @@ namespace School.Api.Controllers
             var response = await _mediator.Send(new GetUserByIdQuery(Id));
             return NewResult(response);
         }
+
+        [HttpGet(AppRouter.UserRouting.Paginated)]
+        public async Task<IActionResult> GetUserbyId([FromQuery] GetPaginatedUsersListQuery query)
+        {
+            var response = await _mediator.Send(query);
+            return NewResult(response);
+        }
     }
 }
