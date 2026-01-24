@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Localization;
 using School.Core.Base.ApiResponse;
+using School.Core.Base.Wrappers;
 using School.Core.Features.Users.Queries.Models;
 using School.Core.Features.Users.Queries.Response;
 using School.Core.Resources;
@@ -10,7 +11,8 @@ using School.Domain.Entities.Identity;
 
 namespace School.Core.Features.Users.Queries.Handlers
 {
-    public class GetUserByIdQueryHandler : ApiResponseHandler, IRequestHandler<GetUserByIdQuery, ApiResponse<GetUserByIdQueryResponse>>
+    public class UserQueryHandler : ApiResponseHandler, IRequestHandler<GetUserByIdQuery, ApiResponse<GetUserByIdQueryResponse>>
+                                            , IRequestHandler<GetPaginatedUsersListQuery, ApiResponse<PaginatedResult<GetPaginatedUsersListResponse>>>
     {
         #region Fields
         private readonly IStringLocalizer<SharedResources> _Localizer;
@@ -21,7 +23,7 @@ namespace School.Core.Features.Users.Queries.Handlers
 
 
         #region Constructor
-        public GetUserByIdQueryHandler(IStringLocalizer<SharedResources> stringLocalizer,
+        public UserQueryHandler(IStringLocalizer<SharedResources> stringLocalizer,
                                        UserManager<User> User,
                                        IMapper mapper) : base(stringLocalizer)
         {
@@ -39,6 +41,14 @@ namespace School.Core.Features.Users.Queries.Handlers
             if (user == null) return NotFound<GetUserByIdQueryResponse>(_Localizer[SharedResourcesKeys.NotFound]);
             var result = _mapper.Map<GetUserByIdQueryResponse>(user);
             return Success(result);
+        }
+
+        public async Task<ApiResponse<PaginatedResult<GetPaginatedUsersListResponse>>> Handle(GetPaginatedUsersListQuery request, CancellationToken cancellationToken)
+        {
+            var Users = _user.Users.AsQueryable();
+            var paginatedList = await _mapper.ProjectTo<GetPaginatedUsersListResponse>(Users)
+                                                        .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+            return Success(paginatedList);
         }
         #endregion
 
