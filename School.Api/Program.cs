@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
 
 
 //Add dbcontext
@@ -27,6 +27,7 @@ builder.Services.AddInfrastructureDependencies()
                 .AddCoreDependencies()
                 .AddServiceRegisteration(builder.Configuration);
 #endregion
+
 
 #region Localization Services configuration
 builder.Services.AddControllersWithViews();
@@ -94,6 +95,8 @@ app.UseHttpsRedirection();
 app.UseCors(CORS);
 #endregion
 
+
+app.UseAuthorization();
 app.UseAuthorization();
 
 app.MapControllers();

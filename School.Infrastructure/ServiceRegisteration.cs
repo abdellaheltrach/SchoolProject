@@ -1,9 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using School.Domain.Entities.Identity;
 using School.Domain.Options;
 using School.Infrastructure.Context;
+using System.Text;
+
+
 namespace School.Infrastructure
 {
     public static class ServiceRegisteration
@@ -47,11 +53,59 @@ namespace School.Infrastructure
             configuration.GetSection(nameof(jwtSettings)).Bind(jwtSettings);
 
             services.AddSingleton(jwtSettings);
+
+
+            //configure Authentication service to use JWT Bearer Tokens
+            // needs Microsoft.AspNetCore.Authentication.JwtBearer
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+           .AddJwtBearer(x =>
+           {
+               x.RequireHttpsMetadata = false;
+               x.SaveToken = true;
+               x.TokenValidationParameters = new TokenValidationParameters
+               {
+                   ValidateIssuer = jwtSettings.ValidateIssuer,
+                   ValidIssuers = new[] { jwtSettings.Issuer },
+                   ValidateIssuerSigningKey = jwtSettings.ValidateIssuerSigningKey,
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.SecretKey)),
+                   ValidAudience = jwtSettings.Audience,
+                   ValidateAudience = jwtSettings.ValidateAudience,
+                   ValidateLifetime = jwtSettings.ValidateLifeTime,
+               };
+           });
             #endregion
 
 
+            #region Swagger configuration to use JWT Bearer token
 
+            //needs Package Swashbuckle.AspNetCore and Swashbuckle.AspNetCore.Annotations 
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "School Project", Version = "v1" });
+                c.EnableAnnotations();
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme (Example: '12345abcdef')",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT"
+                });
+
+                c.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+                {
+                    [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+                });
+            });
+            #endregion
 
 
 
