@@ -210,4 +210,7 @@
   <data name="Deleted" xml:space="preserve">
     <value>Record deleted successfully.</value>
   </data>
+  <data name="InvalidCredentials" xml:space="preserve">
+    <value>Invalid credentials.</value>
+  </data>
 </root>

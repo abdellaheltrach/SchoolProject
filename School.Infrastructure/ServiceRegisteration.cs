@@ -1,14 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
-
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using School.Domain.Entities.Identity;
+using School.Domain.Options;
 using School.Infrastructure.Context;
 namespace School.Infrastructure
 {
-    public static class ServiceIdentityRegisteration
+    public static class ServiceRegisteration
     {
-        public static IServiceCollection AddIdentityServiceRegisteration(this IServiceCollection services)
+        public static IServiceCollection AddServiceRegisteration(this IServiceCollection services, IConfiguration configuration)
         {
+            #region Identity
             //needed 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 
             services.AddIdentity<User, IdentityRole<int>>(option =>
@@ -31,10 +33,30 @@ namespace School.Infrastructure
                 option.User.AllowedUserNameCharacters =
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 option.User.RequireUniqueEmail = false;//added in FluentValidation
-                option.SignIn.RequireConfirmedEmail = true;
+                option.SignIn.RequireConfirmedEmail = false;
 
 
             }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders(); ;
+            #endregion
+
+
+            #region Authentication Service
+
+            //read JWT settings from appsettings.json file and bind it to JwtSettings class
+            var jwtSettings = new JwtSettings();
+            configuration.GetSection(nameof(jwtSettings)).Bind(jwtSettings);
+
+            services.AddSingleton(jwtSettings);
+            #endregion
+
+
+
+
+
+
+
+
+
             return services;
         }
     }

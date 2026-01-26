@@ -21,6 +21,9 @@
 	</ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\Authentication\Commands\Response\" />
+    <Folder Include="Features\Authentication\Queries\Handlers\" />
+    <Folder Include="Features\Authentication\Queries\Models\" />
     <Folder Include="Features\Departement\Commands\" />
     <Folder Include="Mapping\DepartmentMapping\CommandMapping\" />
   </ItemGroup>

@@ -54,6 +54,7 @@
         public const string UserNameIsExist = "UserNameIsExist";
         public const string UpdateUserFailed = "UpdateUserFailed";
         public const string UserUpdated = "UserUpdated";
+        public const string InvalidCredentials = "InvalidCredentials";
 
 
 

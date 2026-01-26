@@ -210,4 +210,7 @@
   <data name="Deleted" xml:space="preserve">
     <value>تم حذف السجل بنجاح.</value>
   </data>
+  <data name="InvalidCredentials" xml:space="preserve">
+    <value>بيانات الدخول غير صحيحة.</value>
+  </data>
 </root>
