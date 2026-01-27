@@ -5,7 +5,7 @@ namespace School.Service.Services.Interfaces
 {
     public interface IAuthenticationService
     {
-        public Task<JwtAuthResponse> GetJWTToken(User user);
+        public Task<JwtAuthResponse> GenerateJwtTokenAsync(User user);
 
     }
 }

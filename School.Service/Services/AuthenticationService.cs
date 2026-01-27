@@ -30,28 +30,53 @@ namespace School.Service.Services
 
 
         #region Methods
-        public async Task<JwtAuthResponse> GetJWTToken(User user)
+        public async Task<JwtAuthResponse> GenerateJwtTokenAsync(User user)
         {
             var (jwtToken, accessTokenString) = GenerateAccessToken(user);
             var refreshToken = GetRefreshToken(user.UserName);
-            var userRefreshToken = new UserRefreshToken
+
+            var userRefreshToken = await _userRefreshTokenRepository.GetByIdAsync(user.Id);
+
+            if (userRefreshToken == null)
             {
-                AddedTime = DateTime.Now,
-                ExpiryDate = DateTime.Now.AddDays(_jwtSettings.RefreshTokenExpirationTimeInDays),
-                IsUsed = true,
-                IsRevoked = false,
-                JwtId = jwtToken.Id,
-                RefreshToken = refreshToken.RefToken,
+                //
+                userRefreshToken = new UserRefreshToken
+                {
+                    UserId = user.Id,
+                    AccessToken = accessTokenString,
+                    RefreshToken = refreshToken.RefToken,
+                    JwtId = jwtToken.Id,
+                    ExpiryDate = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationTimeInDays),
+                    AddedTime = DateTime.UtcNow,
+                    IsUsed = false,
+                    IsRevoked = false
+                };
+
+                await _userRefreshTokenRepository.AddAsync(userRefreshToken);
+
+            }
+            else
+            {
+                // Update existing record
+                userRefreshToken.AccessToken = accessTokenString;
+                userRefreshToken.RefreshToken = refreshToken.RefToken;
+                userRefreshToken.JwtId = jwtToken.Id;
+                userRefreshToken.ExpiryDate = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationTimeInDays);
+                userRefreshToken.AddedTime = DateTime.UtcNow;
+                userRefreshToken.IsUsed = false;
+                userRefreshToken.IsRevoked = false;
+                await _userRefreshTokenRepository.UpdateAsync(userRefreshToken);
+
+            }
+
+            var response = new JwtAuthResponse
+            {
                 AccessToken = accessTokenString,
-                UserId = user.Id
+                RefreshToken = refreshToken
             };
-            var userRefreshtoken = await _userRefreshTokenRepository.AddAsync(userRefreshToken);
 
-
-            var response = new JwtAuthResponse();
-            response.refreshToken = refreshToken;
-            response.AccessToken = accessTokenString;
             return response;
+
         }
 
         #endregion

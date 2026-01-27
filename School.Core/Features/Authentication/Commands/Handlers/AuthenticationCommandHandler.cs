@@ -64,7 +64,7 @@ namespace School.Core.Features.Authentication.Commands.Handlers
             if (!signInResult.Succeeded) return BadRequest<JwtAuthResponse>(_stringLocalizer[SharedResourcesKeys.InvalidCredentials]);
 
             //Generate Token
-            var result = await _authenticationService.GetJWTToken(user);
+            var result = await _authenticationService.GenerateJwtTokenAsync(user);
             //return Token 
             return Success(result);
         }

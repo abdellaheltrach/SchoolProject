@@ -7,7 +7,7 @@ namespace School.Domain.Responses
     public class JwtAuthResponse
     {
         public string AccessToken { get; set; }
-        public RefreshToken refreshToken { get; set; }
+        public RefreshToken RefreshToken { get; set; }
     }
     public class RefreshToken
     {
