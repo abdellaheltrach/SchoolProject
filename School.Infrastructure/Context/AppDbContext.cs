@@ -21,6 +21,7 @@ namespace School.Infrastructure.Context
         {
         }
         public DbSet<User> Users { get; set; }
+        public DbSet<UserRefreshToken> userRefreshTokens { get; set; }
         public DbSet<Department> departments { get; set; }
         public DbSet<Student> students { get; set; }
         public DbSet<DepartmetSubject> departmetSubjects { get; set; }

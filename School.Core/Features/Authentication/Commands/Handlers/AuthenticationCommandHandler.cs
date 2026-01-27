@@ -6,12 +6,13 @@ using School.Core.Features.Authentication.Commands.Models;
 using School.Core.Helpers;
 using School.Core.Resources;
 using School.Domain.Entities.Identity;
+using School.Domain.Responses;
 using School.Service.Services.Interfaces;
 
 namespace School.Core.Features.Authentication.Commands.Handlers
 {
     public class AuthenticationCommandHandler : ApiResponseHandler
-        , IRequestHandler<SignInCommand, ApiResponse<string>>
+        , IRequestHandler<SignInCommand, ApiResponse<JwtAuthResponse>>
     {
 
         #region Fields
@@ -40,7 +41,7 @@ namespace School.Core.Features.Authentication.Commands.Handlers
 
 
         #region Hundlers
-        public async Task<ApiResponse<string>> Handle(SignInCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<JwtAuthResponse>> Handle(SignInCommand request, CancellationToken cancellationToken)
         {
 
             User? user;
@@ -56,11 +57,11 @@ namespace School.Core.Features.Authentication.Commands.Handlers
             }
 
             //Return The UserName Not Found
-            if (user == null) return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.InvalidCredentials]);
+            if (user == null) return BadRequest<JwtAuthResponse>(_stringLocalizer[SharedResourcesKeys.InvalidCredentials]);
             //try To Sign in 
             var signInResult = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
             //if Failed Return Passord is wrong
-            if (!signInResult.Succeeded) return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.InvalidCredentials]);
+            if (!signInResult.Succeeded) return BadRequest<JwtAuthResponse>(_stringLocalizer[SharedResourcesKeys.InvalidCredentials]);
 
             //Generate Token
             var result = await _authenticationService.GetJWTToken(user);

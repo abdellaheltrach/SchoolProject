@@ -41,8 +41,6 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     List<CultureInfo> supportedCultures = new List<CultureInfo>
     {
             new CultureInfo("en-US"),
-            new CultureInfo("de-DE"),
-            new CultureInfo("fr-FR"),
             new CultureInfo("ar-EG")
     };
 
@@ -83,6 +81,7 @@ if (app.Environment.IsDevelopment())
 var options = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
 app.UseRequestLocalization(options.Value);
 #endregion
+
 
 #region costume Error Handling Middleware
 app.UseMiddleware<ErrorHandlerMiddleware>();

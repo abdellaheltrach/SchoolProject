@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace School.Domain.Entities.Identity
 {
@@ -8,5 +9,7 @@ namespace School.Domain.Entities.Identity
         public string FullName { get; set; }
         public string? Address { get; set; }
         public string? Country { get; set; }
+        [InverseProperty(nameof(UserRefreshToken.user))]
+        public virtual ICollection<UserRefreshToken> UserRefreshTokens { get; set; } = new HashSet<UserRefreshToken>();
     }
 }
