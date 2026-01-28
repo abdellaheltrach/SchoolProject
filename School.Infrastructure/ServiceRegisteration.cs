@@ -49,11 +49,19 @@ namespace School.Infrastructure
             #region Authentication Service
 
             //read JWT settings from appsettings.json file and bind it to JwtSettings class
-            var jwtSettings = new JwtSettings();
-            configuration.GetSection(nameof(jwtSettings)).Bind(jwtSettings);
+            var JwtSettings = new JwtSettings();
+            var CookieSettings = new CookieSettings();
+            configuration.GetSection(nameof(JwtSettings)).Bind(JwtSettings);
+            configuration.GetSection(nameof(CookieSettings)).Bind(CookieSettings);
 
-            services.AddSingleton(jwtSettings);
 
+
+            services.AddSingleton(JwtSettings);
+            services.AddSingleton(CookieSettings);
+
+
+            //Enables access to headers, cookies, claims outside controllers, services or hundler classes!
+            services.AddHttpContextAccessor();
 
             //configure Authentication service to use JWT Bearer Tokens
             // needs Microsoft.AspNetCore.Authentication.JwtBearer
@@ -69,13 +77,13 @@ namespace School.Infrastructure
                x.SaveToken = true;
                x.TokenValidationParameters = new TokenValidationParameters
                {
-                   ValidateIssuer = jwtSettings.ValidateIssuer,
-                   ValidIssuers = new[] { jwtSettings.Issuer },
-                   ValidateIssuerSigningKey = jwtSettings.ValidateIssuerSigningKey,
-                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.SecretKey)),
-                   ValidAudience = jwtSettings.Audience,
-                   ValidateAudience = jwtSettings.ValidateAudience,
-                   ValidateLifetime = jwtSettings.ValidateLifeTime,
+                   ValidateIssuer = JwtSettings.ValidateIssuer,
+                   ValidIssuers = new[] { JwtSettings.Issuer },
+                   ValidateIssuerSigningKey = JwtSettings.ValidateIssuerSigningKey,
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtSettings.SecretKey)),
+                   ValidAudience = JwtSettings.Audience,
+                   ValidateAudience = JwtSettings.ValidateAudience,
+                   ValidateLifetime = JwtSettings.ValidateLifeTime,
                };
            });
             #endregion

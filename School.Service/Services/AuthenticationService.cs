@@ -1,7 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using School.Domain.Entities.Identity;
 using School.Domain.Options;
-using School.Domain.Responses;
+using School.Domain.Results;
 using School.Infrastructure.Repositories.Interfaces;
 using School.Service.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,90 +13,80 @@ namespace School.Service.Services
     public class AuthenticationService : IAuthenticationService
     {
         #region Fields
-        private JwtSettings _jwtSettings { get; set; }
+        private readonly JwtSettings _jwtSettings;
+        private readonly CookieSettings _cookieSettings;
         private readonly IUserRefreshTokenRepository _userRefreshTokenRepository;
         #endregion
 
 
         #region  Constructor
-        public AuthenticationService(JwtSettings jwtSettings
-                                     , IUserRefreshTokenRepository userRefreshTokenRepository)
+        public AuthenticationService(JwtSettings jwtSettings,
+                                     CookieSettings cookieSettings,
+                                     IUserRefreshTokenRepository userRefreshTokenRepository)
         {
             _jwtSettings = jwtSettings;
             _userRefreshTokenRepository = userRefreshTokenRepository;
+            _cookieSettings = cookieSettings;
         }
         #endregion
 
 
 
         #region Methods
-        public async Task<JwtAuthResponse> GenerateJwtTokenAsync(User user)
+        public async Task<JwtAuthResult> GenerateJwtTokenAsync(User user)
         {
             var (jwtToken, accessTokenString) = GenerateAccessToken(user);
-            var refreshToken = GetRefreshToken(user.UserName);
+            var refreshTokenString = GenerateRefreshTokenString();
 
             var userRefreshToken = await _userRefreshTokenRepository.GetByIdAsync(user.Id);
-
             if (userRefreshToken == null)
             {
-                //
                 userRefreshToken = new UserRefreshToken
                 {
                     UserId = user.Id,
                     AccessToken = accessTokenString,
-                    RefreshToken = refreshToken.RefToken,
+                    RefreshToken = refreshTokenString,  // Use the string directly
                     JwtId = jwtToken.Id,
-                    ExpiryDate = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationTimeInDays),
+                    ExpiryDate = DateTime.UtcNow.AddDays(_cookieSettings.RefreshTokenExpirationTimeInDays),
                     AddedTime = DateTime.UtcNow,
                     IsUsed = false,
                     IsRevoked = false
                 };
-
                 await _userRefreshTokenRepository.AddAsync(userRefreshToken);
-
             }
             else
             {
-                // Update existing record
                 userRefreshToken.AccessToken = accessTokenString;
-                userRefreshToken.RefreshToken = refreshToken.RefToken;
+                userRefreshToken.RefreshToken = refreshTokenString;
                 userRefreshToken.JwtId = jwtToken.Id;
-                userRefreshToken.ExpiryDate = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationTimeInDays);
+                userRefreshToken.ExpiryDate = DateTime.UtcNow.AddDays(_cookieSettings.RefreshTokenExpirationTimeInDays);
                 userRefreshToken.AddedTime = DateTime.UtcNow;
                 userRefreshToken.IsUsed = false;
                 userRefreshToken.IsRevoked = false;
                 await _userRefreshTokenRepository.UpdateAsync(userRefreshToken);
-
             }
 
-            var response = new JwtAuthResponse
+
+            return new JwtAuthResult
             {
                 AccessToken = accessTokenString,
-                RefreshToken = refreshToken
+                RefreshToken = refreshTokenString
             };
-
-            return response;
-
         }
-
-        #endregion
 
         #region Helpers
         private (JwtSecurityToken, string) GenerateAccessToken(User user)
         {
-            // Create claims
             var claims = new List<Claim>()
-{
-    new Claim(nameof(UserClaimModel.UserName), user.UserName),
-    new Claim(nameof(UserClaimModel.Email), user.Email),
-    new Claim(nameof(UserClaimModel.Id), user.Id.ToString()),
-};
+    {
+        new Claim(nameof(UserClaimModel.UserName), user.UserName),
+        new Claim(nameof(UserClaimModel.Email), user.Email),
+        new Claim(nameof(UserClaimModel.Id), user.Id.ToString()),
+    };
 
-            // Create signing credentials
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            // Create JWT token
             var jwtToken = new JwtSecurityToken(
                 issuer: _jwtSettings.Issuer,
                 audience: _jwtSettings.Audience,
@@ -104,21 +94,8 @@ namespace School.Service.Services
                 expires: DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpirationTimeInMinutes),
                 signingCredentials: credentials);
 
-            // Convert to string
             var accessTokenString = new JwtSecurityTokenHandler().WriteToken(jwtToken);
             return (jwtToken, accessTokenString);
-
-        }
-
-        private RefreshToken GetRefreshToken(string username)
-        {
-            var refreshToken = new RefreshToken
-            {
-                ExpireAt = DateTime.Now.AddDays(_jwtSettings.RefreshTokenExpirationTimeInDays),
-                UserName = username,
-                RefToken = GenerateRefreshTokenString()
-            };
-            return refreshToken;
         }
 
         private string GenerateRefreshTokenString()
@@ -130,6 +107,7 @@ namespace School.Service.Services
                 return Convert.ToBase64String(randomNumber);
             }
         }
+        #endregion
         #endregion
     }
 }

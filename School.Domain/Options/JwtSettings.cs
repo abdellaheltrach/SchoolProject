@@ -10,6 +10,5 @@
         public bool ValidateLifeTime { get; init; }
         public bool ValidateIssuerSigningKey { get; init; }
         public int AccessTokenExpirationTimeInMinutes { get; init; }
-        public int RefreshTokenExpirationTimeInDays { get; init; }
     }
 }
