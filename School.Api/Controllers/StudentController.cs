@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using School.Api.Base;
 using School.Core.Features.Students.Commands.Models;
@@ -9,6 +10,7 @@ namespace School.Api.Controllers
 {
 
     [ApiController]
+    [Authorize]
     public class StudentController : AppBaseController
     {
         public StudentController(IMediator mediator) : base(mediator)
@@ -17,14 +19,14 @@ namespace School.Api.Controllers
         }
 
 
-
+        [AllowAnonymous]
         [HttpGet(AppRouter.StudentRouting.GetStudentList)]
         public async Task<IActionResult> GetStudentList()
         {
             var Reponse = await _mediator.Send(new GetStudentListQuery());
             return NewResult(Reponse);
         }
-
+        [AllowAnonymous]
         [HttpGet(AppRouter.StudentRouting.Paginated)]
         public async Task<IActionResult> Paginated([FromQuery] GetStudentPaginatedListQuery query)
         {

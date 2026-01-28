@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
 
 
 //Add dbcontext
@@ -25,8 +25,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddInfrastructureDependencies()
                 .AddServiceDependencies()
                 .AddCoreDependencies()
-                .AddIdentityServiceRegisteration();
+                .AddServiceRegisteration(builder.Configuration);
 #endregion
+
 
 #region Localization Services configuration
 builder.Services.AddControllersWithViews();
@@ -40,8 +41,6 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     List<CultureInfo> supportedCultures = new List<CultureInfo>
     {
             new CultureInfo("en-US"),
-            new CultureInfo("de-DE"),
-            new CultureInfo("fr-FR"),
             new CultureInfo("ar-EG")
     };
 
@@ -83,6 +82,7 @@ var options = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
 app.UseRequestLocalization(options.Value);
 #endregion
 
+
 #region costume Error Handling Middleware
 app.UseMiddleware<ErrorHandlerMiddleware>();
 #endregion
@@ -94,6 +94,8 @@ app.UseHttpsRedirection();
 app.UseCors(CORS);
 #endregion
 
+
+app.UseAuthorization();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -38,7 +38,12 @@
             public const string Edit = Prefix + "/Edit";
             public const string Delete = Prefix + "/{Id}";
             public const string ChangePassword = Prefix + "/ChangePassword";
-
+        }
+        public static class Auth
+        {
+            private const string Prefix = Rule + "Auth";
+            public const string SignIn = Prefix + "/SignIn";
+            public const string RefreshToken = Prefix + "/RefreshToken";
 
         }
     }

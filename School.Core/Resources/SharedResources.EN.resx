@@ -210,4 +210,16 @@
   <data name="Deleted" xml:space="preserve">
     <value>Record deleted successfully.</value>
   </data>
+  <data name="InvalidCredentials" xml:space="preserve">
+    <value>Invalid credentials.</value>
+  </data>
+  <data name="TokenStillValid" xml:space="preserve">
+    <value>The access token is still valid.</value>
+  </data>
+  <data name="InvalidAccessToken" xml:space="preserve">
+    <value>The access token is invalid or expired.</value>
+  </data>
+  <data name="InvalidRefreshToken" xml:space="preserve">
+    <value>The refresh token is invalid or has expired.</value>
+  </data>
 </root>
