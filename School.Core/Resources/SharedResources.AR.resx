@@ -213,4 +213,13 @@
   <data name="InvalidCredentials" xml:space="preserve">
     <value>بيانات الدخول غير صحيحة.</value>
   </data>
+  <data name="TokenStillValid" xml:space="preserve">
+    <value>رمز الوصول لا يزال صالحًا.</value>
+  </data>
+  <data name="InvalidAccessToken" xml:space="preserve">
+    <value>رمز الوصول غير صالح أو منتهي الصلاحية.</value>
+  </data>
+  <data name="InvalidRefreshToken" xml:space="preserve">
+    <value>رمز التحديث غير صالح أو منتهي الصلاحية.</value>
+  </data>
 </root>

@@ -1,4 +1,6 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using School.Domain.Entities.Identity;
 using School.Domain.Options;
 using School.Domain.Results;
@@ -16,6 +18,7 @@ namespace School.Service.Services
         private readonly JwtSettings _jwtSettings;
         private readonly CookieSettings _cookieSettings;
         private readonly IUserRefreshTokenRepository _userRefreshTokenRepository;
+        private readonly UserManager<User> _userManager;
         #endregion
 
 
@@ -73,6 +76,139 @@ namespace School.Service.Services
                 RefreshToken = refreshTokenString
             };
         }
+        public (bool IsValid, List<Claim>?, string ErrorMessage) ValidateJwtToken(string AccessToken)
+        {
+
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
+
+                var validationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = _jwtSettings.ValidateIssuerSigningKey,
+                    IssuerSigningKey = key,
+                    ValidateIssuer = _jwtSettings.ValidateIssuer,
+                    ValidIssuer = _jwtSettings.Issuer,
+                    ValidateAudience = _jwtSettings.ValidateAudience,
+                    ValidAudience = _jwtSettings.Audience,
+                    ValidateLifetime = _jwtSettings.ValidateLifeTime,
+                    ClockSkew = TimeSpan.Zero
+                };
+
+                var principal = tokenHandler.ValidateToken(AccessToken, validationParameters, out SecurityToken validatedToken);
+
+                // Extract claims
+                var claims = principal.Claims.ToList();
+
+                return (true, claims, null);
+            }
+            catch (SecurityTokenExpiredException)
+            {
+                return (false, null, "Token has expired");
+            }
+            catch (SecurityTokenInvalidSignatureException)
+            {
+                return (false, null, "Invalid token signature - algorithm or key is wrong");
+            }
+            catch (SecurityTokenException ex)
+            {
+                return (false, null, $"Invalid token: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return (false, null, $"Token validation failed: {ex.Message}");
+            }
+        }
+
+        public async Task<JwtAuthResult> RefreshJwtTokenAsync(string accessToken, string refreshToken)
+        {
+            try
+            {
+                // Get the stored refresh token from database
+                var storedTokenRecord = await _userRefreshTokenRepository
+                    .GetTableAsTracking()
+                    .FirstOrDefaultAsync(t => t.RefreshToken == refreshToken);
+
+                // Validate refresh token exists in database
+                if (storedTokenRecord == null)
+                {
+                    return new JwtAuthResult
+                    {
+                        Succeeded = false,
+                        Message = "Invalid refresh token"
+                    };
+                }
+
+                // Validate access token matches the stored one
+                if (storedTokenRecord.AccessToken != accessToken)
+                {
+                    return new JwtAuthResult
+                    {
+                        Succeeded = false,
+                        Message = "Access token and refresh token do not match"
+                    };
+                }
+
+                // Validate refresh token is not expired
+                if (storedTokenRecord.ExpiryDate < DateTime.UtcNow)
+                {
+                    return new JwtAuthResult
+                    {
+                        Succeeded = false,
+                        Message = "Refresh token has expired"
+                    };
+                }
+
+                // Get the user
+                var user = await _userManager.FindByIdAsync(storedTokenRecord.UserId.ToString());
+                if (user == null)
+                {
+                    return new JwtAuthResult
+                    {
+                        Succeeded = false,
+                        Message = "User not found"
+                    };
+                }
+
+                // Generate new access token
+                var (jwtToken, newAccessTokenString) = GenerateAccessToken(user);
+
+                // Generate new refresh token
+                var newRefreshTokenString = GenerateRefreshTokenString();
+
+                // Update database record with new tokens
+                storedTokenRecord.AccessToken = newAccessTokenString;
+                storedTokenRecord.RefreshToken = newRefreshTokenString;
+                storedTokenRecord.JwtId = jwtToken.Id;
+                storedTokenRecord.ExpiryDate = DateTime.UtcNow.AddDays(_cookieSettings.RefreshTokenExpirationTimeInDays);
+                storedTokenRecord.AddedTime = DateTime.UtcNow;
+
+                await _userRefreshTokenRepository.UpdateAsync(storedTokenRecord);
+
+                // Return new tokens
+                return new JwtAuthResult
+                {
+                    Succeeded = true,
+                    Message = "Token refreshed successfully",
+                    AccessToken = newAccessTokenString,
+                    RefreshToken = newRefreshTokenString
+                };
+            }
+            catch (Exception ex)
+            {
+                return new JwtAuthResult
+                {
+                    Succeeded = false,
+                    Message = $"Error refreshing token: {ex.Message}"
+                };
+            }
+
+        }
+
+        #endregion
+
 
         #region Helpers
         private (JwtSecurityToken, string) GenerateAccessToken(User user)
@@ -107,7 +243,6 @@ namespace School.Service.Services
                 return Convert.ToBase64String(randomNumber);
             }
         }
-        #endregion
         #endregion
     }
 }

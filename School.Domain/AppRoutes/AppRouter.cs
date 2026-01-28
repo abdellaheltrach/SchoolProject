@@ -43,6 +43,7 @@
         {
             private const string Prefix = Rule + "Auth";
             public const string SignIn = Prefix + "/SignIn";
+            public const string RefreshToken = Prefix + "/RefreshToken";
 
         }
     }

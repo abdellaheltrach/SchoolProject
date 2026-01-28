@@ -56,7 +56,9 @@
         public const string UserUpdated = "UserUpdated";
         public const string InvalidCredentials = "InvalidCredentials";
 
-
+        public const string TokenStillValid = "TokenStillValid";
+        public const string InvalidAccessToken = "InvalidAccessToken";
+        public const string InvalidRefreshToken = "InvalidRefreshToken";
 
 
 
