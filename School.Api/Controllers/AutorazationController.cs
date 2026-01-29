@@ -1,12 +1,15 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using School.Api.Base;
 using School.Core.Features.Autorazation.Commands.Models;
 using School.Domain.AppRoutes;
+using School.Domain.Helpers;
 
 namespace School.Api.Controllers
 {
     [ApiController]
+    [Authorize(AppRolesConstants.Admin)]
     public class AutorazationController : AppBaseController
     {
         public AutorazationController(IMediator mediator) : base(mediator)

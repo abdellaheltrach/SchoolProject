@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using School.Domain.Entities.Identity;
+using School.Domain.Helpers;
 
 namespace School.Infrastructure.Seeders
 {
@@ -14,11 +15,11 @@ namespace School.Infrastructure.Seeders
 
                 await _roleManager.CreateAsync(new Role()
                 {
-                    Name = "Admin"
+                    Name = AppRolesConstants.Admin
                 });
                 await _roleManager.CreateAsync(new Role()
                 {
-                    Name = "User"
+                    Name = AppRolesConstants.User
                 });
             }
         }

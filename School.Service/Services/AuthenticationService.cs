@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using School.Domain.Entities.Identity;
+using School.Domain.Helpers;
 using School.Domain.Options;
 using School.Domain.Results;
 using School.Infrastructure.Repositories.Interfaces;
@@ -25,10 +26,12 @@ namespace School.Service.Services
         #region  Constructor
         public AuthenticationService(JwtSettings jwtSettings,
                                      CookieSettings cookieSettings,
+                                     UserManager<User> userManager,
                                      IUserRefreshTokenRepository userRefreshTokenRepository)
         {
             _jwtSettings = jwtSettings;
             _userRefreshTokenRepository = userRefreshTokenRepository;
+            _userManager = userManager;
             _cookieSettings = cookieSettings;
         }
         #endregion
@@ -213,12 +216,7 @@ namespace School.Service.Services
         #region Helpers
         private (JwtSecurityToken, string) GenerateAccessToken(User user)
         {
-            var claims = new List<Claim>()
-    {
-        new Claim(nameof(UserClaimModel.UserName), user.UserName),
-        new Claim(nameof(UserClaimModel.Email), user.Email),
-        new Claim(nameof(UserClaimModel.Id), user.Id.ToString()),
-    };
+            var claims = GetClaims(user).Result;
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -242,6 +240,32 @@ namespace School.Service.Services
                 rng.GetBytes(randomNumber);
                 return Convert.ToBase64String(randomNumber);
             }
+        }
+        public async Task<List<Claim>> GetClaims(User user)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            //if User got no roles assign User role to him
+            if (!roles.Any())
+            {
+                await _userManager.AddToRoleAsync(user, AppRolesConstants.User);
+                roles = new List<string> { AppRolesConstants.User };
+            }
+
+            var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.Name,user.UserName),
+                new Claim(ClaimTypes.NameIdentifier,user.UserName),
+                new Claim(ClaimTypes.Email,user.Email),
+                new Claim(nameof(UserClaimModel.PhoneNumber), user.PhoneNumber),
+                new Claim(nameof(UserClaimModel.Id), user.Id.ToString())
+            };
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            claims.AddRange(userClaims);
+            return claims;
         }
         #endregion
     }
