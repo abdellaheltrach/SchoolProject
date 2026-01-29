@@ -7,20 +7,20 @@ using School.Domain.AppRoutes;
 namespace School.Api.Controllers
 {
     [ApiController]
-    public class AuthController : AppBaseController
+    public class AuthenticationController : AppBaseController
     {
-        public AuthController(IMediator mediator) : base(mediator)
+        public AuthenticationController(IMediator mediator) : base(mediator)
         {
         }
 
-        [HttpPost(AppRouter.Auth.SignIn)]
+        [HttpPost(AppRouter.AuthonticationRouting.SignIn)]
         public async Task<IActionResult> Create([FromForm] SignInCommand command)
         {
             var response = await _mediator.Send(command);
             return NewResult(response);
         }
 
-        [HttpPost(AppRouter.Auth.RefreshToken)]
+        [HttpPost(AppRouter.AuthonticationRouting.RefreshToken)]
         public async Task<IActionResult> RefreshToken([FromForm] RefreshTokenCommand command)
         {
             var response = await _mediator.Send(command);

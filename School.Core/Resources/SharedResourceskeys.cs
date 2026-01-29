@@ -10,10 +10,13 @@
         public const string Success = "Success";
         public const string NotFound = "NotFound"; //used in error handling middleware as well
         public const string UnAuthorized = "UnAuthorized"; //used in error handling middleware as well
+        public const string Forbidden = "Forbidden";
         public const string BadRequest = "BadRequest"; //used in error handling middleware as well
         public const string UnprocessableEntity = "UnprocessableEntity";
         public const string DeleteSuccess = "DeleteSuccess";
         public const string CreateSuccess = "CreateSuccess";
+        public const string CreateFailed = "CreateFailed";
+
         public const string Deleted = "Deleted";
         public const string DeletedFailed = "DeletedFailed";
 

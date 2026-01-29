@@ -222,4 +222,10 @@
   <data name="InvalidRefreshToken" xml:space="preserve">
     <value>The refresh token is invalid or has expired.</value>
   </data>
+  <data name="Forbidden" xml:space="preserve">
+    <value>You do not have permission to access this resource.</value>
+  </data>
+  <data name="CreateFailed" xml:space="preserve">
+    <value>Creation failed. Please try again.</value>
+  </data>
 </root>

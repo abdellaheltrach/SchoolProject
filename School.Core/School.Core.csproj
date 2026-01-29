@@ -23,6 +23,9 @@
   <ItemGroup>
     <Folder Include="Features\Authentication\Queries\Handlers\" />
     <Folder Include="Features\Authentication\Queries\Models\" />
+    <Folder Include="Features\Autorazation\Queries\Handlers\" />
+    <Folder Include="Features\Autorazation\Queries\Models\" />
+    <Folder Include="Features\Autorazation\Queries\QueriesResponse\" />
     <Folder Include="Features\Departement\Commands\" />
     <Folder Include="Mapping\DepartmentMapping\CommandMapping\" />
   </ItemGroup>

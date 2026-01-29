@@ -222,4 +222,10 @@
   <data name="InvalidRefreshToken" xml:space="preserve">
     <value>رمز التحديث غير صالح أو منتهي الصلاحية.</value>
   </data>
+  <data name="Forbidden" xml:space="preserve">
+    <value>ليس لديك إذن للوصول إلى هذا المورد.</value>
+  </data>
+  <data name="CreateFailed" xml:space="preserve">
+    <value>فشلت عملية الإنشاء. يرجى المحاولة مرة أخرى.</value>
+  </data>
 </root>

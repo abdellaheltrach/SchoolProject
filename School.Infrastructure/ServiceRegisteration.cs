@@ -19,7 +19,7 @@ namespace School.Infrastructure
             #region Identity
             //needed 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 
-            services.AddIdentity<User, IdentityRole<int>>(option =>
+            services.AddIdentity<User, Role>(option =>
             {
                 // Password settings.
                 //checked already by FluentValidation.
