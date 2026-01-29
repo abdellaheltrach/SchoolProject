@@ -16,6 +16,7 @@ namespace School.Core.Features.Authentication.Commands.Handlers
     public class AuthenticationCommandHandler : ApiResponseHandler
         , IRequestHandler<SignInCommand, ApiResponse<TokenResponse>>
         , IRequestHandler<RefreshTokenCommand, ApiResponse<TokenResponse>>
+        , IRequestHandler<EditRoleCommand, ApiResponse<string>>
     {
 
         #region Fields
@@ -26,6 +27,7 @@ namespace School.Core.Features.Authentication.Commands.Handlers
         private readonly CookieSettings _cookieSettings;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string _refreshTokenCookieName = "refreshToken";
+        private readonly IAuthorizationService _authorizationService;
 
 
         #endregion
@@ -36,7 +38,8 @@ namespace School.Core.Features.Authentication.Commands.Handlers
                                             SignInManager<User> signInManager,
                                             IAuthenticationService authenticationService,
                                             CookieSettings cookieSettings,
-                                            IHttpContextAccessor httpContextAccessor) : base(stringLocalizer)
+                                            IHttpContextAccessor httpContextAccessor,
+                                            IAuthorizationService authorizationService) : base(stringLocalizer)
         {
             _stringLocalizer = stringLocalizer;
             _userManager = userManager;
@@ -44,7 +47,7 @@ namespace School.Core.Features.Authentication.Commands.Handlers
             _authenticationService = authenticationService;
             _cookieSettings = cookieSettings;
             _httpContextAccessor = httpContextAccessor;
-
+            _authorizationService = authorizationService;
         }
 
         #endregion
@@ -136,6 +139,15 @@ namespace School.Core.Features.Authentication.Commands.Handlers
             // Return invalid token for other cases
             return BadRequest<TokenResponse>(_stringLocalizer[SharedResourcesKeys.InvalidAccessToken]);
 
+        }
+
+        public async Task<ApiResponse<string>> Handle(EditRoleCommand request, CancellationToken cancellationToken)
+        {
+            var result = await _authorizationService.EditRoleAsync(request.Id, request.NewRoleName);
+            if (!result) return NotFound<string>();
+            else if (result) return Success((string)_stringLocalizer[SharedResourcesKeys.Success]);
+            else
+                return BadRequest<string>((string)_stringLocalizer[SharedResourcesKeys.BadRequest]);
         }
 
 

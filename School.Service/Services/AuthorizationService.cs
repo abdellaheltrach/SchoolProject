@@ -33,6 +33,18 @@ namespace School.Service.Services
             return await _roleManager.RoleExistsAsync(roleName);
         }
 
+
+        public async Task<bool> EditRoleAsync(int RoleId, string newRoleName)
+        {
+            //check role is exist or not
+            var role = await _roleManager.FindByIdAsync(RoleId.ToString());
+            if (role == null)
+                return false;
+            role.Name = newRoleName;
+            var result = await _roleManager.UpdateAsync(role);
+            if (result.Succeeded) return true;
+            return false;
+        }
         #endregion
 
 

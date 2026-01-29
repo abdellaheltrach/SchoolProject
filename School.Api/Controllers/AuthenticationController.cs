@@ -13,14 +13,14 @@ namespace School.Api.Controllers
         {
         }
 
-        [HttpPost(AppRouter.AuthonticationRouting.SignIn)]
+        [HttpPost(AppRouter.AuthenticationRouting.SignIn)]
         public async Task<IActionResult> Create([FromForm] SignInCommand command)
         {
             var response = await _mediator.Send(command);
             return NewResult(response);
         }
 
-        [HttpPost(AppRouter.AuthonticationRouting.RefreshToken)]
+        [HttpPost(AppRouter.AuthenticationRouting.RefreshToken)]
         public async Task<IActionResult> RefreshToken([FromForm] RefreshTokenCommand command)
         {
             var response = await _mediator.Send(command);

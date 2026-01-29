@@ -39,17 +39,18 @@
             public const string Delete = Prefix + "/{Id}";
             public const string ChangePassword = Prefix + "/ChangePassword";
         }
-        public static class AuthonticationRouting
+        public static class AuthenticationRouting
         {
-            private const string Prefix = Rule + "Authontication";
+            private const string Prefix = Rule + "Authentication";
             public const string SignIn = Prefix + "/SignIn";
             public const string RefreshToken = Prefix + "/RefreshToken";
 
         }
         public static class AuthorizationRouting
         {
-            private const string Prefix = Rule + "Auth";
+            private const string Prefix = Rule + "Authorization";
             public const string Create = Prefix + "/Create";
+            public const string Edit = Prefix + "/Edit";
 
         }
     }

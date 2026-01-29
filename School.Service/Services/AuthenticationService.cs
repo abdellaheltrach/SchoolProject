@@ -210,6 +210,8 @@ namespace School.Service.Services
 
         }
 
+
+
         #endregion
 
 
@@ -267,6 +269,8 @@ namespace School.Service.Services
             claims.AddRange(userClaims);
             return claims;
         }
+
+
         #endregion
     }
 }
