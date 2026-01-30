@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using School.Api.Base;
-using School.Core.Features.Authentication.Commands.Models;
 using School.Core.Features.Autorazation.Commands.Models;
 using School.Domain.AppRoutes;
 using School.Domain.Helpers;

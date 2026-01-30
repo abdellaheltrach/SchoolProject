@@ -16,7 +16,6 @@ namespace School.Core.Features.Authentication.Commands.Handlers
     public class AuthenticationCommandHandler : ApiResponseHandler
         , IRequestHandler<SignInCommand, ApiResponse<TokenResponse>>
         , IRequestHandler<RefreshTokenCommand, ApiResponse<TokenResponse>>
-        , IRequestHandler<EditRoleCommand, ApiResponse<string>>
     {
 
         #region Fields
@@ -141,14 +140,7 @@ namespace School.Core.Features.Authentication.Commands.Handlers
 
         }
 
-        public async Task<ApiResponse<string>> Handle(EditRoleCommand request, CancellationToken cancellationToken)
-        {
-            var result = await _authorizationService.EditRoleAsync(request.Id, request.NewRoleName);
-            if (!result) return NotFound<string>();
-            else if (result) return Success((string)_stringLocalizer[SharedResourcesKeys.Success]);
-            else
-                return BadRequest<string>((string)_stringLocalizer[SharedResourcesKeys.BadRequest]);
-        }
+
 
 
         #endregion

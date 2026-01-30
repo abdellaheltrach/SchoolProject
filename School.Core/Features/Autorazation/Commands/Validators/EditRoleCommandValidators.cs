@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.Localization;
-using School.Core.Features.Authentication.Commands.Models;
+using School.Core.Features.Autorazation.Commands.Models;
 using School.Core.Resources;
 
-namespace School.Core.Features.Authentication.Commands.Validators
+namespace School.Core.Features.Autorazation.Commands.Validators
 {
     public class EditRoleCommandValidators : AbstractValidator<EditRoleCommand>
     {

@@ -9,6 +9,8 @@ namespace School.Core.Features.Autorazation.Commands.Handlers
 {
     public class AutorazationCommandHandlers : ApiResponseHandler,
         IRequestHandler<AddRoleCommand, ApiResponse<string>>
+        , IRequestHandler<EditRoleCommand, ApiResponse<string>>
+
     {
         private readonly IAuthorizationService _authorizationService;
         #region Fields
@@ -30,6 +32,15 @@ namespace School.Core.Features.Autorazation.Commands.Handlers
             var result = await _authorizationService.AddRoleAsync(request.RoleName);
             if (result) return Success("");
             return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.CreateFailed]);
+        }
+
+        public async Task<ApiResponse<string>> Handle(EditRoleCommand request, CancellationToken cancellationToken)
+        {
+            var result = await _authorizationService.EditRoleAsync(request.Id, request.NewRoleName);
+            if (!result) return NotFound<string>();
+            else if (result) return Success((string)_stringLocalizer[SharedResourcesKeys.Success]);
+            else
+                return BadRequest<string>((string)_stringLocalizer[SharedResourcesKeys.BadRequest]);
         }
         #endregion
 

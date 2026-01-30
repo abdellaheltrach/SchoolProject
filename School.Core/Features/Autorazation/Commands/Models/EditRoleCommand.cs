@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using School.Core.Base.ApiResponse;
 
-namespace School.Core.Features.Authentication.Commands.Models
+namespace School.Core.Features.Autorazation.Commands.Models
 {
     public class EditRoleCommand : IRequest<ApiResponse<string>>
     {
