@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using School.Domain.Entities.Identity;
+using School.Domain.Results;
 using School.Service.Services.Interfaces;
 
 namespace School.Service.Services
@@ -82,6 +83,32 @@ namespace School.Service.Services
         public async Task<Role?> GetRoleById(int id)
         {
             return await _roleManager.FindByIdAsync(id.ToString());
+        }
+
+        public async Task<ManageUserRolesResult> ManageUserRolesData(User user)
+        {
+            var response = new ManageUserRolesResult();
+            var rolesList = new List<UserRoles>();
+            //Roles
+            var roles = await _roleManager.Roles.ToListAsync();
+            response.UserId = user.Id;
+            foreach (var role in roles)
+            {
+                var useRole = new UserRoles();
+                useRole.Id = role.Id;
+                useRole.Name = role.Name;
+                if (await _userManager.IsInRoleAsync(user, role.Name))
+                {
+                    useRole.HasRole = true;
+                }
+                else
+                {
+                    useRole.HasRole = false;
+                }
+                rolesList.Add(useRole);
+            }
+            response.userRoles = rolesList;
+            return response;
         }
         #endregion
 

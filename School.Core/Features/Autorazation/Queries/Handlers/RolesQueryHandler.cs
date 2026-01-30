@@ -7,19 +7,21 @@ using School.Core.Features.Autorazation.Queries.Models;
 using School.Core.Features.Autorazation.Queries.QueriesResponse;
 using School.Core.Resources;
 using School.Domain.Entities.Identity;
+using School.Domain.Results;
 using School.Service.Services.Interfaces;
 
 namespace School.Core.Features.Autorazation.Queries.Handlers
 {
-    public class AutorazationQueryHandler : ApiResponseHandler,
+    public class RolesQueryHandler : ApiResponseHandler,
        IRequestHandler<GetRolesListQuery, ApiResponse<List<GetRolesListResponse>>>,
-       IRequestHandler<GetRoleByIdQuery, ApiResponse<GetRoleByIdResponse>>
+       IRequestHandler<GetRoleByIdQuery, ApiResponse<GetRoleByIdResponse>>,
+        IRequestHandler<ManageUserRolesQuery, ApiResponse<ManageUserRolesResult>>
     {
         private readonly IAuthorizationService _authorizationService;
         private readonly IMapper _mapper;
         private readonly IStringLocalizer<SharedResources> _stringLocalizer;
         private readonly UserManager<User> _userManager;
-        public AutorazationQueryHandler(IStringLocalizer<SharedResources> stringLocalizer,
+        public RolesQueryHandler(IStringLocalizer<SharedResources> stringLocalizer,
                                 IAuthorizationService authorizationService,
                                 IMapper mapper,
                                 UserManager<User> userManager) : base(stringLocalizer)
@@ -42,6 +44,14 @@ namespace School.Core.Features.Autorazation.Queries.Handlers
             var role = await _authorizationService.GetRoleById(request.Id);
             if (role == null) return NotFound<GetRoleByIdResponse>(_stringLocalizer[SharedResourcesKeys.RoleNotExist]);
             var result = _mapper.Map<GetRoleByIdResponse>(role);
+            return Success(result);
+        }
+
+        public async Task<ApiResponse<ManageUserRolesResult>> Handle(ManageUserRolesQuery request, CancellationToken cancellationToken)
+        {
+            var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+            if (user == null) return NotFound<ManageUserRolesResult>(_stringLocalizer[SharedResourcesKeys.NotFound]);
+            var result = await _authorizationService.ManageUserRolesData(user);
             return Success(result);
         }
     }

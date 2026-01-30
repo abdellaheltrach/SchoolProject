@@ -1,4 +1,5 @@
 ﻿using School.Domain.Entities.Identity;
+using School.Domain.Results;
 
 namespace School.Service.Services.Interfaces
 {
@@ -11,5 +12,6 @@ namespace School.Service.Services.Interfaces
         Task<string> DeleteRoleAsync(int id);
         Task<List<Role>> GetRolesList();
         Task<Role?> GetRoleById(int id);
+        Task<ManageUserRolesResult> ManageUserRolesData(User user);
     }
 }
