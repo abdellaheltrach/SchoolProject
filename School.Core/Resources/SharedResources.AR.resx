@@ -231,4 +231,7 @@
   <data name="RoleIsUsed" xml:space="preserve">
     <value>هذا الدور مُعيَّن بالفعل ولا يمكن إزالته.</value>
   </data>
+  <data name="RoleNotExist" xml:space="preserve">
+    <value>الدور غير موجود.</value>
+  </data>
 </root>

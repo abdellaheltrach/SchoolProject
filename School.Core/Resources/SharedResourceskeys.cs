@@ -64,6 +64,7 @@
         public const string InvalidRefreshToken = "InvalidRefreshToken";
 
         public const string RoleIsUsed = "RoleIsUsed";
+        public const string RoleNotExist = "RoleNotExist";
 
 
 

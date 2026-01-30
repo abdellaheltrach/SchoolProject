@@ -231,4 +231,7 @@
   <data name="RoleIsUsed" xml:space="preserve">
     <value>The role is currently in use and cannot be deleted.</value>
   </data>
+  <data name="RoleNotExist" xml:space="preserve">
+    <value>The role does not exist.</value>
+  </data>
 </root>

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using School.Api.Base;
 using School.Core.Features.Autorazation.Commands.Models;
+using School.Core.Features.Autorazation.Queries.Models;
 using School.Domain.AppRoutes;
 using School.Domain.Helpers;
 
@@ -33,6 +34,19 @@ namespace School.Api.Controllers
         public async Task<IActionResult> Delete([FromRoute] int Id)
         {
             var response = await _mediator.Send(new DeleteRoleCommand(Id));
+            return NewResult(response);
+        }
+
+        [HttpGet(AppRouter.AuthorizationRouting.RoleList)]
+        public async Task<IActionResult> GetRoleList()
+        {
+            var response = await _mediator.Send(new GetRolesListQuery());
+            return NewResult(response);
+        }
+        [HttpGet(AppRouter.AuthorizationRouting.GetRoleById)]
+        public async Task<IActionResult> GetRoleById([FromRoute] int id)
+        {
+            var response = await _mediator.Send(new GetRoleByIdQuery() { Id = id });
             return NewResult(response);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using School.Domain.Entities.Identity;
 using School.Service.Services.Interfaces;
 
@@ -71,6 +72,16 @@ namespace School.Service.Services
             var role = await _roleManager.FindByIdAsync(roleId.ToString());
             if (role == null) return false;
             else return true;
+        }
+
+        public async Task<List<Role>> GetRolesList()
+        {
+            return await _roleManager.Roles.ToListAsync();
+        }
+
+        public async Task<Role?> GetRoleById(int id)
+        {
+            return await _roleManager.FindByIdAsync(id.ToString());
         }
         #endregion
 
