@@ -228,4 +228,7 @@
   <data name="CreateFailed" xml:space="preserve">
     <value>فشلت عملية الإنشاء. يرجى المحاولة مرة أخرى.</value>
   </data>
+  <data name="RoleIsUsed" xml:space="preserve">
+    <value>هذا الدور مُعيَّن بالفعل ولا يمكن إزالته.</value>
+  </data>
 </root>

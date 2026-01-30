@@ -228,4 +228,7 @@
   <data name="CreateFailed" xml:space="preserve">
     <value>Creation failed. Please try again.</value>
   </data>
+  <data name="RoleIsUsed" xml:space="preserve">
+    <value>The role is currently in use and cannot be deleted.</value>
+  </data>
 </root>

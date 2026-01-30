@@ -63,6 +63,9 @@
         public const string InvalidAccessToken = "InvalidAccessToken";
         public const string InvalidRefreshToken = "InvalidRefreshToken";
 
+        public const string RoleIsUsed = "RoleIsUsed";
+
+
 
 
     }

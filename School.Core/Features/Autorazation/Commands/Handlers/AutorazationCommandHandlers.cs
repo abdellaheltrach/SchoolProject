@@ -10,6 +10,7 @@ namespace School.Core.Features.Autorazation.Commands.Handlers
     public class AutorazationCommandHandlers : ApiResponseHandler,
         IRequestHandler<AddRoleCommand, ApiResponse<string>>
         , IRequestHandler<EditRoleCommand, ApiResponse<string>>
+        , IRequestHandler<DeleteRoleCommand, ApiResponse<string>>
 
     {
         private readonly IAuthorizationService _authorizationService;
@@ -41,6 +42,16 @@ namespace School.Core.Features.Autorazation.Commands.Handlers
             else if (result) return Success((string)_stringLocalizer[SharedResourcesKeys.Success]);
             else
                 return BadRequest<string>((string)_stringLocalizer[SharedResourcesKeys.BadRequest]);
+        }
+
+        public async Task<ApiResponse<string>> Handle(DeleteRoleCommand request, CancellationToken cancellationToken)
+        {
+            var result = await _authorizationService.DeleteRoleAsync(request.Id);
+            if (result == "NotFound") return NotFound<string>();
+            else if (result == "Used") return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.RoleIsUsed]);
+            else if (result == "Success") return Success((string)_stringLocalizer[SharedResourcesKeys.Deleted]);
+            else
+                return BadRequest<string>(result);
         }
         #endregion
 

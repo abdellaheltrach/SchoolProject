@@ -51,6 +51,7 @@
             private const string Prefix = Rule + "Authorization";
             public const string Create = Prefix + "/Create";
             public const string Edit = Prefix + "/Edit";
+            public const string Delete = Prefix + "/{Id}";
 
         }
     }
