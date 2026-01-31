@@ -246,4 +246,13 @@
   <data name="FailedToUpdateUserRoles" xml:space="preserve">
     <value>Failed to update user roles.</value>
   </data>
+  <data name="FailedToRemoveOldClaims" xml:space="preserve">
+    <value>Failed to remove the old claims.</value>
+  </data>
+  <data name="FailedToAddNewClaims" xml:space="preserve">
+    <value>Failed to add the new claims.</value>
+  </data>
+  <data name="FailedToUpdateClaims" xml:space="preserve">
+    <value>Failed to update claims.</value>
+  </data>
 </root>

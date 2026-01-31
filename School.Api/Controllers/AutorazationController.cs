@@ -71,5 +71,13 @@ namespace School.Api.Controllers
             var response = await _mediator.Send(new ManageUserClaimsQuery() { UserId = userId });
             return NewResult(response);
         }
+
+        [HttpPut(AppRouter.AuthorizationRouting.UpdateUserClaims)]
+        public async Task<IActionResult> UpdateUserClaims([FromBody] UpdateUserClaimsCommand command)
+        {
+            var response = await _mediator.Send(command);
+            return NewResult(response);
+        }
+
     }
 }

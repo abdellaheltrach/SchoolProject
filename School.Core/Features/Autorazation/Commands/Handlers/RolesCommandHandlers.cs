@@ -7,7 +7,7 @@ using School.Service.Services.Interfaces;
 
 namespace School.Core.Features.Autorazation.Commands.Handlers
 {
-    public class AutorazationCommandHandlers : ApiResponseHandler,
+    public class RolesCommandHandlers : ApiResponseHandler,
         IRequestHandler<AddRoleCommand, ApiResponse<string>>
         , IRequestHandler<EditRoleCommand, ApiResponse<string>>
         , IRequestHandler<DeleteRoleCommand, ApiResponse<string>>
@@ -20,7 +20,7 @@ namespace School.Core.Features.Autorazation.Commands.Handlers
         #endregion
 
         #region Constructors
-        public AutorazationCommandHandlers(IAuthorizationService authorizationService,
+        public RolesCommandHandlers(IAuthorizationService authorizationService,
             IStringLocalizer<SharedResources> stringLocalizer) : base(stringLocalizer)
         {
             _authorizationService = authorizationService;

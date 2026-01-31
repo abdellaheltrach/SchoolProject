@@ -1,5 +1,6 @@
 ﻿using School.Domain.Entities.Identity;
 using School.Domain.Results;
+using School.Domain.Results.Requests;
 
 namespace School.Service.Services.Interfaces
 {
@@ -14,7 +15,8 @@ namespace School.Service.Services.Interfaces
         Task<Role?> GetRoleById(int id);
         Task<ManageUserRolesResult> ManageUserRolesData(User user);
         Task<string> UpdateUserRoles(int UserId, List<UserRoles> userRoles);
-        public Task<ManageUserClaimsResult> ManageUserClaimData(User user);
+        Task<ManageUserClaimsResult> ManageUserClaimData(User user);
+        Task<string> UpdateUserClaims(UpdateUserClaimsRequest request);
 
     }
 }

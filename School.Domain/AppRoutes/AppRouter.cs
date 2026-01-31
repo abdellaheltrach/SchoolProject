@@ -57,6 +57,7 @@
             public const string ManageUserRoles = Prefix + "/{userId}";
             public const string UpdateUserRoles = Prefix + "/Update-User-Roles";
             public const string ManageUserClaims = Prefix + "/UserClaims/{userId}";
+            public const string UpdateUserClaims = Prefix + "/UserClaims/Update";
 
 
         }

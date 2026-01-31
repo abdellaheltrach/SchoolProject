@@ -246,4 +246,13 @@
   <data name="FailedToUpdateUserRoles" xml:space="preserve">
     <value>فشل في تحديث أدوار المستخدم.</value>
   </data>
+  <data name="FailedToRemoveOldClaims" xml:space="preserve">
+    <value>فشل في إزالة الصلاحيات القديمة.</value>
+  </data>
+  <data name="FailedToAddNewClaims" xml:space="preserve">
+    <value>فشل في إضافة الصلاحيات الجديدة.</value>
+  </data>
+  <data name="FailedToUpdateClaims" xml:space="preserve">
+    <value>فشل في تحديث الصلاحيات.</value>
+  </data>
 </root>

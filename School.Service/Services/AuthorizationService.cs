@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using School.Domain.Entities.Identity;
 using School.Domain.Helpers;
 using School.Domain.Results;
+using School.Domain.Results.Requests;
 using School.Infrastructure.Context;
 using School.Service.Services.Interfaces;
+using System.Security.Claims;
 
 namespace School.Service.Services
 {
@@ -176,6 +178,38 @@ namespace School.Service.Services
             response.userClaims = usercliamsList;
             //return Result
             return response;
+        }
+
+
+        public async Task<string> UpdateUserClaims(UpdateUserClaimsRequest request)
+        {
+            var transact = await _dbContext.Database.BeginTransactionAsync();
+            try
+            {
+                var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+                if (user == null)
+                {
+                    return "UserIsNull";
+                }
+                //remove old Claims
+                var userClaims = await _userManager.GetClaimsAsync(user);
+                var removeClaimsResult = await _userManager.RemoveClaimsAsync(user, userClaims);
+                if (!removeClaimsResult.Succeeded)
+                    return "FailedToRemoveOldClaims";
+                var claims = request.userClaims.Where(x => x.Value == true).Select(x => new Claim(x.Type, x.Value.ToString()));
+
+                var addUserClaimResult = await _userManager.AddClaimsAsync(user, claims);
+                if (!addUserClaimResult.Succeeded)
+                    return "FailedToAddNewClaims";
+
+                await transact.CommitAsync();
+                return "Success";
+            }
+            catch (Exception ex)
+            {
+                await transact.RollbackAsync();
+                return "FailedToUpdateClaims";
+            }
         }
 
         #endregion
