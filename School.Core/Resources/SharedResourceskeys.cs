@@ -10,10 +10,13 @@
         public const string Success = "Success";
         public const string NotFound = "NotFound"; //used in error handling middleware as well
         public const string UnAuthorized = "UnAuthorized"; //used in error handling middleware as well
+        public const string Forbidden = "Forbidden";
         public const string BadRequest = "BadRequest"; //used in error handling middleware as well
         public const string UnprocessableEntity = "UnprocessableEntity";
         public const string DeleteSuccess = "DeleteSuccess";
         public const string CreateSuccess = "CreateSuccess";
+        public const string CreateFailed = "CreateFailed";
+
         public const string Deleted = "Deleted";
         public const string DeletedFailed = "DeletedFailed";
 
@@ -53,12 +56,24 @@
         public const string UserCreationFailed = "UserCreationFailed";
         public const string UserNameIsExist = "UserNameIsExist";
         public const string UpdateUserFailed = "UpdateUserFailed";
+        public const string UserNotFound = "UserNotFound";
         public const string UserUpdated = "UserUpdated";
         public const string InvalidCredentials = "InvalidCredentials";
 
         public const string TokenStillValid = "TokenStillValid";
         public const string InvalidAccessToken = "InvalidAccessToken";
         public const string InvalidRefreshToken = "InvalidRefreshToken";
+
+        public const string RoleIsUsed = "RoleIsUsed";
+        public const string RoleNotExist = "RoleNotExist";
+        public const string FailedToRemoveOldRoles = "FailedToRemoveOldRoles";
+        public const string FailedToAddNewRoles = "FailedToAddNewRoles";
+        public const string FailedToUpdateUserRoles = "FailedToUpdateUserRoles";
+
+
+        public const string FailedToRemoveOldClaims = "FailedToRemoveOldClaims";
+        public const string FailedToAddNewClaims = "FailedToAddNewClaims";
+        public const string FailedToUpdateClaims = "FailedToUpdateClaims";
 
 
 

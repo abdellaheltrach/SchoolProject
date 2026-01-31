@@ -26,6 +26,7 @@ namespace School.Core.Features.Authentication.Commands.Handlers
         private readonly CookieSettings _cookieSettings;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string _refreshTokenCookieName = "refreshToken";
+        private readonly IAuthorizationService _authorizationService;
 
 
         #endregion
@@ -36,7 +37,8 @@ namespace School.Core.Features.Authentication.Commands.Handlers
                                             SignInManager<User> signInManager,
                                             IAuthenticationService authenticationService,
                                             CookieSettings cookieSettings,
-                                            IHttpContextAccessor httpContextAccessor) : base(stringLocalizer)
+                                            IHttpContextAccessor httpContextAccessor,
+                                            IAuthorizationService authorizationService) : base(stringLocalizer)
         {
             _stringLocalizer = stringLocalizer;
             _userManager = userManager;
@@ -44,7 +46,7 @@ namespace School.Core.Features.Authentication.Commands.Handlers
             _authenticationService = authenticationService;
             _cookieSettings = cookieSettings;
             _httpContextAccessor = httpContextAccessor;
-
+            _authorizationService = authorizationService;
         }
 
         #endregion
@@ -137,6 +139,8 @@ namespace School.Core.Features.Authentication.Commands.Handlers
             return BadRequest<TokenResponse>(_stringLocalizer[SharedResourcesKeys.InvalidAccessToken]);
 
         }
+
+
 
 
         #endregion

@@ -31,13 +31,24 @@ namespace School.Core.Base.ApiResponse
                 Meta = Meta
             };
         }
+        //401 Unauthorized response indicates that the user is not authenticated.
         public ApiResponse<T> Unauthorized<T>(string message = null)
         {
             return new ApiResponse<T>()
             {
                 StatusCode = System.Net.HttpStatusCode.Unauthorized,
-                Succeeded = true,
+                Succeeded = false,
                 Message = message == null ? _stringLocalizer[SharedResourcesKeys.UnAuthorized] : message
+            };
+        }
+        //403 Forbidden response indicates that the user is not allowed to access the resource.
+        public ApiResponse<T> Forbidden<T>(string message = null)
+        {
+            return new ApiResponse<T>()
+            {
+                StatusCode = System.Net.HttpStatusCode.Forbidden,
+                Succeeded = false,
+                Message = message == null ? _stringLocalizer[SharedResourcesKeys.Forbidden] : message
             };
         }
         public ApiResponse<T> BadRequest<T>(string message = null, List<string> errors = null)

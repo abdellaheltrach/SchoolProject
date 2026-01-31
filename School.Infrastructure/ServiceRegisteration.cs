@@ -19,7 +19,7 @@ namespace School.Infrastructure
             #region Identity
             //needed 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 
-            services.AddIdentity<User, IdentityRole<int>>(option =>
+            services.AddIdentity<User, Role>(option =>
             {
                 // Password settings.
                 //checked already by FluentValidation.
@@ -117,6 +117,23 @@ namespace School.Infrastructure
 
 
 
+            #region add Authorization Policies
+            services.AddAuthorization(option =>
+            {
+                option.AddPolicy("CreateStudent", policy =>
+                {
+                    policy.RequireClaim("Create Student", "True");
+                });
+                option.AddPolicy("EditStudent", policy =>
+                {
+                    policy.RequireClaim("Edit Student", "True");
+                });
+                option.AddPolicy("DeleteStudent", policy =>
+                {
+                    policy.RequireClaim("Delete Student", "True");
+                });
+            });
+            #endregion
 
 
             return services;

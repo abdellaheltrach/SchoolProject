@@ -28,6 +28,8 @@ namespace School.Api.Base
                     return new CreatedResult(string.Empty, response);
                 case HttpStatusCode.Unauthorized:
                     return new UnauthorizedObjectResult(response);
+                case HttpStatusCode.Forbidden:
+                    return new ObjectResult(response) { StatusCode = (int)HttpStatusCode.Forbidden };
                 case HttpStatusCode.BadRequest:
                     return new BadRequestObjectResult(response);
                 case HttpStatusCode.NotFound:
@@ -37,7 +39,7 @@ namespace School.Api.Base
                 case HttpStatusCode.UnprocessableEntity:
                     return new UnprocessableEntityObjectResult(response);
                 default:
-                    return new BadRequestObjectResult(response);
+                    return new ObjectResult(response) { StatusCode = (int?)response.StatusCode };
             }
         }
         #endregion

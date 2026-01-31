@@ -222,4 +222,37 @@
   <data name="InvalidRefreshToken" xml:space="preserve">
     <value>The refresh token is invalid or has expired.</value>
   </data>
+  <data name="Forbidden" xml:space="preserve">
+    <value>You do not have permission to access this resource.</value>
+  </data>
+  <data name="CreateFailed" xml:space="preserve">
+    <value>Creation failed. Please try again.</value>
+  </data>
+  <data name="RoleIsUsed" xml:space="preserve">
+    <value>The role is currently in use and cannot be deleted.</value>
+  </data>
+  <data name="RoleNotExist" xml:space="preserve">
+    <value>The role does not exist.</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>The user was not found.</value>
+  </data>
+  <data name="FailedToRemoveOldRoles" xml:space="preserve">
+    <value>Failed to remove the old roles.</value>
+  </data>
+  <data name="FailedToAddNewRoles" xml:space="preserve">
+    <value>Failed to add the new roles.</value>
+  </data>
+  <data name="FailedToUpdateUserRoles" xml:space="preserve">
+    <value>Failed to update user roles.</value>
+  </data>
+  <data name="FailedToRemoveOldClaims" xml:space="preserve">
+    <value>Failed to remove the old claims.</value>
+  </data>
+  <data name="FailedToAddNewClaims" xml:space="preserve">
+    <value>Failed to add the new claims.</value>
+  </data>
+  <data name="FailedToUpdateClaims" xml:space="preserve">
+    <value>Failed to update claims.</value>
+  </data>
 </root>
