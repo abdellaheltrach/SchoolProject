@@ -48,7 +48,7 @@
         }
         public static class AuthorizationRouting
         {
-            private const string Prefix = Rule + "Authorization/Role";
+            private const string Prefix = Rule + "Role";
             public const string Create = Prefix + "/Create";
             public const string Edit = Prefix + "/Edit";
             public const string Delete = Prefix + "/{Id}";
@@ -56,6 +56,8 @@
             public const string GetRoleById = Prefix + "/Role-By-Id/{id}";
             public const string ManageUserRoles = Prefix + "/{userId}";
             public const string UpdateUserRoles = Prefix + "/Update-User-Roles";
+            public const string ManageUserClaims = Prefix + "/UserClaims/{userId}";
+
 
         }
     }

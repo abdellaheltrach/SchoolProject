@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using School.Domain.Entities.Identity;
+using School.Domain.Helpers;
 using School.Domain.Results;
 using School.Infrastructure.Context;
 using School.Service.Services.Interfaces;
@@ -149,7 +150,33 @@ namespace School.Service.Services
                 return "FailedToUpdateUserRoles";
             }
         }
+        public async Task<ManageUserClaimsResult> ManageUserClaimData(User user)
+        {
+            var response = new ManageUserClaimsResult();
+            var usercliamsList = new List<UserClaims>();
+            response.UserId = user.Id;
+            //Get USer Claims
+            var userDbClaims = await _userManager.GetClaimsAsync(user);
 
+
+            foreach (var claim in ClaimsStore.claims)
+            {
+                var userclaim = new UserClaims();
+                userclaim.Type = claim.Type;
+                if (userDbClaims.Any(x => x.Type == claim.Type))
+                {
+                    userclaim.Value = true;
+                }
+                else
+                {
+                    userclaim.Value = false;
+                }
+                usercliamsList.Add(userclaim);
+            }
+            response.userClaims = usercliamsList;
+            //return Result
+            return response;
+        }
 
         #endregion
     }

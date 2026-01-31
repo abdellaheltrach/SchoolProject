@@ -63,5 +63,13 @@ namespace School.Api.Controllers
             var response = await _mediator.Send(command);
             return NewResult(response);
         }
+
+
+        [HttpGet(AppRouter.AuthorizationRouting.ManageUserClaims)]
+        public async Task<IActionResult> ManageUserClaims([FromRoute] int userId)
+        {
+            var response = await _mediator.Send(new ManageUserClaimsQuery() { UserId = userId });
+            return NewResult(response);
+        }
     }
 }
