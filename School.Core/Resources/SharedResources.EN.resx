@@ -234,4 +234,16 @@
   <data name="RoleNotExist" xml:space="preserve">
     <value>The role does not exist.</value>
   </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>The user was not found.</value>
+  </data>
+  <data name="FailedToRemoveOldRoles" xml:space="preserve">
+    <value>Failed to remove the old roles.</value>
+  </data>
+  <data name="FailedToAddNewRoles" xml:space="preserve">
+    <value>Failed to add the new roles.</value>
+  </data>
+  <data name="FailedToUpdateUserRoles" xml:space="preserve">
+    <value>Failed to update user roles.</value>
+  </data>
 </root>

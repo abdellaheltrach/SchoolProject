@@ -56,5 +56,12 @@ namespace School.Api.Controllers
             var response = await _mediator.Send(new ManageUserRolesQuery() { UserId = userId });
             return NewResult(response);
         }
+
+        [HttpPut(AppRouter.AuthorizationRouting.UpdateUserRoles)]
+        public async Task<IActionResult> UpdateUserRoles([FromBody] UpdateUserRolesCommand command)
+        {
+            var response = await _mediator.Send(command);
+            return NewResult(response);
+        }
     }
 }

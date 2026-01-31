@@ -56,6 +56,7 @@
         public const string UserCreationFailed = "UserCreationFailed";
         public const string UserNameIsExist = "UserNameIsExist";
         public const string UpdateUserFailed = "UpdateUserFailed";
+        public const string UserNotFound = "UserNotFound";
         public const string UserUpdated = "UserUpdated";
         public const string InvalidCredentials = "InvalidCredentials";
 
@@ -65,6 +66,10 @@
 
         public const string RoleIsUsed = "RoleIsUsed";
         public const string RoleNotExist = "RoleNotExist";
+        public const string FailedToRemoveOldRoles = "FailedToRemoveOldRoles";
+        public const string FailedToAddNewRoles = "FailedToAddNewRoles";
+        public const string FailedToUpdateUserRoles = "FailedToUpdateUserRoles";
+
 
 
 

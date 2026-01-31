@@ -234,4 +234,16 @@
   <data name="RoleNotExist" xml:space="preserve">
     <value>الدور غير موجود.</value>
   </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>المستخدم غير موجود.</value>
+  </data>
+  <data name="FailedToRemoveOldRoles" xml:space="preserve">
+    <value>فشل في إزالة الأدوار القديمة.</value>
+  </data>
+  <data name="FailedToAddNewRoles" xml:space="preserve">
+    <value>فشل في إضافة الأدوار الجديدة.</value>
+  </data>
+  <data name="FailedToUpdateUserRoles" xml:space="preserve">
+    <value>فشل في تحديث أدوار المستخدم.</value>
+  </data>
 </root>

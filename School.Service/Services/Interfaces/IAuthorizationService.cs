@@ -13,5 +13,6 @@ namespace School.Service.Services.Interfaces
         Task<List<Role>> GetRolesList();
         Task<Role?> GetRoleById(int id);
         Task<ManageUserRolesResult> ManageUserRolesData(User user);
+        Task<string> UpdateUserRoles(int UserId, List<UserRoles> userRoles);
     }
 }
