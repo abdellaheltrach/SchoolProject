@@ -245,6 +245,7 @@ namespace School.Service.Services
         }
         public async Task<List<Claim>> GetClaims(User user)
         {
+            //add User Roles to claims
             var roles = await _userManager.GetRolesAsync(user);
             //if User got no roles assign User role to him
             if (!roles.Any())
@@ -265,6 +266,7 @@ namespace School.Service.Services
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
+            //add User Claims to claims
             var userClaims = await _userManager.GetClaimsAsync(user);
             claims.AddRange(userClaims);
             return claims;

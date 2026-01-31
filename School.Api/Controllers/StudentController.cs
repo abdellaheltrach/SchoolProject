@@ -41,7 +41,7 @@ namespace School.Api.Controllers
             return NewResult(Reponse);
         }
 
-
+        [Authorize(Policy = "CreateStudent")]
         [HttpPost(AppRouter.StudentRouting.AddStudent)]
         public async Task<IActionResult> Create([FromBody] AddStudentCommand command)
         {
@@ -50,14 +50,14 @@ namespace School.Api.Controllers
             return NewResult(response);
         }
 
-
+        [Authorize(Policy = "EditStudent")]
         [HttpPut(AppRouter.StudentRouting.EditStudent)]
         public async Task<IActionResult> Edit([FromBody] EditStudentCommand command)
         {
             var response = await _mediator.Send(command);
             return NewResult(response);
         }
-
+        [Authorize(Policy = "DeleteStudent")]
         [HttpDelete(AppRouter.StudentRouting.DeleteStudent)]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
