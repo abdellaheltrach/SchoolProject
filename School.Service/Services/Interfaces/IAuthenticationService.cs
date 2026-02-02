@@ -9,5 +9,7 @@ namespace School.Service.Services.Interfaces
         public Task<JwtAuthResult> GenerateJwtTokenAsync(User user);
         public (bool IsValid, List<Claim>?, string ErrorMessage) ValidateJwtToken(string AccessToken);
         public Task<JwtAuthResult> RefreshJwtTokenAsync(string accessToken, string refreshToken);
+        public Task<bool> ConfirmEmail(int? userId, string? code);
+
     }
 }

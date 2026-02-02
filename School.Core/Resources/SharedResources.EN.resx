@@ -264,4 +264,10 @@
   <data name="EmailIsExist" xml:space="preserve">
     <value>Email already exists.</value>
   </data>
+  <data name="ConfirmEmailDone" xml:space="preserve">
+    <value>Email confirmed successfully.</value>
+  </data>
+  <data name="ErrorWhenConfirmEmail" xml:space="preserve">
+    <value>An error occurred while confirming the email.</value>
+  </data>
 </root>

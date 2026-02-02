@@ -41,9 +41,10 @@
         }
         public static class AuthenticationRouting
         {
-            private const string Prefix = Rule + "Authe";
+            private const string Prefix = Rule + "Auth";
             public const string SignIn = Prefix + "/SignIn";
             public const string RefreshToken = Prefix + "/RefreshToken";
+            public const string ConfirmEmail = Prefix + "/ConfirmEmail";
 
         }
         public static class AuthorizationRouting

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using School.Api.Base;
 using School.Core.Features.Authentication.Commands.Models;
+using School.Core.Features.Authentication.Queries.Models;
 using School.Domain.AppRoutes;
 
 namespace School.Api.Controllers
@@ -24,6 +25,13 @@ namespace School.Api.Controllers
         public async Task<IActionResult> RefreshToken([FromForm] RefreshTokenCommand command)
         {
             var response = await _mediator.Send(command);
+            return NewResult(response);
+        }
+
+        [HttpGet(AppRouter.AuthenticationRouting.ConfirmEmail)]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] EmailConfirmationQuery query)
+        {
+            var response = await _mediator.Send(query);
             return NewResult(response);
         }
 

@@ -61,6 +61,8 @@
         public const string InvalidCredentials = "InvalidCredentials";
         public const string EmailNotConfirmed = "EmailNotConfirmed ";
         public const string EmailIsExist = "EmailIsExist";
+        public const string ErrorWhenConfirmEmail = "ErrorWhenConfirmEmail";
+        public const string ConfirmEmailDone = "ConfirmEmailDone";
 
 
 

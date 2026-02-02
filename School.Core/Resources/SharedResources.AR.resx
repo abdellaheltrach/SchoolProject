@@ -264,4 +264,10 @@
   <data name="EmailIsExist" xml:space="preserve">
     <value>البريد الإلكتروني موجود بالفعل.</value>
   </data>
+  <data name="ConfirmEmailDone" xml:space="preserve">
+    <value>تم تأكيد البريد الإلكتروني بنجاح.</value>
+  </data>
+  <data name="ErrorWhenConfirmEmail" xml:space="preserve">
+    <value>حدث خطأ أثناء تأكيد البريد الإلكتروني.</value>
+  </data>
 </root>

@@ -211,6 +211,23 @@ namespace School.Service.Services
         }
 
 
+        public async Task<bool> ConfirmEmail(int? userId, string? code)
+        {
+            //check for null
+            if (userId == null || code == null)
+                return false;
+            //find user using id
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            //if it's not exists return false
+            if (user == null) return false;
+            //confirm if the tokken correct using userManager
+            var confirmEmail = await _userManager.ConfirmEmailAsync(user, code);
+            if (!confirmEmail.Succeeded)
+                return false;
+            return true;
+        }
+
+
 
         #endregion
 
@@ -271,6 +288,7 @@ namespace School.Service.Services
             claims.AddRange(userClaims);
             return claims;
         }
+
 
 
         #endregion
