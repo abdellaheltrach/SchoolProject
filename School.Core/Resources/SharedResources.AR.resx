@@ -223,13 +223,13 @@
     <value>رمز التحديث غير صالح أو منتهي الصلاحية.</value>
   </data>
   <data name="Forbidden" xml:space="preserve">
-    <value>ليس لديك إذن للوصول إلى هذا المورد.</value>
+    <value>الوصول محظور.</value>
   </data>
   <data name="CreateFailed" xml:space="preserve">
-    <value>فشلت عملية الإنشاء. يرجى المحاولة مرة أخرى.</value>
+    <value>فشلت عملية الإنشاء.</value>
   </data>
   <data name="RoleIsUsed" xml:space="preserve">
-    <value>هذا الدور مُعيَّن بالفعل ولا يمكن إزالته.</value>
+    <value>الدور مستخدم حاليًا.</value>
   </data>
   <data name="RoleNotExist" xml:space="preserve">
     <value>الدور غير موجود.</value>
@@ -254,5 +254,8 @@
   </data>
   <data name="FailedToUpdateClaims" xml:space="preserve">
     <value>فشل في تحديث الصلاحيات.</value>
+  </data>
+  <data name="SendEmailFailed" xml:space="preserve">
+    <value>فشل في إرسال البريد الإلكتروني.</value>
   </data>
 </root>

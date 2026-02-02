@@ -255,4 +255,7 @@
   <data name="FailedToUpdateClaims" xml:space="preserve">
     <value>Failed to update claims.</value>
   </data>
+  <data name="SendEmailFailed" xml:space="preserve">
+    <value>Failed to send the email.</value>
+  </data>
 </root>

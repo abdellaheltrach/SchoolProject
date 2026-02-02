@@ -76,6 +76,10 @@
         public const string FailedToUpdateClaims = "FailedToUpdateClaims";
 
 
+        public const string SendEmailFailed = "SendEmailFailed";
+
+
+
 
     }
 }

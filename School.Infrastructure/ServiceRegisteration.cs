@@ -51,13 +51,16 @@ namespace School.Infrastructure
             //read JWT settings from appsettings.json file and bind it to JwtSettings class
             var JwtSettings = new JwtSettings();
             var CookieSettings = new CookieSettings();
+            var EmailSettings = new EmailSettings();
             configuration.GetSection(nameof(JwtSettings)).Bind(JwtSettings);
             configuration.GetSection(nameof(CookieSettings)).Bind(CookieSettings);
+            configuration.GetSection(nameof(EmailSettings)).Bind(EmailSettings);
 
 
 
             services.AddSingleton(JwtSettings);
             services.AddSingleton(CookieSettings);
+            services.AddSingleton(EmailSettings);
 
 
             //Enables access to headers, cookies, claims outside controllers, services or hundler classes!
