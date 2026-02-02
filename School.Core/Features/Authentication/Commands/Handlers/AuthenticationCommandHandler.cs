@@ -75,6 +75,9 @@ namespace School.Core.Features.Authentication.Commands.Handlers
             var signInResult = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
             //if Failed Return InvalidCredentials
             if (!signInResult.Succeeded) return BadRequest<TokenResponse>(_stringLocalizer[SharedResourcesKeys.InvalidCredentials]);
+            //check if the email confirmed
+            if (!user.EmailConfirmed)
+                return BadRequest<TokenResponse>(_stringLocalizer[SharedResourcesKeys.EmailNotConfirmed]);
 
             //user seccessfully signed in then generate JWT Token and Refresh Token
             var result = await _authenticationService.GenerateJwtTokenAsync(user);

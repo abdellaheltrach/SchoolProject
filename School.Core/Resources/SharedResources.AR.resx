@@ -258,4 +258,10 @@
   <data name="SendEmailFailed" xml:space="preserve">
     <value>فشل في إرسال البريد الإلكتروني.</value>
   </data>
+  <data name="EmailNotConfirmed" xml:space="preserve">
+    <value>البريد الإلكتروني غير مؤكد.</value>
+  </data>
+  <data name="EmailIsExist" xml:space="preserve">
+    <value>البريد الإلكتروني موجود بالفعل.</value>
+  </data>
 </root>

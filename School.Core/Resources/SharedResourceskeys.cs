@@ -59,6 +59,10 @@
         public const string UserNotFound = "UserNotFound";
         public const string UserUpdated = "UserUpdated";
         public const string InvalidCredentials = "InvalidCredentials";
+        public const string EmailNotConfirmed = "EmailNotConfirmed ";
+        public const string EmailIsExist = "EmailIsExist";
+
+
 
         public const string TokenStillValid = "TokenStillValid";
         public const string InvalidAccessToken = "InvalidAccessToken";

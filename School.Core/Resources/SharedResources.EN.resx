@@ -258,4 +258,10 @@
   <data name="SendEmailFailed" xml:space="preserve">
     <value>Failed to send the email.</value>
   </data>
+  <data name="EmailNotConfirmed" xml:space="preserve">
+    <value>Email is not confirmed.</value>
+  </data>
+  <data name="EmailIsExist" xml:space="preserve">
+    <value>Email already exists.</value>
+  </data>
 </root>
