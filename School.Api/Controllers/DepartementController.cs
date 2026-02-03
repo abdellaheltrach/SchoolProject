@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using School.Api.Base;
 using School.Core.Features.Departement.Queries.Models;
@@ -8,6 +9,7 @@ namespace School.Api.Controllers
 {
 
     [ApiController]
+    [Authorize]
     public class DepartementController : AppBaseController
     {
         public DepartementController(IMediator mediator) : base(mediator)

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using School.Api.Base;
 using School.Core.Features.Emails.Commands.Models;
@@ -6,6 +7,7 @@ using School.Domain.AppRoutes;
 
 namespace School.Api.Controllers
 {
+    [Authorize]
     public class EmailsController : AppBaseController
     {
         public EmailsController(IMediator mediator) : base(mediator)

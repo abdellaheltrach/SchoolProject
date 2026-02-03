@@ -1,13 +1,17 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using School.Api.Base;
 using School.Core.Features.Users.Commands.Models;
 using School.Core.Features.Users.Queries.Models;
+using School.Core.Filters;
 using School.Domain.AppRoutes;
 
 namespace School.Api.Controllers
 {
     [ApiController]
+    [Authorize(Roles = "Admin")]
+    [ServiceFilter(typeof(ValidateAdminRoleFilter))]
     public class UserController : AppBaseController
     {
         public UserController(IMediator mediator) : base(mediator)
