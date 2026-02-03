@@ -8,8 +8,8 @@ using School.Service.Services.Interfaces;
 namespace School.Core.Features.Authentication.Queries.Handlers
 {
     public class AuthenticationQueryHandler : ApiResponseHandler,
-        IRequestHandler<EmailConfirmationQuery, ApiResponse<string>>
-
+        IRequestHandler<EmailConfirmationQuery, ApiResponse<string>>,
+        IRequestHandler<ConfirmResetPasswordQuery, ApiResponse<string>>
     {
 
 
@@ -40,6 +40,18 @@ namespace School.Core.Features.Authentication.Queries.Handlers
             if (!isConfirmed)
                 return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.ErrorWhenConfirmEmail]);
             return Success<string>(_stringLocalizer[SharedResourcesKeys.ConfirmEmailDone]);
+        }
+
+        public async Task<ApiResponse<string>> Handle(ConfirmResetPasswordQuery request, CancellationToken cancellationToken)
+        {
+            var result = await _authenticationService.ConfirmResetPassword(request.Code, request.Email);
+            switch (result)
+            {
+                case "UserNotFound": return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.UserNotFound]);
+                case "Failed": return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.InvaildCode]);
+                case "Success": return Success<string>("");
+                default: return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.InvaildCode]);
+            }
         }
 
 

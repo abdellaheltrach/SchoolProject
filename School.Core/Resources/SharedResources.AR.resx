@@ -270,4 +270,7 @@
   <data name="ErrorWhenConfirmEmail" xml:space="preserve">
     <value>حدث خطأ أثناء تأكيد البريد الإلكتروني.</value>
   </data>
+  <data name="InvaildCode" xml:space="preserve">
+    <value>رمز غير صالح.</value>
+  </data>
 </root>

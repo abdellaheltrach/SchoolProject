@@ -45,6 +45,9 @@
             public const string SignIn = Prefix + "/SignIn";
             public const string RefreshToken = Prefix + "/RefreshToken";
             public const string ConfirmEmail = Prefix + "/ConfirmEmail";
+            public const string SendResetPasswordCode = Prefix + "/SendResetPasswordCode";
+            public const string ConfirmResetPasswordCode = Prefix + "/ConfirmResetPasswordCode";
+            public const string ResetPassword = Prefix + "/ResetPassword";
 
         }
         public static class AuthorizationRouting

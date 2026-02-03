@@ -83,6 +83,7 @@
 
 
         public const string SendEmailFailed = "SendEmailFailed";
+        public const string InvaildCode = "InvaildCode";
 
 
 

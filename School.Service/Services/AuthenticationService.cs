@@ -5,6 +5,7 @@ using School.Domain.Entities.Identity;
 using School.Domain.Helpers;
 using School.Domain.Options;
 using School.Domain.Results;
+using School.Infrastructure.Context;
 using School.Infrastructure.Repositories.Interfaces;
 using School.Service.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
@@ -20,6 +21,8 @@ namespace School.Service.Services
         private readonly CookieSettings _cookieSettings;
         private readonly IUserRefreshTokenRepository _userRefreshTokenRepository;
         private readonly UserManager<User> _userManager;
+        private readonly IEmailsService _emailsService;
+        private readonly AppDbContext _applicationDBContext;
         #endregion
 
 
@@ -27,12 +30,16 @@ namespace School.Service.Services
         public AuthenticationService(JwtSettings jwtSettings,
                                      CookieSettings cookieSettings,
                                      UserManager<User> userManager,
+                                     AppDbContext applicationDBContext,
+                                     IEmailsService emailsService,
                                      IUserRefreshTokenRepository userRefreshTokenRepository)
         {
             _jwtSettings = jwtSettings;
             _userRefreshTokenRepository = userRefreshTokenRepository;
             _userManager = userManager;
             _cookieSettings = cookieSettings;
+            _emailsService = emailsService;
+            _applicationDBContext = applicationDBContext;
         }
         #endregion
 
@@ -225,6 +232,85 @@ namespace School.Service.Services
             if (!confirmEmail.Succeeded)
                 return false;
             return true;
+        }
+
+
+        public async Task<string> SendResetPasswordCode(string Email)
+        {
+            var trans = await _applicationDBContext.Database.BeginTransactionAsync();
+            try
+            {
+                //user
+                var user = await _userManager.FindByEmailAsync(Email);
+                //user not Exist => not found
+                if (user == null)
+                    return "UserNotFound";
+                //Generate Random Number
+
+                //Random generator = new Random();
+                //string randomNumber = generator.Next(0, 1000000).ToString("D6");
+                var chars = "0123456789";
+                var random = new Random();
+                var randomNumber = new string(Enumerable.Repeat(chars, 6).Select(s => s[random.Next(s.Length)]).ToArray());
+
+                //update User In Database Code
+                user.Code = randomNumber;
+                var updateResult = await _userManager.UpdateAsync(user);
+                if (!updateResult.Succeeded)
+                    return "ErrorInUpdateUser";
+                var message = "Code To Reset Passsword : " + user.Code;
+                //Send Code To  Email 
+                await _emailsService.SendEmail(user.Email, message, "Reset Password");
+                await trans.CommitAsync();
+                return "Success";
+            }
+            catch (Exception ex)
+            {
+                await trans.RollbackAsync();
+                return "Failed";
+            }
+        }
+        public async Task<string> ConfirmResetPassword(string Code, string Email)
+        {
+
+            //Get User
+            //user
+            var user = await _userManager.FindByEmailAsync(Email);
+            //user not Exist => not found
+            if (user == null)
+                return "UserNotFound";
+            //Decrept Code From Database User Code
+            var userCode = user.Code;
+            //Equal With Code
+            if (userCode == Code) return "Success";
+            return "Failed";
+        }
+
+
+        public async Task<string> ResetPassword(string Email, string Password)
+        {
+
+            var trans = await _applicationDBContext.Database.BeginTransactionAsync();
+            try
+            {
+                //Get User
+                var user = await _userManager.FindByEmailAsync(Email);
+                //user not Exist => not found
+                if (user == null)
+                    return "UserNotFound";
+                await _userManager.RemovePasswordAsync(user);
+                if (!await _userManager.HasPasswordAsync(user))
+                {
+                    await _userManager.AddPasswordAsync(user, Password);
+                }
+                await trans.CommitAsync();
+                return "Success";
+            }
+            catch (Exception ex)
+            {
+                await trans.RollbackAsync();
+                return "Failed";
+            }
         }
 
 
