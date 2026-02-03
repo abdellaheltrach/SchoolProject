@@ -16,6 +16,8 @@ namespace School.Core.Features.Authentication.Commands.Handlers
     public class AuthenticationCommandHandler : ApiResponseHandler
         , IRequestHandler<SignInCommand, ApiResponse<TokenResponse>>
         , IRequestHandler<RefreshTokenCommand, ApiResponse<TokenResponse>>
+        , IRequestHandler<ResetPasswordCommand, ApiResponse<string>>
+        , IRequestHandler<SendResetPasswordCommand, ApiResponse<string>>
     {
 
         #region Fields
@@ -75,6 +77,9 @@ namespace School.Core.Features.Authentication.Commands.Handlers
             var signInResult = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
             //if Failed Return InvalidCredentials
             if (!signInResult.Succeeded) return BadRequest<TokenResponse>(_stringLocalizer[SharedResourcesKeys.InvalidCredentials]);
+            //check if the email confirmed
+            if (!user.EmailConfirmed)
+                return BadRequest<TokenResponse>(_stringLocalizer[SharedResourcesKeys.EmailNotConfirmed]);
 
             //user seccessfully signed in then generate JWT Token and Refresh Token
             var result = await _authenticationService.GenerateJwtTokenAsync(user);
@@ -139,6 +144,31 @@ namespace School.Core.Features.Authentication.Commands.Handlers
             return BadRequest<TokenResponse>(_stringLocalizer[SharedResourcesKeys.InvalidAccessToken]);
 
         }
+        public async Task<ApiResponse<string>> Handle(SendResetPasswordCommand request, CancellationToken cancellationToken)
+        {
+            var result = await _authenticationService.SendResetPasswordCode(request.Email);
+            switch (result)
+            {
+                case "UserNotFound": return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.UserNotFound]);
+                case "ErrorInUpdateUser": return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.BadRequest]);
+                case "Failed": return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.BadRequest]);
+                case "Success": return Success<string>("");
+                default: return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.BadRequest]);
+            }
+        }
+
+        public async Task<ApiResponse<string>> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
+        {
+            var result = await _authenticationService.ResetPassword(request.Email, request.Password);
+            switch (result)
+            {
+                case "UserNotFound": return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.UserNotFound]);
+                case "Failed": return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.InvaildCode]);
+                case "Success": return Success<string>("");
+                default: return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.InvaildCode]);
+            }
+        }
+
 
 
 

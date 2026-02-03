@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using School.Core;
+using School.Core.Filters;
 using School.Core.MiddleWare;
 using School.Domain.Entities.Identity;
 using School.Infrastructure;
@@ -70,6 +71,10 @@ builder.Services.AddCors(options =>
 
 #endregion
 
+#region  register Filters
+builder.Services.AddTransient<ValidateAdminRoleFilter>();
+builder.Services.AddTransient<ValidateUserRoleFilter>();
+#endregion
 var app = builder.Build();
 
 #region Seeding application Default user and Roles 

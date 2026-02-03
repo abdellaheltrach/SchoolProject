@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using School.Api.Base;
 using School.Core.Features.Authentication.Commands.Models;
+using School.Core.Features.Authentication.Queries.Models;
 using School.Domain.AppRoutes;
 
 namespace School.Api.Controllers
@@ -27,5 +28,30 @@ namespace School.Api.Controllers
             return NewResult(response);
         }
 
+        [HttpGet(AppRouter.AuthenticationRouting.ConfirmEmail)]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] EmailConfirmationQuery query)
+        {
+            var response = await _mediator.Send(query);
+            return NewResult(response);
+        }
+
+        [HttpPost(AppRouter.AuthenticationRouting.SendResetPasswordCode)]
+        public async Task<IActionResult> SendResetPassword([FromQuery] SendResetPasswordCommand command)
+        {
+            var response = await _mediator.Send(command);
+            return NewResult(response);
+        }
+        [HttpGet(AppRouter.AuthenticationRouting.ConfirmResetPasswordCode)]
+        public async Task<IActionResult> ConfirmResetPassword([FromQuery] ConfirmResetPasswordQuery query)
+        {
+            var response = await _mediator.Send(query);
+            return NewResult(response);
+        }
+        [HttpPost(AppRouter.AuthenticationRouting.ResetPassword)]
+        public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordCommand command)
+        {
+            var response = await _mediator.Send(command);
+            return NewResult(response);
+        }
     }
 }

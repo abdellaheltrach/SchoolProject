@@ -59,6 +59,12 @@
         public const string UserNotFound = "UserNotFound";
         public const string UserUpdated = "UserUpdated";
         public const string InvalidCredentials = "InvalidCredentials";
+        public const string EmailNotConfirmed = "EmailNotConfirmed ";
+        public const string EmailIsExist = "EmailIsExist";
+        public const string ErrorWhenConfirmEmail = "ErrorWhenConfirmEmail";
+        public const string ConfirmEmailDone = "ConfirmEmailDone";
+
+
 
         public const string TokenStillValid = "TokenStillValid";
         public const string InvalidAccessToken = "InvalidAccessToken";
@@ -74,6 +80,11 @@
         public const string FailedToRemoveOldClaims = "FailedToRemoveOldClaims";
         public const string FailedToAddNewClaims = "FailedToAddNewClaims";
         public const string FailedToUpdateClaims = "FailedToUpdateClaims";
+
+
+        public const string SendEmailFailed = "SendEmailFailed";
+        public const string InvaildCode = "InvaildCode";
+
 
 
 

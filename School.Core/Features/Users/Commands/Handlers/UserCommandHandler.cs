@@ -7,6 +7,7 @@ using School.Core.Base.ApiResponse;
 using School.Core.Features.Users.Commands.Models;
 using School.Core.Resources;
 using School.Domain.Entities.Identity;
+using School.Service.Services.Interfaces;
 
 namespace School.Core.Features.Users.Commands.Handlers
 {
@@ -19,13 +20,16 @@ namespace School.Core.Features.Users.Commands.Handlers
         private readonly IStringLocalizer<SharedResources> _stringLocalizer;
         private readonly IMapper _mapper;
         public readonly UserManager<User> _userManager;
+        private readonly IUserService _userService;
         #endregion
         #region Constructors
         public UserCommandHandler(IStringLocalizer<SharedResources> stringLocalizer,
                         IMapper mapper,
-                        UserManager<User> userManager) : base(stringLocalizer)
+                        UserManager<User> userManager,
+                        IUserService userService) : base(stringLocalizer)
         {
             _stringLocalizer = stringLocalizer;
+            _userService = userService;
             _mapper = mapper;
             _userManager = userManager;
         }
@@ -34,18 +38,18 @@ namespace School.Core.Features.Users.Commands.Handlers
         #region Handlers
         public async Task<ApiResponse<string>> Handle(AddUserCommand request, CancellationToken cancellationToken)
         {
-            var NewidentityUser = _mapper.Map<User>(request);
-            var createResult = await _userManager.CreateAsync(NewidentityUser, request.Password);
-
-            if (!createResult.Succeeded)
+            var identityUser = _mapper.Map<User>(request);
+            //Create
+            var createResult = await _userService.AddUserAsync(identityUser, request.Password);
+            switch (createResult)
             {
-                var errors = createResult.Errors
-                    .Select(error => error.Description)
-                    .ToList();
-                return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.UserCreationFailed], errors);
-
+                case "EmailIsExist": return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.EmailIsExist]);
+                case "UserNameIsExist": return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.UserNameIsExist]);
+                case "ErrorInCreateUser": return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.UserCreationFailed]);
+                case "Failed": return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.CreateFailed]);
+                case "Success": return Success<string>("");
+                default: return BadRequest<string>(createResult);
             }
-            return Created<string>(null, null, new { id = NewidentityUser.Id });
 
         }
 

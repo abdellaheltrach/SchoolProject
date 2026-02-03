@@ -1,5 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -39,7 +44,7 @@ namespace School.Infrastructure
                 option.User.AllowedUserNameCharacters =
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 option.User.RequireUniqueEmail = false;//added in FluentValidation
-                option.SignIn.RequireConfirmedEmail = false;
+                option.SignIn.RequireConfirmedEmail = true;//system will send confirmation email
 
 
             }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders(); ;
@@ -51,18 +56,36 @@ namespace School.Infrastructure
             //read JWT settings from appsettings.json file and bind it to JwtSettings class
             var JwtSettings = new JwtSettings();
             var CookieSettings = new CookieSettings();
+            var EmailSettings = new EmailSettings();
             configuration.GetSection(nameof(JwtSettings)).Bind(JwtSettings);
             configuration.GetSection(nameof(CookieSettings)).Bind(CookieSettings);
+            configuration.GetSection(nameof(EmailSettings)).Bind(EmailSettings);
 
 
 
             services.AddSingleton(JwtSettings);
             services.AddSingleton(CookieSettings);
+            services.AddSingleton(EmailSettings);
 
 
             //Enables access to headers, cookies, claims outside controllers, services or hundler classes!
             services.AddHttpContextAccessor();
 
+            //Enable IUrlHelper in Services
+            services.AddTransient<IUrlHelper>(x =>
+            {
+                var httpContext = x.GetRequiredService<IHttpContextAccessor>().HttpContext;
+                var factory = x.GetRequiredService<IUrlHelperFactory>();
+
+                // Create ActionContext from HttpContext
+                var actionContext = new ActionContext(
+                    httpContext,
+                    httpContext.GetRouteData(),
+                    new ActionDescriptor()
+                );
+
+                return factory.GetUrlHelper(actionContext);
+            });
             //configure Authentication service to use JWT Bearer Tokens
             // needs Microsoft.AspNetCore.Authentication.JwtBearer
 

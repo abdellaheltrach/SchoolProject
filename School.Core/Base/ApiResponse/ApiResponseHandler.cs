@@ -17,7 +17,7 @@ namespace School.Core.Base.ApiResponse
             {
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Succeeded = true,
-                Message = message == null ? _stringLocalizer[SharedResourcesKeys.DeleteSuccess] : message
+                Message = string.IsNullOrWhiteSpace(message) ? _stringLocalizer[SharedResourcesKeys.DeleteSuccess] : message
             };
         }
         public ApiResponse<T> Success<T>(T entity, string message = null, object Meta = null)
@@ -27,7 +27,7 @@ namespace School.Core.Base.ApiResponse
                 Data = entity,
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Succeeded = true,
-                Message = message == null ? _stringLocalizer[SharedResourcesKeys.Success] : message,
+                Message = string.IsNullOrWhiteSpace(message) ? _stringLocalizer[SharedResourcesKeys.Success] : message,
                 Meta = Meta
             };
         }
@@ -38,7 +38,7 @@ namespace School.Core.Base.ApiResponse
             {
                 StatusCode = System.Net.HttpStatusCode.Unauthorized,
                 Succeeded = false,
-                Message = message == null ? _stringLocalizer[SharedResourcesKeys.UnAuthorized] : message
+                Message = string.IsNullOrWhiteSpace(message) ? _stringLocalizer[SharedResourcesKeys.UnAuthorized] : message
             };
         }
         //403 Forbidden response indicates that the user is not allowed to access the resource.
@@ -48,7 +48,7 @@ namespace School.Core.Base.ApiResponse
             {
                 StatusCode = System.Net.HttpStatusCode.Forbidden,
                 Succeeded = false,
-                Message = message == null ? _stringLocalizer[SharedResourcesKeys.Forbidden] : message
+                Message = string.IsNullOrWhiteSpace(message) ? _stringLocalizer[SharedResourcesKeys.Forbidden] : message
             };
         }
         public ApiResponse<T> BadRequest<T>(string message = null, List<string> errors = null)
@@ -58,7 +58,7 @@ namespace School.Core.Base.ApiResponse
                 StatusCode = System.Net.HttpStatusCode.BadRequest,
                 Succeeded = false,
                 Errors = errors,
-                Message = message == null ? _stringLocalizer[SharedResourcesKeys.BadRequest] : message
+                Message = string.IsNullOrWhiteSpace(message) ? _stringLocalizer[SharedResourcesKeys.BadRequest] : message
             };
         }
 
@@ -68,7 +68,7 @@ namespace School.Core.Base.ApiResponse
             {
                 StatusCode = System.Net.HttpStatusCode.NotFound,
                 Succeeded = false,
-                Message = message == null ? _stringLocalizer[SharedResourcesKeys.NotFound] : message
+                Message = string.IsNullOrWhiteSpace(message) ? _stringLocalizer[SharedResourcesKeys.NotFound] : message
             };
         }
 
@@ -78,7 +78,7 @@ namespace School.Core.Base.ApiResponse
             {
                 StatusCode = System.Net.HttpStatusCode.UnprocessableEntity,
                 Succeeded = false,
-                Message = message == null ? _stringLocalizer[SharedResourcesKeys.UnprocessableEntity] : message
+                Message = string.IsNullOrWhiteSpace(message) ? _stringLocalizer[SharedResourcesKeys.UnprocessableEntity] : message
             };
         }
 
@@ -90,7 +90,7 @@ namespace School.Core.Base.ApiResponse
                 Data = entity,
                 StatusCode = System.Net.HttpStatusCode.Created,
                 Succeeded = true,
-                Message = message == null ? _stringLocalizer[SharedResourcesKeys.CreateSuccess] : message,
+                Message = string.IsNullOrWhiteSpace(message) ? _stringLocalizer[SharedResourcesKeys.CreateSuccess] : message,
                 Meta = Meta
             };
         }
