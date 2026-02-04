@@ -1,4 +1,5 @@
 ﻿using School.Domain.Entities;
+using School.Domain.Entities.Procedures;
 using School.Domain.Entities.Views;
 
 namespace School.Service.Services.Interfaces
@@ -9,6 +10,8 @@ namespace School.Service.Services.Interfaces
         public Task<bool> IsDepartmentIdExist(int departmentId);
 
         public Task<List<DepartementTotalStudentView>> GetViewDepartmentDataAsync();
+
+        public Task<IReadOnlyList<DepartmentStudentCountProcedure>> GetDepartmentStudentCountProcs(DepartmentStudentCountProcedureParameters parameters);
 
 
     }

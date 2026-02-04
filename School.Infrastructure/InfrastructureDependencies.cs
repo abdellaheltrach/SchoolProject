@@ -4,7 +4,10 @@ using School.Infrastructure.Bases;
 using School.Infrastructure.Reposetries.Interfaces;
 using School.Infrastructure.Repositories;
 using School.Infrastructure.Repositories.Interfaces;
+using School.Infrastructure.Repositories.Interfaces.Procedures;
 using School.Infrastructure.Repositories.Interfaces.Views;
+using School.Infrastructure.Repositories.Procedures;
+using School.Infrastructure.Repositories.Views;
 
 namespace School.Infrastructure
 {
@@ -25,6 +28,9 @@ namespace School.Infrastructure
 
             //views
             services.AddTransient<IViewRepository<DepartementTotalStudentView>, ViewDepartmentRepository>();
+
+            //procedures
+            services.AddTransient<IDepartmentStudentCountProcedureRepository, DepartmentStudentCountProcedureRepository>();
 
             return services;
         }

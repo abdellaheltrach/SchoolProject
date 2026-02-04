@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using School.Domain.Entities;
+using School.Domain.Entities.Procedures;
 using School.Domain.Entities.Views;
 using School.Infrastructure.Repositories.Interfaces;
+using School.Infrastructure.Repositories.Interfaces.Procedures;
 using School.Infrastructure.Repositories.Interfaces.Views;
 using School.Service.Services.Interfaces;
 
@@ -12,14 +14,18 @@ namespace School.Service.Services
         #region fields
         private readonly IDepartmentRepository _departmentRepository;
         private readonly IViewRepository<DepartementTotalStudentView> _viewDepartmentRepository;
+        private readonly IDepartmentStudentCountProcedureRepository _departmentStudentCountProcRepository;
 
         #endregion
 
         #region constructor
-        public DepartmentService(IDepartmentRepository studentRepository, IViewRepository<DepartementTotalStudentView> viewDepartmentRepository)
+        public DepartmentService(IDepartmentRepository studentRepository, IViewRepository<DepartementTotalStudentView> viewDepartmentRepository,
+                                             IDepartmentStudentCountProcedureRepository departmentStudentCountProcRepository)
         {
             _departmentRepository = studentRepository;
             _viewDepartmentRepository = viewDepartmentRepository;
+            _departmentStudentCountProcRepository = departmentStudentCountProcRepository;
+
         }
         #endregion
 
@@ -45,6 +51,11 @@ namespace School.Service.Services
         {
             var viewDepartment = await _viewDepartmentRepository.GetTableNoTracking().ToListAsync();
             return viewDepartment;
+        }
+
+        public async Task<IReadOnlyList<DepartmentStudentCountProcedure>> GetDepartmentStudentCountProcs(DepartmentStudentCountProcedureParameters parameters)
+        {
+            return await _departmentStudentCountProcRepository.GetDepartmentStudentCountProcs(parameters);
         }
 
 

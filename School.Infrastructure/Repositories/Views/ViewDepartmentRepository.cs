@@ -4,7 +4,7 @@ using School.Infrastructure.Bases;
 using School.Infrastructure.Context;
 using School.Infrastructure.Repositories.Interfaces.Views;
 
-namespace School.Infrastructure.Repositories
+namespace School.Infrastructure.Repositories.Views
 {
     public class ViewDepartmentRepository : GenericRepositoryAsync<DepartementTotalStudentView>, IViewRepository<DepartementTotalStudentView>
     {

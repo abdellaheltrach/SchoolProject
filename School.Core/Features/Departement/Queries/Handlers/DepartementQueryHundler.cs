@@ -8,6 +8,7 @@ using School.Core.Features.Departement.Queries.QueriesResponse;
 using School.Core.Helpers;
 using School.Core.Resources;
 using School.Domain.Entities;
+using School.Domain.Entities.Procedures;
 using School.Service.Services.Interfaces;
 using System.Linq.Expressions;
 
@@ -15,7 +16,8 @@ namespace School.Core.Features.Departement.Queries.Hundlers
 {
     public class DepartementQueryHundler : ApiResponseHandler,
         IRequestHandler<GetDepartementByIdQuery, ApiResponse<GetDepartmentByIdResponse>>,
-        IRequestHandler<GetDepartmentStudentListCountQuery, ApiResponse<List<GetDepartmentStudentListCountResponse>>>
+        IRequestHandler<GetDepartmentStudentListCountQuery, ApiResponse<List<GetDepartmentStudentListCountResponse>>>,
+        IRequestHandler<GetDepartmentStudentCountByIDQuery, ApiResponse<GetDepartmentStudentCountByIDResponse>>
     {
         #region Fields
         private readonly IDepartmentService _DepartmentService;
@@ -63,6 +65,14 @@ namespace School.Core.Features.Departement.Queries.Hundlers
         {
             var viewDepartmentResult = await _DepartmentService.GetViewDepartmentDataAsync();
             var result = _mapper.Map<List<GetDepartmentStudentListCountResponse>>(viewDepartmentResult);
+            return Success(result);
+        }
+
+        public async Task<ApiResponse<GetDepartmentStudentCountByIDResponse>> Handle(GetDepartmentStudentCountByIDQuery request, CancellationToken cancellationToken)
+        {
+            var parameters = _mapper.Map<DepartmentStudentCountProcedureParameters>(request);
+            var procResult = await _DepartmentService.GetDepartmentStudentCountProcs(parameters);
+            var result = _mapper.Map<GetDepartmentStudentCountByIDResponse>(procResult.FirstOrDefault());
             return Success(result);
         }
         #endregion
