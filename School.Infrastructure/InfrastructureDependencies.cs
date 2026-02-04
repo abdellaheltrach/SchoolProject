@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using School.Domain.Entities.Views;
 using School.Infrastructure.Bases;
 using School.Infrastructure.Reposetries.Interfaces;
 using School.Infrastructure.Repositories;
 using School.Infrastructure.Repositories.Interfaces;
+using School.Infrastructure.Repositories.Interfaces.Views;
 
 namespace School.Infrastructure
 {
@@ -20,6 +22,9 @@ namespace School.Infrastructure
 
             // Generic Repository
             services.AddTransient(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
+
+            //views
+            services.AddTransient<IViewRepository<DepartementTotalStudentView>, ViewDepartmentRepository>();
 
             return services;
         }
