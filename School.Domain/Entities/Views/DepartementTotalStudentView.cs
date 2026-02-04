@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace School.Domain.Entities.Views
 {
@@ -11,6 +12,7 @@ FROM     departments INNER JOIN
 				  group by  departments.Id, departments.DepartmentNameAr, departments.DepartmentNameEn
      */
     [Keyless]
+    [Table("DepartementTotalStudentView")]
     public class DepartementTotalStudentView
     {
         public int Id { get; set; }

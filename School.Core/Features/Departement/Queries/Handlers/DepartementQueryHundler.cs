@@ -14,7 +14,8 @@ using System.Linq.Expressions;
 namespace School.Core.Features.Departement.Queries.Hundlers
 {
     public class DepartementQueryHundler : ApiResponseHandler,
-        IRequestHandler<GetDepartementByIdQuery, ApiResponse<GetDepartmentByIdResponse>>
+        IRequestHandler<GetDepartementByIdQuery, ApiResponse<GetDepartmentByIdResponse>>,
+        IRequestHandler<GetDepartmentStudentListCountQuery, ApiResponse<List<GetDepartmentStudentListCountResponse>>>
     {
         #region Fields
         private readonly IDepartmentService _DepartmentService;
@@ -56,6 +57,13 @@ namespace School.Core.Features.Departement.Queries.Hundlers
 
             //return success response with mapped data
             return Success(mapper);
+        }
+
+        public async Task<ApiResponse<List<GetDepartmentStudentListCountResponse>>> Handle(GetDepartmentStudentListCountQuery request, CancellationToken cancellationToken)
+        {
+            var viewDepartmentResult = await _DepartmentService.GetViewDepartmentDataAsync();
+            var result = _mapper.Map<List<GetDepartmentStudentListCountResponse>>(viewDepartmentResult);
+            return Success(result);
         }
         #endregion
     }

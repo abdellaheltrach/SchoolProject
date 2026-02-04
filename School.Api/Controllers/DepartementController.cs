@@ -22,5 +22,12 @@ namespace School.Api.Controllers
         {
             return NewResult(await _mediator.Send(Query));
         }
+
+        [HttpGet(AppRouter.DepartmentRouting.GetDepartmentStudentsCount)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetDepartmentStudentsCount()
+        {
+            return NewResult(await _mediator.Send(new GetDepartmentStudentListCountQuery()));
+        }
     }
 }
