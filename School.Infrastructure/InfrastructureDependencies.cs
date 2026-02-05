@@ -3,7 +3,9 @@ using School.Domain.Entities.Views;
 using School.Infrastructure.Bases;
 using School.Infrastructure.Reposetries.Interfaces;
 using School.Infrastructure.Repositories;
+using School.Infrastructure.Repositories.Functions;
 using School.Infrastructure.Repositories.Interfaces;
+using School.Infrastructure.Repositories.Interfaces.Functions;
 using School.Infrastructure.Repositories.Interfaces.Procedures;
 using School.Infrastructure.Repositories.Interfaces.Views;
 using School.Infrastructure.Repositories.Procedures;
@@ -31,6 +33,9 @@ namespace School.Infrastructure
 
             //procedures
             services.AddTransient<IDepartmentStudentCountProcedureRepository, DepartmentStudentCountProcedureRepository>();
+
+            //Functions
+            services.AddTransient<IInstructorFunctionsRepository, InstructorFunctionsRepository>();
 
             return services;
         }
