@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using School.Api.Base;
 using School.Core.Features.Authentication.Commands.Models;
@@ -15,9 +16,18 @@ namespace School.Api.Controllers
         }
 
         [HttpPost(AppRouter.AuthenticationRouting.SignIn)]
+        [AllowAnonymous]
         public async Task<IActionResult> Create([FromForm] SignInCommand command)
         {
             var response = await _mediator.Send(command);
+            return NewResult(response);
+        }
+
+        [HttpPost(AppRouter.AuthenticationRouting.Logout)]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            var response = await _mediator.Send(new SignOutCommand());
             return NewResult(response);
         }
 

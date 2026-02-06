@@ -8,13 +8,16 @@ using School.Core.Features.Authentication.Commands.Response;
 using School.Core.Helpers;
 using School.Core.Resources;
 using School.Domain.Entities.Identity;
+using School.Domain.Helpers;
 using School.Domain.Options;
 using School.Service.Services.Interfaces;
+using Serilog;
 
 namespace School.Core.Features.Authentication.Commands.Handlers
 {
     public class AuthenticationCommandHandler : ApiResponseHandler
         , IRequestHandler<SignInCommand, ApiResponse<TokenResponse>>
+        , IRequestHandler<SignOutCommand, ApiResponse<string>>
         , IRequestHandler<RefreshTokenCommand, ApiResponse<TokenResponse>>
         , IRequestHandler<ResetPasswordCommand, ApiResponse<string>>
         , IRequestHandler<SendResetPasswordCommand, ApiResponse<string>>
@@ -29,6 +32,8 @@ namespace School.Core.Features.Authentication.Commands.Handlers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string _refreshTokenCookieName = "refreshToken";
         private readonly IAuthorizationService _authorizationService;
+        private readonly ILogger _logger;
+
 
 
         #endregion
@@ -49,6 +54,7 @@ namespace School.Core.Features.Authentication.Commands.Handlers
             _cookieSettings = cookieSettings;
             _httpContextAccessor = httpContextAccessor;
             _authorizationService = authorizationService;
+            _logger = Log.ForContext<AuthenticationCommandHandler>();
         }
 
         #endregion
@@ -100,7 +106,43 @@ namespace School.Core.Features.Authentication.Commands.Handlers
                 AccessToken = result.AccessToken
             };
             //return Token 
+            _logger.Information($"User {user.Id} ({user.UserName}) logged in successfully");
+
             return Success(response);
+        }
+
+        public async Task<ApiResponse<string>> Handle(SignOutCommand request, CancellationToken cancellationToken)
+        {
+
+            try
+            {
+                var httpContext = _httpContextAccessor.HttpContext;
+                var userId = httpContext.User.FindFirst(nameof(UserClaimModel.Id))?.Value;
+                var username = httpContext.User.FindFirst(nameof(UserClaimModel.UserName))?.Value;
+
+                // Check if user is authenticated
+                if (!httpContext.User.Identity?.IsAuthenticated ?? false)
+                {
+                    _logger.Warning("Logout attempt by unauthenticated user");
+                    return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.BadRequest]);
+                }
+
+                // Sign out user
+                await _signInManager.SignOutAsync();
+
+                // Remove refresh token cookie
+                httpContext.Response.Cookies.Delete(_refreshTokenCookieName);
+
+                _logger.Information($"User {userId} ({username}) logged out successfully");
+
+                return Success((string)_stringLocalizer[SharedResourcesKeys.Success]);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error during logout");
+                return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.BadRequest]);
+            }
+
         }
 
         public async Task<ApiResponse<TokenResponse>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
@@ -168,6 +210,8 @@ namespace School.Core.Features.Authentication.Commands.Handlers
                 default: return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.InvaildCode]);
             }
         }
+
+
 
 
 

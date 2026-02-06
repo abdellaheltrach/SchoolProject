@@ -45,6 +45,7 @@
         {
             private const string Prefix = Rule + "Auth";
             public const string SignIn = Prefix + "/SignIn";
+            public const string Logout = Prefix + "/Logout";
             public const string RefreshToken = Prefix + "/RefreshToken";
             public const string ConfirmEmail = Prefix + "/ConfirmEmail";
             public const string SendResetPasswordCode = Prefix + "/SendResetPasswordCode";
