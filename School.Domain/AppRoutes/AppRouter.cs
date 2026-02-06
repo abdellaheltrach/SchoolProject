@@ -77,6 +77,7 @@
         {
             private const string Prefix = Rule + "Instructor";
             public const string GetSalarySummationOfInstructor = Prefix + "/Salary-Summation-Of-Instructors";
+            public const string AddInstructor = Prefix + "/Create";
         }
     }
 }

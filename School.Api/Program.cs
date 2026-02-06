@@ -114,6 +114,7 @@ app.UseHttpsRedirection();
 app.UseCors(CORS);
 #endregion
 
+app.UseStaticFiles();
 
 app.UseAuthorization();
 app.UseAuthorization();
