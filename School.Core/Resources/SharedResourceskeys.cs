@@ -85,7 +85,8 @@
         public const string SendEmailFailed = "SendEmailFailed";
         public const string InvaildCode = "InvaildCode";
 
-
+        public const string NoImage = "NoImage";
+        public const string FailedToUploadImage = "FailedToUploadImage";
 
 
     }

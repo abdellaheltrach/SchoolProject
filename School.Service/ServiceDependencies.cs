@@ -2,6 +2,7 @@
 using School.Service.AuthServices;
 using School.Service.AuthServices.Interfaces;
 using School.Service.Services;
+using School.Service.Services._Interfaces;
 using School.Service.Services.Interfaces;
 
 namespace School.Service
@@ -17,6 +18,9 @@ namespace School.Service
             services.AddTransient<IEmailsService, EmailsService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ICurrentUserService, CurrentUserService>();
+            services.AddTransient<IInstructorService, InstructorService>();
+            services.AddTransient<IFileService, FileService>();
+
 
             return services;
         }

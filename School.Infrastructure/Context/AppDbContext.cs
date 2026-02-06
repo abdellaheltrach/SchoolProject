@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using School.Domain.Entities;
 using School.Domain.Entities.Identity;
+using School.Domain.Entities.Views;
 using System.Reflection;
 
 namespace School.Infrastructure.Context
@@ -34,6 +35,9 @@ namespace School.Infrastructure.Context
         public DbSet<StudentSubject> studentSubjects { get; set; }
         public DbSet<Instructor> instructors { get; set; }
         public DbSet<InstructorSubject> instructorSubjects { get; set; }
+
+        //view
+        public DbSet<DepartementTotalStudentView> departementTotalStudentViews { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

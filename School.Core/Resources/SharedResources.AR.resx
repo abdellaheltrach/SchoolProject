@@ -273,4 +273,10 @@
   <data name="InvaildCode" xml:space="preserve">
     <value>رمز غير صالح.</value>
   </data>
+  <data name="FailedToUploadImage" xml:space="preserve">
+    <value>فشل في رفع الصورة.</value>
+  </data>
+  <data name="NoImage" xml:space="preserve">
+    <value>لم يتم توفير صورة.</value>
+  </data>
 </root>

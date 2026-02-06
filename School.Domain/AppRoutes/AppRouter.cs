@@ -25,6 +25,8 @@
         {
             private const string Prefix = Rule + "Department";
             public const string GetDepartmentByID = Prefix + "/Id";
+            public const string GetDepartmentStudentsCount = Prefix + "/Department-Students-Count";
+            public const string GetDepartmentStudentsCountById = Prefix + "/Department-Students-Count-ById/{Id}";
 
 
 
@@ -70,6 +72,12 @@
         {
             private const string Prefix = Rule + "Email";
             public const string SendEmail = Prefix + "/SendEmail";
+        }
+        public static class InstructorRouting
+        {
+            private const string Prefix = Rule + "Instructor";
+            public const string GetSalarySummationOfInstructor = Prefix + "/Salary-Summation-Of-Instructors";
+            public const string AddInstructor = Prefix + "/Create";
         }
     }
 }
