@@ -10,6 +10,7 @@ using School.Infrastructure;
 using School.Infrastructure.Context;
 using School.Infrastructure.Seeders;
 using School.Service;
+using Serilog;
 using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -75,6 +76,15 @@ builder.Services.AddCors(options =>
 builder.Services.AddTransient<ValidateAdminRoleFilter>();
 builder.Services.AddTransient<ValidateUserRoleFilter>();
 #endregion
+
+
+#region Serilog Configuration
+Log.Logger = new LoggerConfiguration()
+              .ReadFrom.Configuration(builder.Configuration).CreateLogger();
+builder.Services.AddSerilog();
+#endregion
+
+
 var app = builder.Build();
 
 #region Seeding application Default user and Roles 
@@ -86,7 +96,6 @@ using (var scope = app.Services.CreateScope())
     await UserSeeder.SeedAsync(userManager);
 }
 #endregion
-
 
 
 // Configure the HTTP request pipeline.

@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 using School.Core.Base.ApiResponse;
 using School.Core.Resources;
+using Serilog;
 using System.Net;
 using System.Text.Json;
 
@@ -21,7 +19,7 @@ namespace School.Core.MiddleWare
     {
         private readonly RequestDelegate _next;
         private readonly IStringLocalizer<SharedResources> _localizer;
-        private readonly ILogger<ErrorHandlerMiddleware> _logger;
+        private readonly ILogger _logger;
 
         // need to add a FrameworkReference so it's can be used
         // <FrameworkReference Include="Microsoft.AspNetCore.App" /> + using Microsoft.AspNetCore.Hosting;
@@ -33,12 +31,11 @@ namespace School.Core.MiddleWare
         public ErrorHandlerMiddleware(
             RequestDelegate next,
             IStringLocalizer<SharedResources> stringLocalizer,
-            ILogger<ErrorHandlerMiddleware> logger,
             IWebHostEnvironment env)
         {
             _next = next;
             _localizer = stringLocalizer;
-            _logger = logger;
+            _logger = Log.ForContext<ErrorHandlerMiddleware>();
             _env = env;
         }
 
@@ -71,7 +68,7 @@ namespace School.Core.MiddleWare
                     response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     responseModel.StatusCode = HttpStatusCode.Unauthorized;
                     responseModel.Message = _localizer[SharedResourcesKeys.UnAuthorized];
-                    _logger.LogWarning(unauthorizedEx, "Unauthorized access attempt");
+                    _logger.Warning(unauthorizedEx, "Unauthorized access attempt");
                     break;
 
                 case FluentValidation.ValidationException validationEx:
@@ -81,7 +78,7 @@ namespace School.Core.MiddleWare
                     responseModel.Errors = validationEx.Errors
                         .Select(e => e.ErrorMessage)
                         .ToList();
-                    _logger.LogWarning("Validation failed: {Errors}", string.Join(", ", responseModel.Errors));
+                    _logger.Warning("Validation failed: {Errors}", string.Join(", ", responseModel.Errors));
                     break;
 
                 case ArgumentNullException argNullEx:
@@ -89,7 +86,7 @@ namespace School.Core.MiddleWare
                     responseModel.StatusCode = HttpStatusCode.BadRequest;
                     responseModel.Message = _localizer[SharedResourcesKeys.BadRequest];
                     responseModel.Errors.Add(argNullEx.Message);
-                    _logger.LogWarning(argNullEx, "Argument null error: {ParamName}", argNullEx.ParamName);
+                    _logger.Warning(argNullEx, "Argument null error: {ParamName}", argNullEx.ParamName);
                     break;
 
                 case ArgumentException argEx:
@@ -97,7 +94,7 @@ namespace School.Core.MiddleWare
                     responseModel.StatusCode = HttpStatusCode.BadRequest;
                     responseModel.Message = _localizer[SharedResourcesKeys.BadRequest];
                     responseModel.Errors.Add(argEx.Message);
-                    _logger.LogWarning(argEx, "Argument validation error: {Message}", argEx.Message);
+                    _logger.Warning(argEx, "Argument validation error: {Message}", argEx.Message);
                     break;
 
 
@@ -105,7 +102,7 @@ namespace School.Core.MiddleWare
                     response.StatusCode = (int)HttpStatusCode.NotFound;
                     responseModel.StatusCode = HttpStatusCode.NotFound;
                     responseModel.Message = _localizer[SharedResourcesKeys.NotFound];
-                    _logger.LogWarning(notFoundEx, "Resource not found");
+                    _logger.Warning(notFoundEx, "Resource not found");
                     break;
 
                 case DbUpdateException dbEx:
@@ -119,7 +116,7 @@ namespace School.Core.MiddleWare
                         responseModel.Errors.Add(dbEx.InnerException.Message);
                     }
 
-                    _logger.LogError(dbEx, "Database update error");
+                    _logger.Error(dbEx, "Database update error");
                     break;
 
                 case Exception e when e.GetType().Name == "ApiException":
@@ -133,7 +130,7 @@ namespace School.Core.MiddleWare
                         responseModel.Errors.Add(e.InnerException.Message);
                     }
 
-                    _logger.LogError(e, "API exception occurred");
+                    _logger.Error(e, "API exception occurred");
                     break;
 
                 default:
@@ -151,7 +148,7 @@ namespace School.Core.MiddleWare
                         }
                     }
 
-                    _logger.LogError(error, "Unhandled exception occurred");
+                    _logger.Error(error, "Unhandled exception occurred");
                     break;
             }
 

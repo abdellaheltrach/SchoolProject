@@ -10,6 +10,7 @@ using School.Core.Resources;
 using School.Domain.Entities;
 using School.Domain.Entities.Procedures;
 using School.Service.Services.Interfaces;
+using Serilog;
 using System.Linq.Expressions;
 
 namespace School.Core.Features.Departement.Queries.Hundlers
@@ -56,7 +57,7 @@ namespace School.Core.Features.Departement.Queries.Hundlers
             var PaginatedList = await studentQuerable.Select(expression).ToPaginatedListAsync(request.StudentPageNumber, request.StudentPageSize);
             mapper.StudentList = PaginatedList;
 
-
+            Log.Information($"User fitched department with id ={request.ID}");
             //return success response with mapped data
             return Success(mapper);
         }

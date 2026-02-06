@@ -3,21 +3,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using School.Domain.Helpers;
 using School.Service.AuthServices.Interfaces;
+using Serilog;
 
 namespace School.Core.Filters
 {
     public class ValidateUserRoleFilter : IAsyncActionFilter
     {
         private readonly ICurrentUserService _currentUserService;
-        //private readonly ILogger<ValidateUserRoleFilter> _logger;
+        private readonly ILogger _logger;
 
         public ValidateUserRoleFilter(
-            ICurrentUserService currentUserService
-            //,ILogger<ValidateUserRoleFilter> logger
-            )
+            ICurrentUserService currentUserService)
         {
             _currentUserService = currentUserService;
-            //_logger = logger;
+            _logger = Log.ForContext<ValidateAdminRoleFilter>(); ;
+
         }
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
@@ -25,7 +25,7 @@ namespace School.Core.Filters
             // Check if user is authenticated
             if (context.HttpContext.User.Identity?.IsAuthenticated != true)
             {
-                //_logger.LogWarning("Unauthenticated user attempted to access protected resource");
+                _logger.Warning("Unauthenticated user attempted to access protected resource");
                 context.Result = new UnauthorizedObjectResult(new
                 {
                     statusCode = 401,
@@ -44,7 +44,7 @@ namespace School.Core.Filters
                 if (!roles.Contains(AppRolesConstants.User))
                 {
                     var userId = context.HttpContext.User.FindFirst(nameof(UserClaimModel.Id))?.Value;
-                    //_logger.LogWarning($"User {userId} does not have User role. Roles: {string.Join(", ", roles)}");
+                    _logger.Warning($"User {userId} does not have User role. Roles: {string.Join(", ", roles)}");
 
                     context.Result = new ObjectResult(new
                     {
@@ -63,7 +63,7 @@ namespace School.Core.Filters
             }
             catch (Exception ex)
             {
-                //_logger.LogError($"Error validating user role: {ex.Message}");
+                _logger.Error($"Error validating user role: {ex.Message}");
                 context.Result = new ObjectResult(new
                 {
                     statusCode = 500,
