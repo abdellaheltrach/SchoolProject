@@ -6,14 +6,14 @@ using School.Infrastructure.Repositories.Interfaces;
 
 namespace School.Infrastructure.Repositories
 {
-    public class DepartementRepository : GenericRepositoryAsync<Department>, IDepartmentRepository
+    public class DepartmentRepository : GenericRepositoryAsync<Department>, IDepartmentRepository
     {
         #region Fields
         private readonly DbSet<Department> _Departement;
         #endregion
 
         #region Constructors
-        public DepartementRepository(AppDbContext context) : base(context)
+        public DepartmentRepository(AppDbContext context) : base(context)
         {
             _Departement = context.Set<Department>();
         }

@@ -1,34 +1,23 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using School.Infrastructure.Context;
+using School.Domain.Entities;
 using School.Infrastructure.Repositories;
 using School.XUnitTest.Fixtures;
 
 namespace School.XUnitTest.Repositories
 {
-    public class StudentRepositoryTests : IAsyncLifetime
+    public class StudentRepositoryIntegrationTests : IntegrationTestBase
     {
-        private AppDbContext _dbContext;
-        private StudentRepository _studentRepository;
 
-        public async ValueTask InitializeAsync()
+        private async Task<Department> SeedDepartmentAsync()
         {
-            var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseInMemoryDatabase($"SchoolDb_{Guid.NewGuid()}")
-                .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
-                .Options;
+            var _DepartmentRepository = new DepartmentRepository(_dbContext);
 
-            _dbContext = new AppDbContext(options);
-            _studentRepository = new StudentRepository(_dbContext);
-            await _dbContext.Database.EnsureCreatedAsync();
+            var department = DepartmentFixture.CreateValidDepartment();
+            var newDepartment = await _DepartmentRepository.AddAsync(department);
+            return newDepartment;
         }
 
-        public async ValueTask DisposeAsync()
-        {
-            await _dbContext.Database.EnsureDeletedAsync();
-            await _dbContext.DisposeAsync();
-        }
 
         #region Generic Repository Tests
 
@@ -37,7 +26,9 @@ namespace School.XUnitTest.Repositories
         public async Task AddAsync_ShouldAddStudent()
         {
             // Arrange
-            var student = StudentFixture.CreateValidStudent();
+            var department = await SeedDepartmentAsync();
+            var student = StudentFixture.CreateValidStudent(department);
+            var _studentRepository = new StudentRepository(_dbContext);
 
             // Act
             await _studentRepository.AddAsync(student);
@@ -49,11 +40,16 @@ namespace School.XUnitTest.Repositories
             result.NameEn.Should().Be(student.NameEn);
         }
 
+
+
+
         [Fact]
         public async Task AddRangeAsync_ShouldAddList()
         {
             // Arrange
-            var students = StudentFixture.CreateStudentList(3);
+            var department = await SeedDepartmentAsync();
+            var students = StudentFixture.CreateStudentList(3, department);
+            var _studentRepository = new StudentRepository(_dbContext);
 
             // Act
             await _studentRepository.AddRangeAsync(students);
@@ -68,14 +64,16 @@ namespace School.XUnitTest.Repositories
         public async Task UpdateAsync_ShouldUpdateStudent()
         {
             // Arrange
-            var student = StudentFixture.CreateValidStudent();
+            var department = await SeedDepartmentAsync();
+            var student = StudentFixture.CreateValidStudent(department);
+            var _studentRepository = new StudentRepository(_dbContext);
+
+
             await _studentRepository.AddAsync(student);
-            await _studentRepository.SaveChangesAsync();
 
             // Act
             student.NameEn = "Updated Name";
             await _studentRepository.UpdateAsync(student);
-            await _studentRepository.SaveChangesAsync();
 
             var result = await _studentRepository.GetByIdAsync(student.StudentID);
 
@@ -88,9 +86,12 @@ namespace School.XUnitTest.Repositories
         public async Task UpdateRangeAsync_ShouldUpdateList()
         {
             // Arrange
-            var students = StudentFixture.CreateStudentList(3);
+            var department = await SeedDepartmentAsync();
+            var students = StudentFixture.CreateStudentList(3, department);
+            var _studentRepository = new StudentRepository(_dbContext);
+
+
             await _studentRepository.AddRangeAsync(students);
-            await _studentRepository.SaveChangesAsync();
 
             // Act
             foreach (var s in students)
@@ -98,7 +99,6 @@ namespace School.XUnitTest.Repositories
                 s.NameEn = $"Updated {s.NameEn}";
             }
             await _studentRepository.UpdateRangeAsync(students);
-            await _studentRepository.SaveChangesAsync();
 
             var updatedStudents = await _studentRepository.GetTableNoTracking().ToListAsync();
 
@@ -110,13 +110,13 @@ namespace School.XUnitTest.Repositories
         public async Task DeleteAsync_ShouldDeleteStudent()
         {
             // Arrange
-            var student = StudentFixture.CreateValidStudent();
-            await _studentRepository.AddAsync(student);
-            await _studentRepository.SaveChangesAsync();
+            var department = await SeedDepartmentAsync();
+            var student = StudentFixture.CreateValidStudent(department);
+            var _studentRepository = new StudentRepository(_dbContext);
 
+            await _studentRepository.AddAsync(student);
             // Act
             await _studentRepository.DeleteAsync(student);
-            await _studentRepository.SaveChangesAsync();
 
             var result = await _studentRepository.GetByIdAsync(student.StudentID);
 
@@ -128,13 +128,15 @@ namespace School.XUnitTest.Repositories
         public async Task DeleteRangeAsync_ShouldDeleteList()
         {
             // Arrange
-            var students = StudentFixture.CreateStudentList(3);
+            var department = await SeedDepartmentAsync();
+            var students = StudentFixture.CreateStudentList(3, department);
+            var _studentRepository = new StudentRepository(_dbContext);
+
+
             await _studentRepository.AddRangeAsync(students);
-            await _studentRepository.SaveChangesAsync();
 
             // Act
             await _studentRepository.DeleteRangeAsync(students);
-            await _studentRepository.SaveChangesAsync();
 
             var count = await _studentRepository.GetTableNoTracking().CountAsync();
 
@@ -147,9 +149,11 @@ namespace School.XUnitTest.Repositories
         public async Task GetTableNoTracking_ShouldReturnQueryable()
         {
             // Arrange
-            var students = StudentFixture.CreateStudentList(5);
+            var department = await SeedDepartmentAsync();
+            var students = StudentFixture.CreateStudentList(5, department);
+            var _studentRepository = new StudentRepository(_dbContext);
+
             await _studentRepository.AddRangeAsync(students);
-            await _studentRepository.SaveChangesAsync();
 
             // Act
             var query = _studentRepository.GetTableNoTracking();
@@ -164,9 +168,11 @@ namespace School.XUnitTest.Repositories
         public async Task GetTableAsTracking_ShouldReturnTrackedQueryable()
         {
             // Arrange
-            var student = StudentFixture.CreateValidStudent();
+            var department = await SeedDepartmentAsync();
+            var student = StudentFixture.CreateValidStudent(department);
+            var _studentRepository = new StudentRepository(_dbContext);
+
             await _studentRepository.AddAsync(student);
-            await _studentRepository.SaveChangesAsync();
 
             // Act
             var trackedQuery = _studentRepository.GetTableAsTracking();
@@ -185,9 +191,11 @@ namespace School.XUnitTest.Repositories
         public async Task GetTableAsTracking_WithMultipleStudents_ShouldBeTracked()
         {
             // Arrange
-            var students = StudentFixture.CreateStudentList(3);
+            var department = await SeedDepartmentAsync();
+            var students = StudentFixture.CreateStudentList(3, department);
+            var _studentRepository = new StudentRepository(_dbContext);
+
             await _studentRepository.AddRangeAsync(students);
-            await _studentRepository.SaveChangesAsync();
 
             // Act
             var trackedStudents = await _studentRepository
@@ -209,11 +217,13 @@ namespace School.XUnitTest.Repositories
         public async Task SaveChangesAsync_ShouldPersistChanges()
         {
             // Arrange
-            var student = StudentFixture.CreateValidStudent();
-            await _studentRepository.AddAsync(student);
+            var department = await SeedDepartmentAsync();
+            var student = StudentFixture.CreateValidStudent(department);
+            var _studentRepository = new StudentRepository(_dbContext);
+
 
             // Act
-            await _studentRepository.SaveChangesAsync();
+            await _studentRepository.AddAsync(student);//add and save changes in one step
 
             var result = await _studentRepository.GetByIdAsync(student.StudentID);
 
@@ -227,11 +237,13 @@ namespace School.XUnitTest.Repositories
         public async Task SaveChangesAsync_ShouldPersistMultipleChanges()
         {
             // Arrange
-            var students = StudentFixture.CreateStudentList(3);
+            var department = await SeedDepartmentAsync();
+            var students = StudentFixture.CreateStudentList(3, department);
+            var _studentRepository = new StudentRepository(_dbContext);
+
             await _studentRepository.AddRangeAsync(students);
 
             // Act
-            await _studentRepository.SaveChangesAsync();
 
             var count = await _studentRepository.GetTableNoTracking().CountAsync();
 
@@ -244,6 +256,8 @@ namespace School.XUnitTest.Repositories
         public async Task BeginTransaction_ShouldReturnValidTransaction()
         {
             // Act
+            var _studentRepository = new StudentRepository(_dbContext);
+
             var transaction = _studentRepository.BeginTransaction();
 
             // Assert
@@ -257,14 +271,16 @@ namespace School.XUnitTest.Repositories
         public async Task BeginTransaction_WithCommit_ShouldPersistChanges()
         {
             // Arrange
-            var student = StudentFixture.CreateValidStudent();
+            var department = await SeedDepartmentAsync();
+            var student = StudentFixture.CreateValidStudent(department);
+            var _studentRepository = new StudentRepository(_dbContext);
+
 
             // Act
             using var transaction = _studentRepository.BeginTransaction();
             try
             {
                 await _studentRepository.AddAsync(student);
-                await _studentRepository.SaveChangesAsync();
                 _studentRepository.Commit();
             }
             catch
@@ -284,14 +300,15 @@ namespace School.XUnitTest.Repositories
         public async Task BeginTransaction_WithRollback_ShouldUndoChanges()
         {
             // Arrange
-            var student = StudentFixture.CreateValidStudent();
+            var department = await SeedDepartmentAsync();
+            var student = StudentFixture.CreateValidStudent(department);
+            var _studentRepository = new StudentRepository(_dbContext);
 
             // Act
             using var transaction = _studentRepository.BeginTransaction();
             try
             {
                 await _studentRepository.AddAsync(student);
-                await _studentRepository.SaveChangesAsync();
 
                 // Simulate error
                 throw new InvalidOperationException("Simulated error");
@@ -302,9 +319,6 @@ namespace School.XUnitTest.Repositories
             }
 
             // Assert
-            // Note: InMemory DB may not support true transaction rollback,
-            // but this tests the API call structure is correct
-            // With real DB (SQL Server), changes would be rolled back
 
             // Verify the rollback method was called without exception
             true.Should().BeTrue();
@@ -315,14 +329,16 @@ namespace School.XUnitTest.Repositories
         public async Task Commit_ShouldCommitTransaction()
         {
             // Arrange
-            var student = StudentFixture.CreateValidStudent();
+            var department = await SeedDepartmentAsync();
+            var student = StudentFixture.CreateValidStudent(department);
+            var _studentRepository = new StudentRepository(_dbContext);
+
             var transaction = _studentRepository.BeginTransaction();
 
             try
             {
                 // Act
                 await _studentRepository.AddAsync(student);
-                await _studentRepository.SaveChangesAsync();
                 _studentRepository.Commit();
 
                 // Assert
@@ -339,14 +355,16 @@ namespace School.XUnitTest.Repositories
         public async Task RollBack_ShouldNotPersistUncommittedChanges()
         {
             // Arrange
-            var student = StudentFixture.CreateValidStudent();
+            var department = await SeedDepartmentAsync();
+            var student = StudentFixture.CreateValidStudent(department);
+            var _studentRepository = new StudentRepository(_dbContext);
+
             var transaction = _studentRepository.BeginTransaction();
 
             try
             {
                 // Act
                 await _studentRepository.AddAsync(student);
-                await _studentRepository.SaveChangesAsync();
                 _studentRepository.RollBack();
 
                 // Assert
@@ -364,14 +382,17 @@ namespace School.XUnitTest.Repositories
         public async Task Commit_WithMultipleOperations_ShouldCommitAll()
         {
             // Arrange
-            var students = StudentFixture.CreateStudentList(3);
+            var department = await SeedDepartmentAsync();
+            var students = StudentFixture.CreateStudentList(3, department);
+            var _studentRepository = new StudentRepository(_dbContext);
+
+
             var transaction = _studentRepository.BeginTransaction();
 
             try
             {
                 // Act
                 await _studentRepository.AddRangeAsync(students);
-                await _studentRepository.SaveChangesAsync();
                 _studentRepository.Commit();
 
                 // Assert
@@ -389,6 +410,8 @@ namespace School.XUnitTest.Repositories
         public async Task GetByIdAsync_WithNonExistentId_ReturnsNull()
         {
             // Act
+            var _studentRepository = new StudentRepository(_dbContext);
+
             var result = await _studentRepository.GetByIdAsync(999);
 
             // Assert
@@ -399,9 +422,11 @@ namespace School.XUnitTest.Repositories
         public async Task CountAsync_ShouldReturnCorrectCount()
         {
             // Arrange
-            var students = StudentFixture.CreateStudentList(5);
+            var department = await SeedDepartmentAsync();
+            var students = StudentFixture.CreateStudentList(5, department);
+            var _studentRepository = new StudentRepository(_dbContext);
+
             await _studentRepository.AddRangeAsync(students);
-            await _studentRepository.SaveChangesAsync();
 
             // Act
             var count = await _studentRepository.GetTableNoTracking().CountAsync();
@@ -418,13 +443,11 @@ namespace School.XUnitTest.Repositories
         public async Task GetAllStudentListAsync_ShouldReturnStudentsWithDepartments()
         {
             // Arrange
-            var department = DepartmentFixture.CreateValidDepartment();
-            _dbContext.departments.Add(department);
-            await _studentRepository.SaveChangesAsync();
+            var department = await SeedDepartmentAsync();
+            var _studentRepository = new StudentRepository(_dbContext);
 
-            var student = StudentFixture.CreateValidStudent(departmentId: department.Id);
+            var student = StudentFixture.CreateValidStudent(department);
             await _studentRepository.AddAsync(student);
-            await _studentRepository.SaveChangesAsync();
 
             // Act
             var result = await _studentRepository.GetAllStudentListAsync();

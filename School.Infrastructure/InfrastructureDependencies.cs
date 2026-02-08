@@ -22,7 +22,7 @@ namespace School.Infrastructure
             // Specific Repositories
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<ISubjectRepository, SubjectRepository>();
-            services.AddTransient<IDepartmentRepository, DepartementRepository>();
+            services.AddTransient<IDepartmentRepository, DepartmentRepository>();
             services.AddTransient<IInstructorRepository, InstructorRepository>();
             services.AddTransient<IUserRefreshTokenRepository, UserRefreshTokenRepository>();
             services.AddTransient<IInstructorsRepository, InstructorsRepository>();
