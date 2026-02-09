@@ -2,11 +2,13 @@
 using MockQueryable;
 using Moq;
 using School.Domain.Entities;
+using School.Domain.Entities.Procedures;
 using School.Domain.Entities.Views;
 using School.Infrastructure.Repositories.Interfaces;
 using School.Infrastructure.Repositories.Interfaces.Procedures;
 using School.Infrastructure.Repositories.Interfaces.Views;
 using School.Service.Services;
+using School.Tests.Fixtures.Procedure;
 using School.XUnitTest.Fixtures;
 
 namespace School.Tests.Services
@@ -79,5 +81,102 @@ namespace School.Tests.Services
 
         #endregion
 
+
+        #region GetDepartmentByIdIncluding_DS_Subj_Ins_InsManger Tests
+        [Fact]
+        public async Task GetDepartmentByIdIncluding_WithValidId_ReturnsCompleteObjectGraph()
+        {
+            // ARRANGE
+            var departmentId = 1;
+            var department = DepartmentFixture.CreateValidDepartmentWithAllRelations(departmentId);
+            var mockQueryable = new List<Department> { department }.BuildMock();
+
+            _departmentRepoMock.Setup(x => x.GetTableNoTracking()).Returns(mockQueryable);
+
+            // ACT
+            var result = await _service.GetDepartmentByIdIncluding_DS_Subj_Ins_InsManger(departmentId);
+
+            // ASSERT
+            result.Should().NotBeNull();
+            result.Id.Should().Be(departmentId);
+
+            // Check all includes in one go
+            result.InstructorManager.Should().NotBeNull();
+            result.Instructors.Should().NotBeEmpty();
+            result.DepartmentSubjects.Should().NotBeEmpty();
+        }
+
+        [Fact]
+        public async Task GetDepartmentByIdIncluding_WithNonExistingId_ReturnsNull()
+        {
+            // ARRANGE
+            var mockQueryable = new List<Department>().BuildMock();
+            _departmentRepoMock.Setup(x => x.GetTableNoTracking()).Returns(mockQueryable);
+
+            // ACT
+            var result = await _service.GetDepartmentByIdIncluding_DS_Subj_Ins_InsManger(999);
+
+            // ASSERT
+            result.Should().BeNull();
+        }
+        #endregion
+
+
+
+        #region GetViewDepartmentDataAsync Tests
+        [Fact]
+        public async Task GetViewDepartmentDataAsync_ShouldReturnViewData()
+        {
+            // Arrange
+            var viewData = DepartmentTotalStudentViewFixture.CreateList();
+
+            var mockQueryable = viewData.BuildMock();
+
+            _viewRepoMock
+                .Setup(x => x.GetTableNoTracking())
+                .Returns(mockQueryable);
+
+
+
+            // Act
+            var result = await _service.GetViewDepartmentDataAsync();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(2);
+            result[0].TotalStudents.Should().Be(10);
+        }
+
+        #endregion
+
+        #region GetDepartmentStudentCountProcs tests
+        [Fact]
+        public async Task GetDepartmentStudentCountProcs_ShouldReturnRepositoryResult()
+        {
+            // Arrange
+            var parameters = new DepartmentStudentCountProcedureParameters
+            {
+                DepartmentId = 0
+            };
+
+            var expected = DepartmentStudentCountProcedureFixture.CreateList();
+
+            _procRepoMock
+                .Setup(x => x.GetDepartmentStudentCountProcs(parameters))
+                .ReturnsAsync(expected);
+
+
+            // Act
+            var result = await _service.GetDepartmentStudentCountProcs(parameters);
+
+            // Assert
+            result.Should().BeEquivalentTo(expected);
+
+            _procRepoMock.Verify(
+                x => x.GetDepartmentStudentCountProcs(parameters),
+                Times.Once
+            );
+        }
+        #endregion
     }
 }
