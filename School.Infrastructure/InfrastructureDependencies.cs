@@ -3,7 +3,6 @@ using School.Domain.Entities.Views;
 using School.Infrastructure.Bases;
 using School.Infrastructure.Reposetries.Interfaces;
 using School.Infrastructure.Repositories;
-using School.Infrastructure.Repositories._Interfaces;
 using School.Infrastructure.Repositories.Functions;
 using School.Infrastructure.Repositories.Interfaces;
 using School.Infrastructure.Repositories.Interfaces.Functions;
@@ -25,7 +24,6 @@ namespace School.Infrastructure
             services.AddTransient<IDepartmentRepository, DepartmentRepository>();
             services.AddTransient<IInstructorRepository, InstructorRepository>();
             services.AddTransient<IUserRefreshTokenRepository, UserRefreshTokenRepository>();
-            services.AddTransient<IInstructorsRepository, InstructorsRepository>();
 
             // Generic Repository
             services.AddTransient(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));

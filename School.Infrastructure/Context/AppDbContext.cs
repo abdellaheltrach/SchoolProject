@@ -30,7 +30,7 @@ namespace School.Infrastructure.Context
         public DbSet<UserRefreshToken> userRefreshTokens { get; set; }
         public DbSet<Department> departments { get; set; }
         public DbSet<Student> students { get; set; }
-        public DbSet<DepartmetSubject> departmetSubjects { get; set; }
+        public DbSet<DepartmentSubject> departmetSubjects { get; set; }
         public DbSet<Subject> subjects { get; set; }
         public DbSet<StudentSubject> studentSubjects { get; set; }
         public DbSet<Instructor> instructors { get; set; }

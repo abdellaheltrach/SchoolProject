@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using School.Domain.Entities;
 using School.Infrastructure.Context;
-using School.Infrastructure.Repositories._Interfaces;
+using School.Infrastructure.Repositories.Interfaces;
 using School.Infrastructure.Repositories.Interfaces.Functions;
 using School.Service.Services._Interfaces;
 using School.Service.Services.Interfaces;
@@ -15,14 +15,14 @@ namespace School.Service.Services
         #region Fileds
         private readonly AppDbContext _dbContext;
         private readonly IInstructorFunctionsRepository _instructorFunctionsRepository;
-        private readonly IInstructorsRepository _instructorsRepository;
+        private readonly IInstructorRepository _instructorsRepository;
         private readonly IFileService _fileService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         #endregion
         #region Constructors
         public InstructorService(AppDbContext dbContext,
-                                 IInstructorsRepository instructorsRepository,
+                                 IInstructorRepository instructorsRepository,
                                  IInstructorFunctionsRepository instructorFunctionsRepository,
                                  IFileService fileService,
                                  IHttpContextAccessor httpContextAccessor)

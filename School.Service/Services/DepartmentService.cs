@@ -19,10 +19,10 @@ namespace School.Service.Services
         #endregion
 
         #region constructor
-        public DepartmentService(IDepartmentRepository studentRepository, IViewRepository<DepartementTotalStudentView> viewDepartmentRepository,
+        public DepartmentService(IDepartmentRepository departmentRepository, IViewRepository<DepartementTotalStudentView> viewDepartmentRepository,
                                              IDepartmentStudentCountProcedureRepository departmentStudentCountProcRepository)
         {
-            _departmentRepository = studentRepository;
+            _departmentRepository = departmentRepository;
             _viewDepartmentRepository = viewDepartmentRepository;
             _departmentStudentCountProcRepository = departmentStudentCountProcRepository;
 
