@@ -104,6 +104,7 @@ namespace School.Service.Services
             try
             {
                 var studentRepo = _unitOfWork.Repository<Student>();
+
                 await studentRepo.DeleteAsync(student);
                 await _unitOfWork.CommitAsync();
                 return true;

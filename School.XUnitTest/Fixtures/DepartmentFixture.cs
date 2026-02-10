@@ -9,6 +9,7 @@ namespace School.XUnitTest.Fixtures
         {
             return new Department
             {
+                Id = 1,
                 DepartmentNameEn = nameEn ?? "Computer Science",
                 DepartmentNameAr = "علوم الحاسوب",
                 InstructorManagerId = null

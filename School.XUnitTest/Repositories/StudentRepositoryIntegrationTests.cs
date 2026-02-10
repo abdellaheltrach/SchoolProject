@@ -1,6 +1,8 @@
-using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using School.Domain.Entities;
+using School.Infrastructure.Bases.UnitOfWork;
+using School.Infrastructure.Reposetries.Interfaces;
 using School.Infrastructure.Repositories;
 using School.XUnitTest.Fixtures;
 
@@ -9,14 +11,7 @@ namespace School.XUnitTest.Repositories
     public class StudentRepositoryIntegrationTests : IntegrationTestBase
     {
 
-        private async Task<Department> SeedDepartmentAsync()
-        {
-            var _DepartmentRepository = new DepartmentRepository(_dbContext);
 
-            var department = DepartmentFixture.CreateValidDepartment();
-            var newDepartment = await _DepartmentRepository.AddAsync(department);
-            return newDepartment;
-        }
 
 
         #region Generic Repository Tests
@@ -32,6 +27,7 @@ namespace School.XUnitTest.Repositories
 
             // Act
             await _studentRepository.AddAsync(student);
+            await _dbContext.SaveChangesAsync();
 
             var result = await _studentRepository.GetByIdAsync(student.StudentID);
 
@@ -46,17 +42,28 @@ namespace School.XUnitTest.Repositories
         [Fact]
         public async Task AddRangeAsync_ShouldAddList()
         {
-            // Arrange
+
+            // ARRANGE
             var department = await SeedDepartmentAsync();
+            var unitOfWork = new UnitOfWork(_dbContext, _serviceProvider);
             var students = StudentFixture.CreateStudentList(3, department);
-            var _studentRepository = new StudentRepository(_dbContext);
 
-            // Act
-            await _studentRepository.AddRangeAsync(students);
+            // ACT
+            var transaction = await unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var studentRepo = unitOfWork.CustomRepository<IStudentRepository>();
+                await studentRepo.AddRangeAsync(students);
+                await unitOfWork.CommitAsync();
+            }
+            catch
+            {
+                await unitOfWork.RollbackAsync();
+                throw;
+            }
 
-            var count = await _studentRepository.GetTableNoTracking().CountAsync();
-
-            // Assert
+            // ASSERT
+            var count = await _dbContext.Set<Student>().CountAsync();
             count.Should().Be(3);
         }
 
@@ -70,10 +77,12 @@ namespace School.XUnitTest.Repositories
 
 
             await _studentRepository.AddAsync(student);
+            await _dbContext.SaveChangesAsync();
 
             // Act
             student.NameEn = "Updated Name";
             await _studentRepository.UpdateAsync(student);
+            await _dbContext.SaveChangesAsync();
 
             var result = await _studentRepository.GetByIdAsync(student.StudentID);
 
@@ -92,6 +101,7 @@ namespace School.XUnitTest.Repositories
 
 
             await _studentRepository.AddRangeAsync(students);
+            await _dbContext.SaveChangesAsync();
 
             // Act
             foreach (var s in students)
@@ -99,6 +109,7 @@ namespace School.XUnitTest.Repositories
                 s.NameEn = $"Updated {s.NameEn}";
             }
             await _studentRepository.UpdateRangeAsync(students);
+            await _dbContext.SaveChangesAsync();
 
             var updatedStudents = await _studentRepository.GetTableNoTracking().ToListAsync();
 
@@ -115,8 +126,11 @@ namespace School.XUnitTest.Repositories
             var _studentRepository = new StudentRepository(_dbContext);
 
             await _studentRepository.AddAsync(student);
+            await _dbContext.SaveChangesAsync();
+
             // Act
             await _studentRepository.DeleteAsync(student);
+            await _dbContext.SaveChangesAsync();
 
             var result = await _studentRepository.GetByIdAsync(student.StudentID);
 
@@ -127,20 +141,23 @@ namespace School.XUnitTest.Repositories
         [Fact]
         public async Task DeleteRangeAsync_ShouldDeleteList()
         {
-            // Arrange
+            // ARRANGE
             var department = await SeedDepartmentAsync();
             var students = StudentFixture.CreateStudentList(3, department);
-            var _studentRepository = new StudentRepository(_dbContext);
+            var unitOfWork = new UnitOfWork(_dbContext, _serviceProvider);
 
+            // Add students first
+            var studentRepo = unitOfWork.CustomRepository<IStudentRepository>();
+            await studentRepo.AddRangeAsync(students);
+            await unitOfWork.CommitAsync();
 
-            await _studentRepository.AddRangeAsync(students);
+            // ACT - Delete students
+            var studentsToDelete = await _dbContext.Set<Student>().ToListAsync();
+            await studentRepo.DeleteRangeAsync(studentsToDelete);
+            await unitOfWork.CommitAsync();
 
-            // Act
-            await _studentRepository.DeleteRangeAsync(students);
-
-            var count = await _studentRepository.GetTableNoTracking().CountAsync();
-
-            // Assert
+            // ASSERT
+            var count = await _dbContext.Set<Student>().CountAsync();
             count.Should().Be(0);
         }
 
@@ -154,6 +171,7 @@ namespace School.XUnitTest.Repositories
             var _studentRepository = new StudentRepository(_dbContext);
 
             await _studentRepository.AddRangeAsync(students);
+            await _dbContext.SaveChangesAsync();
 
             // Act
             var query = _studentRepository.GetTableNoTracking();
@@ -173,13 +191,14 @@ namespace School.XUnitTest.Repositories
             var _studentRepository = new StudentRepository(_dbContext);
 
             await _studentRepository.AddAsync(student);
+            await _dbContext.SaveChangesAsync();
 
             // Act
             var trackedQuery = _studentRepository.GetTableAsTracking();
             var result = await trackedQuery.FirstOrDefaultAsync(s => s.StudentID == student.StudentID);
 
-            result.NameEn = "Modified via Tracked Query";
-            await _studentRepository.SaveChangesAsync();
+            result!.NameEn = "Modified via Tracked Query";
+            await _dbContext.SaveChangesAsync();
 
             // Assert - Verify change was tracked and saved
             var updatedStudent = await _studentRepository.GetByIdAsync(student.StudentID);
@@ -196,6 +215,7 @@ namespace School.XUnitTest.Repositories
             var _studentRepository = new StudentRepository(_dbContext);
 
             await _studentRepository.AddRangeAsync(students);
+            await _dbContext.SaveChangesAsync();
 
             // Act
             var trackedStudents = await _studentRepository
@@ -206,7 +226,7 @@ namespace School.XUnitTest.Repositories
             {
                 student.NameEn = $"{student.NameEn} - Updated";
             }
-            await _studentRepository.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             // Assert
             var allStudents = await _studentRepository.GetTableNoTracking().ToListAsync();
@@ -223,7 +243,8 @@ namespace School.XUnitTest.Repositories
 
 
             // Act
-            await _studentRepository.AddAsync(student);//add and save changes in one step
+            await _studentRepository.AddAsync(student);
+            await _dbContext.SaveChangesAsync();
 
             var result = await _studentRepository.GetByIdAsync(student.StudentID);
 
@@ -242,9 +263,9 @@ namespace School.XUnitTest.Repositories
             var _studentRepository = new StudentRepository(_dbContext);
 
             await _studentRepository.AddRangeAsync(students);
+            await _dbContext.SaveChangesAsync();
 
             // Act
-
             var count = await _studentRepository.GetTableNoTracking().CountAsync();
 
             // Assert
@@ -256,9 +277,9 @@ namespace School.XUnitTest.Repositories
         public async Task BeginTransaction_ShouldReturnValidTransaction()
         {
             // Act
-            var _studentRepository = new StudentRepository(_dbContext);
+            var _unitOfWork = new UnitOfWork(_dbContext, _serviceProvider);
 
-            var transaction = _studentRepository.BeginTransaction();
+            var transaction = await _unitOfWork.BeginTransactionAsync();
 
             // Assert
             transaction.Should().NotBeNull();
@@ -273,23 +294,24 @@ namespace School.XUnitTest.Repositories
             // Arrange
             var department = await SeedDepartmentAsync();
             var student = StudentFixture.CreateValidStudent(department);
-            var _studentRepository = new StudentRepository(_dbContext);
-
+            var _unitOfWork = new UnitOfWork(_dbContext, _serviceProvider);
 
             // Act
-            using var transaction = _studentRepository.BeginTransaction();
+            var transaction = await _unitOfWork.BeginTransactionAsync();
             try
             {
-                await _studentRepository.AddAsync(student);
-                _studentRepository.Commit();
+                var studentRepo = _unitOfWork.Repository<Student>();
+                await studentRepo.AddAsync(student);
+                await _unitOfWork.CommitAsync();
             }
             catch
             {
-                _studentRepository.RollBack();
+                await _unitOfWork.RollbackAsync();
                 throw;
             }
 
             // Assert
+            var _studentRepository = new StudentRepository(_dbContext);
             var result = await _studentRepository.GetByIdAsync(student.StudentID);
             result.Should().NotBeNull();
             result.NameEn.Should().Be(student.NameEn);
@@ -302,24 +324,24 @@ namespace School.XUnitTest.Repositories
             // Arrange
             var department = await SeedDepartmentAsync();
             var student = StudentFixture.CreateValidStudent(department);
-            var _studentRepository = new StudentRepository(_dbContext);
+            var _unitOfWork = new UnitOfWork(_dbContext, _serviceProvider);
 
             // Act
-            using var transaction = _studentRepository.BeginTransaction();
+            var transaction = await _unitOfWork.BeginTransactionAsync();
             try
             {
-                await _studentRepository.AddAsync(student);
+                var studentRepo = _unitOfWork.Repository<Student>();
+                await studentRepo.AddAsync(student);
 
                 // Simulate error
                 throw new InvalidOperationException("Simulated error");
             }
             catch
             {
-                _studentRepository.RollBack();
+                await _unitOfWork.RollbackAsync();
             }
 
             // Assert
-
             // Verify the rollback method was called without exception
             true.Should().BeTrue();
         }
@@ -331,23 +353,26 @@ namespace School.XUnitTest.Repositories
             // Arrange
             var department = await SeedDepartmentAsync();
             var student = StudentFixture.CreateValidStudent(department);
-            var _studentRepository = new StudentRepository(_dbContext);
+            var _unitOfWork = new UnitOfWork(_dbContext, _serviceProvider);
 
-            var transaction = _studentRepository.BeginTransaction();
+            var transaction = await _unitOfWork.BeginTransactionAsync();
 
             try
             {
                 // Act
-                await _studentRepository.AddAsync(student);
-                _studentRepository.Commit();
+                var studentRepo = _unitOfWork.Repository<Student>();
+                await studentRepo.AddAsync(student);
+                await _unitOfWork.CommitAsync();
 
                 // Assert
+                var _studentRepository = new StudentRepository(_dbContext);
                 var result = await _studentRepository.GetByIdAsync(student.StudentID);
                 result.Should().NotBeNull();
             }
-            finally
+            catch
             {
-                transaction?.Dispose();
+                await _unitOfWork.RollbackAsync();
+                throw;
             }
         }
 
@@ -357,24 +382,24 @@ namespace School.XUnitTest.Repositories
             // Arrange
             var department = await SeedDepartmentAsync();
             var student = StudentFixture.CreateValidStudent(department);
-            var _studentRepository = new StudentRepository(_dbContext);
+            var _unitOfWork = new UnitOfWork(_dbContext, _serviceProvider);
 
-            var transaction = _studentRepository.BeginTransaction();
+            var transaction = await _unitOfWork.BeginTransactionAsync();
 
             try
             {
                 // Act
-                await _studentRepository.AddAsync(student);
-                _studentRepository.RollBack();
+                var studentRepo = _unitOfWork.Repository<Student>();
+                await studentRepo.AddAsync(student);
+                await _unitOfWork.RollbackAsync();
 
                 // Assert
-                // Note: With InMemory DB, rollback behavior may differ from real DB
-                // This test ensures the API calls work correctly
                 true.Should().BeTrue();
             }
-            finally
+            catch
             {
-                transaction?.Dispose();
+                await _unitOfWork.RollbackAsync();
+                throw;
             }
         }
 
@@ -384,24 +409,26 @@ namespace School.XUnitTest.Repositories
             // Arrange
             var department = await SeedDepartmentAsync();
             var students = StudentFixture.CreateStudentList(3, department);
-            var _studentRepository = new StudentRepository(_dbContext);
+            var _unitOfWork = new UnitOfWork(_dbContext, _serviceProvider);
 
-
-            var transaction = _studentRepository.BeginTransaction();
+            var transaction = await _unitOfWork.BeginTransactionAsync();
 
             try
             {
                 // Act
-                await _studentRepository.AddRangeAsync(students);
-                _studentRepository.Commit();
+                var studentRepo = _unitOfWork.Repository<Student>();
+                await studentRepo.AddRangeAsync(students);
+                await _unitOfWork.CommitAsync();
 
                 // Assert
+                var _studentRepository = new StudentRepository(_dbContext);
                 var count = await _studentRepository.GetTableNoTracking().CountAsync();
                 count.Should().Be(3);
             }
-            finally
+            catch
             {
-                transaction?.Dispose();
+                await _unitOfWork.RollbackAsync();
+                throw;
             }
         }
 
@@ -424,15 +451,29 @@ namespace School.XUnitTest.Repositories
             // Arrange
             var department = await SeedDepartmentAsync();
             var students = StudentFixture.CreateStudentList(5, department);
-            var _studentRepository = new StudentRepository(_dbContext);
+            var unitOfWork = new UnitOfWork(_dbContext, _serviceProvider);
+            var _studentRepository = unitOfWork.CustomRepository<StudentRepository>();
 
-            await _studentRepository.AddRangeAsync(students);
 
             // Act
-            var count = await _studentRepository.GetTableNoTracking().CountAsync();
+            var transaction = await unitOfWork.BeginTransactionAsync();
+            try
+            {
+                await _studentRepository.AddRangeAsync(students);
+                await unitOfWork.CommitAsync();
+                var count = await _studentRepository.GetTableNoTracking().CountAsync();
 
-            // Assert
-            count.Should().Be(5);
+
+
+                // Assert
+                count.Should().Be(5);
+            }
+            catch
+            {
+                await unitOfWork.RollbackAsync();
+                throw;
+            }
+
         }
 
         #endregion
@@ -443,22 +484,52 @@ namespace School.XUnitTest.Repositories
         public async Task GetAllStudentListAsync_ShouldReturnStudentsWithDepartments()
         {
             // Arrange
-            var department = await SeedDepartmentAsync();
-            var _studentRepository = new StudentRepository(_dbContext);
+            var unitOfWork = _scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-            var student = StudentFixture.CreateValidStudent(department);
-            await _studentRepository.AddAsync(student);
+            var department = DepartmentFixture.CreateValidDepartment();
 
-            // Act
-            var result = await _studentRepository.GetAllStudentListAsync();
+            var transaction = await unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var departmentRepo = unitOfWork.CustomRepository<DepartmentRepository>();
+                await departmentRepo.AddAsync(department);
 
-            // Assert
-            result.Should().NotBeNull();
-            result.Should().HaveCount(1);
-            result[0].Department.Should().NotBeNull();
-            result[0].Department.DepartmentNameEn.Should().Be(department.DepartmentNameEn);
+                var student = StudentFixture.CreateValidStudent(department);
+                var studentRepo = unitOfWork.CustomRepository<IStudentRepository>();
+                await studentRepo.AddAsync(student);
+
+                await unitOfWork.CommitAsync();
+
+                // Act
+                var result = await studentRepo.GetAllStudentListAsync();
+
+                // Assert
+                result.Should().NotBeNull();
+                result.Should().HaveCount(1);
+
+                var returnedStudent = result.First();
+                returnedStudent.Department.Should().NotBeNull();
+                returnedStudent.Department!.DepartmentNameEn
+                    .Should().Be(department.DepartmentNameEn);
+            }
+            catch
+            {
+                await unitOfWork.RollbackAsync();
+                throw;
+            }
         }
 
         #endregion
+
+        #region Helpers
+        private async Task<Department> SeedDepartmentAsync()
+        {
+            var department = DepartmentFixture.CreateValidDepartment();
+            _dbContext.Set<Department>().Add(department);
+            await _dbContext.SaveChangesAsync();
+            return department;
+        }
+        #endregion
+
     }
 }

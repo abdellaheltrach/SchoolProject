@@ -8,6 +8,7 @@ namespace School.XUnitTest.Fixtures
         {
             return new Student
             {
+                StudentID = 1,
                 NameEn = "Test Student",
                 NameAr = "طالب اختبار",
                 Address = "123 Test St",
