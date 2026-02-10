@@ -33,6 +33,19 @@ namespace School.Infrastructure.Bases
 
             return (IGenericRepositoryAsync<T>)_repositories[type];
         }
+
+        public TRepository CustomRepository<TRepository>() where TRepository : class
+        {
+            var type = typeof(TRepository);
+
+            if (!_repositories.ContainsKey(type))
+            {
+                var repositoryInstance = Activator.CreateInstance(type, _context);
+                _repositories.Add(type, repositoryInstance);
+            }
+
+            return (TRepository)_repositories[type];
+        }
         #endregion
 
         #region Transaction Management

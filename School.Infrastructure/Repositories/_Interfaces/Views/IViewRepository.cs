@@ -1,4 +1,4 @@
-﻿using School.Infrastructure.Bases;
+﻿using School.Infrastructure.Bases.Interfaces;
 
 namespace School.Infrastructure.Repositories.Interfaces.Views
 {
