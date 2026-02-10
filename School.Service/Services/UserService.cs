@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using School.Domain.Entities.Identity;
 using School.Domain.Helpers;
-using School.Infrastructure.Context;
+using School.Infrastructure.Bases.UnitOfWork;
 using School.Service.Services.Interfaces;
 
 namespace School.Service.Services
@@ -14,27 +14,27 @@ namespace School.Service.Services
         private readonly UserManager<User> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEmailsService _emailsService;
-        private readonly AppDbContext _applicationDBContext;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IUrlHelper _urlHelper;
         #endregion
         #region Constructors
         public UserService(UserManager<User> userManager,
                                       IHttpContextAccessor httpContextAccessor,
                                       IEmailsService emailsService,
-                                      AppDbContext applicationDBContext,
+                                      IUnitOfWork unitOfWork,
                                       IUrlHelper urlHelper)
         {
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
             _emailsService = emailsService;
-            _applicationDBContext = applicationDBContext;
+            _unitOfWork = unitOfWork;
             _urlHelper = urlHelper;
         }
         #endregion
         #region Handle Functions
         public async Task<string> AddUserAsync(User user, string password)
         {
-            var trans = await _applicationDBContext.Database.BeginTransactionAsync();
+            var trans = await _unitOfWork.BeginTransactionAsync();
             try
             {
                 //Search the user using email
@@ -61,12 +61,12 @@ namespace School.Service.Services
                 if (!sendEmailResult) return "Failed";
 
 
-                await trans.CommitAsync();
+                await _unitOfWork.CommitAsync();
                 return "Success";
             }
             catch (Exception ex)
             {
-                await trans.RollbackAsync();
+                await _unitOfWork.RollbackAsync();
                 return "Failed";
             }
 

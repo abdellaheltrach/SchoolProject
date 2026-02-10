@@ -4,7 +4,7 @@ using School.Domain.Entities.Identity;
 using School.Domain.Helpers;
 using School.Domain.Results;
 using School.Domain.Results.Requests;
-using School.Infrastructure.Context;
+using School.Infrastructure.Bases.UnitOfWork;
 using School.Service.Services.Interfaces;
 using System.Security.Claims;
 
@@ -15,17 +15,17 @@ namespace School.Service.Services
         #region Fields
         private readonly RoleManager<Role> _roleManager;
         private readonly UserManager<User> _userManager;
-        private readonly AppDbContext _dbContext;
+        private readonly IUnitOfWork _unitOfWork;
 
         #endregion
 
         #region Constructors
-        public AuthorizationService(RoleManager<Role> roleManager, UserManager<User> userManager
-            , AppDbContext dbContext)
+        public AuthorizationService(RoleManager<Role> roleManager, UserManager<User> userManager,
+            IUnitOfWork unitOfWork)
         {
             _roleManager = roleManager;
             _userManager = userManager;
-            _dbContext = dbContext;
+            _unitOfWork = unitOfWork;
         }
         #endregion
 
@@ -121,7 +121,7 @@ namespace School.Service.Services
 
         public async Task<string> UpdateUserRoles(int UserId, List<UserRoles> UpdatedUserRoles)
         {
-            var transact = await _dbContext.Database.BeginTransactionAsync();
+            var transact = await _unitOfWork.BeginTransactionAsync();
             try
             {
                 //Get User
@@ -142,13 +142,13 @@ namespace School.Service.Services
                 var addRolesresult = await _userManager.AddToRolesAsync(user, selectedRoles);
                 if (!addRolesresult.Succeeded)
                     return "FailedToAddNewRoles";
-                await transact.CommitAsync();
+                await _unitOfWork.CommitAsync();
                 //return Result
                 return "Success";
             }
             catch (Exception ex)
             {
-                await transact.RollbackAsync();
+                await _unitOfWork.RollbackAsync();
                 return "FailedToUpdateUserRoles";
             }
         }
@@ -183,7 +183,7 @@ namespace School.Service.Services
 
         public async Task<string> UpdateUserClaims(UpdateUserClaimsRequest request)
         {
-            var transact = await _dbContext.Database.BeginTransactionAsync();
+            var transact = await _unitOfWork.BeginTransactionAsync();
             try
             {
                 var user = await _userManager.FindByIdAsync(request.UserId.ToString());
@@ -202,12 +202,12 @@ namespace School.Service.Services
                 if (!addUserClaimResult.Succeeded)
                     return "FailedToAddNewClaims";
 
-                await transact.CommitAsync();
+                await _unitOfWork.CommitAsync();
                 return "Success";
             }
             catch (Exception ex)
             {
-                await transact.RollbackAsync();
+                await _unitOfWork.RollbackAsync();
                 return "FailedToUpdateClaims";
             }
         }
@@ -216,4 +216,5 @@ namespace School.Service.Services
     }
 
 }
+
 

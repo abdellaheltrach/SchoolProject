@@ -1,5 +1,5 @@
 ﻿using School.Domain.Entities;
-using School.Infrastructure.Bases.Interfaces;
+using School.Infrastructure.Bases.GenericRepository;
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -1,20 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
-using School.Infrastructure.Bases.Interfaces;
+using School.Infrastructure.Bases.GenericRepository;
 using School.Infrastructure.Context;
 
-namespace School.Infrastructure.Bases
+namespace School.Infrastructure.Bases.UnitOfWork
 {
 
 
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext _context;
+        private readonly IServiceProvider _serviceProvider;
         private IDbContextTransaction _transaction;
-        private Dictionary<Type, object> _repositories;
+        private readonly Dictionary<Type, object> _repositories;
 
-        public UnitOfWork(AppDbContext context)
+        public UnitOfWork(AppDbContext context, IServiceProvider serviceProvider)
         {
             _context = context;
+            _serviceProvider = serviceProvider;
             _repositories = new Dictionary<Type, object>();
         }
 
@@ -40,7 +42,11 @@ namespace School.Infrastructure.Bases
 
             if (!_repositories.ContainsKey(type))
             {
-                var repositoryInstance = Activator.CreateInstance(type, _context);
+                // Use IServiceProvider to resolve the implementation
+                var repositoryInstance = _serviceProvider.GetService(type);
+                if (repositoryInstance == null)
+                    throw new InvalidOperationException($"Repository {type.Name} is not registered in DI container");
+
                 _repositories.Add(type, repositoryInstance);
             }
 
@@ -60,7 +66,7 @@ namespace School.Infrastructure.Bases
             try
             {
                 await _context.SaveChangesAsync();
-                await _transaction?.CommitAsync();
+                if (_transaction != null) await _transaction.CommitAsync();
             }
             catch
             {
@@ -79,7 +85,7 @@ namespace School.Infrastructure.Bases
         {
             try
             {
-                await _transaction?.RollbackAsync();
+                if (_transaction != null) await _transaction.RollbackAsync();
             }
             finally
             {

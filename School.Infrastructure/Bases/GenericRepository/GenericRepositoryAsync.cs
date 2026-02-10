@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using School.Infrastructure.Bases.Interfaces;
 using School.Infrastructure.Context;
 
-namespace School.Infrastructure.Bases
+namespace School.Infrastructure.Bases.GenericRepository
 {
     public class GenericRepositoryAsync<T> : IGenericRepositoryAsync<T> where T : class
     {
@@ -41,7 +40,7 @@ namespace School.Infrastructure.Bases
         #region Add Actions 
         public virtual async Task AddRangeAsync(ICollection<T> entities)
         {
-
+            await _dbContext.Set<T>().AddRangeAsync(entities);
         }
 
         public virtual async Task<T> AddAsync(T entity)

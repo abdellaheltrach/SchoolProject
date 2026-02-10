@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
+using School.Infrastructure.Bases.GenericRepository;
 
-namespace School.Infrastructure.Bases.Interfaces
+namespace School.Infrastructure.Bases.UnitOfWork
 {
     public interface IUnitOfWork : IDisposable, IAsyncDisposable
     {

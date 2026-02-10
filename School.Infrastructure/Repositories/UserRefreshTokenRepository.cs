@@ -1,5 +1,5 @@
 ﻿using School.Domain.Entities.Identity;
-using School.Infrastructure.Bases;
+using School.Infrastructure.Bases.GenericRepository;
 using School.Infrastructure.Context;
 using School.Infrastructure.Repositories.Interfaces;
 

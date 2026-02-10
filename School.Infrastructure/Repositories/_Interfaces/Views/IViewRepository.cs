@@ -1,4 +1,4 @@
-﻿using School.Infrastructure.Bases.Interfaces;
+﻿using School.Infrastructure.Bases.GenericRepository;
 
 namespace School.Infrastructure.Repositories.Interfaces.Views
 {

@@ -1,4 +1,4 @@
-﻿namespace School.Infrastructure.Bases.Interfaces
+﻿namespace School.Infrastructure.Bases.GenericRepository
 {
     public interface IGenericRepositoryAsync<T> where T : class
     {
