@@ -59,7 +59,7 @@ namespace School.Tests.Services
             var result = await _service.IsDepartmentIdExist(departmentList[0].Id);
 
             // Assert
-            Assert.True(result);
+            result.Should().BeTrue();
         }
 
         [Fact]
@@ -146,10 +146,9 @@ namespace School.Tests.Services
             result.Should().HaveCount(2);
             result[0].TotalStudents.Should().Be(10);
         }
-
         #endregion
 
-        #region GetDepartmentStudentCountProcs tests
+        #region GetDepartmentStudentCountProcs Tests
         [Fact]
         public async Task GetDepartmentStudentCountProcs_ShouldReturnRepositoryResult()
         {
