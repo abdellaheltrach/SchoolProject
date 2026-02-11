@@ -47,7 +47,115 @@ namespace School.Tests.Services
         }
         #endregion
 
-        #region AddUserAsync tests
+        #region AddUserAsync Tests
+        [Fact]
+        public async Task AddUserAsync_EmailExists_ReturnsEmailIsExist()
+        {
+            // Arrange
+            var user = UserFixture.CreateUser();
+            var password = "Password123!";
+
+            _userManagerMock
+                .Setup(x => x.FindByEmailAsync(user.Email!))
+                .ReturnsAsync(user);
+
+            // Act
+            var result = await _userServiceMock.AddUserAsync(user, password);
+
+            // Assert
+            result.Should().Be("EmailIsExist");
+            _userManagerMock.Verify(x => x.CreateAsync(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
+            _unitOfWorkMock.Verify(u => u.BeginTransactionAsync(), Times.Once);
+            _unitOfWorkMock.Verify(u => u.RollbackAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task AddUserAsync_UserNameExists_ReturnsUserNameIsExist()
+        {
+            // Arrange
+            var user = UserFixture.CreateUser();
+            var password = "Password123!";
+
+            _userManagerMock
+                .Setup(x => x.FindByEmailAsync(user.Email!))
+                .ReturnsAsync((User?)null);
+
+            _userManagerMock
+                .Setup(x => x.FindByNameAsync(user.UserName!))
+                .ReturnsAsync(user);
+
+            // Act
+            var result = await _userServiceMock.AddUserAsync(user, password);
+
+            // Assert
+            result.Should().Be("UserNameIsExist");
+            _userManagerMock.Verify(x => x.CreateAsync(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
+            _unitOfWorkMock.Verify(u => u.BeginTransactionAsync(), Times.Once);
+            _unitOfWorkMock.Verify(u => u.RollbackAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task AddUserAsync_CreateFailed_ReturnsIdentityErrors()
+        {
+            // Arrange
+            var user = UserFixture.CreateUser();
+            var password = "Password123!";
+            var errors = new List<IdentityError> { new IdentityError { Description = "Error 1" }, new IdentityError { Description = "Error 2" } };
+
+            _userManagerMock
+                .Setup(x => x.FindByEmailAsync(user.Email!))
+                .ReturnsAsync((User?)null);
+
+            _userManagerMock
+                .Setup(x => x.FindByNameAsync(user.UserName!))
+                .ReturnsAsync((User?)null);
+
+            _userManagerMock
+                .Setup(x => x.CreateAsync(user, password))
+                .ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
+
+            // Act
+            var result = await _userServiceMock.AddUserAsync(user, password);
+
+            // Assert
+            result.Should().Be("Error 1,Error 2");
+            _unitOfWorkMock.Verify(u => u.BeginTransactionAsync(), Times.Once);
+            _unitOfWorkMock.Verify(u => u.RollbackAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task AddUserAsync_EmailSendFailed_ReturnsFailed()
+        {
+            // Arrange
+            var user = UserFixture.CreateUser();
+            var password = "Password123!";
+
+            _userManagerMock
+                .Setup(x => x.FindByEmailAsync(user.Email!))
+                .ReturnsAsync((User?)null);
+
+            _userManagerMock
+                .Setup(x => x.FindByNameAsync(user.UserName!))
+                .ReturnsAsync((User?)null);
+
+            _userManagerMock
+                .Setup(x => x.CreateAsync(user, password))
+                .ReturnsAsync(IdentityResult.Success);
+
+            _emailsServiceMock
+                .Setup(x => x.SendEmailConfirmationMail(user))
+                .ReturnsAsync(false);
+
+            // Act
+            var result = await _userServiceMock.AddUserAsync(user, password);
+
+            // Assert
+            result.Should().Be("Failed");
+            _unitOfWorkMock.Verify(u => u.BeginTransactionAsync(), Times.Once);
+            _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Never);
+            _unitOfWorkMock.Verify(u => u.RollbackAsync(), Times.Once);
+        }
+
         [Fact]
         public async Task AddUserAsync_ValidUser_ReturnsSuccess()
         {
@@ -56,12 +164,12 @@ namespace School.Tests.Services
             var password = "Password123!";
 
             _userManagerMock
-                .Setup(x => x.FindByEmailAsync(user.Email))
-                .ReturnsAsync((User)null);
+                .Setup(x => x.FindByEmailAsync(user.Email!))
+                .ReturnsAsync((User?)null);
 
             _userManagerMock
-                .Setup(x => x.FindByNameAsync(user.UserName))
-                .ReturnsAsync((User)null);
+                .Setup(x => x.FindByNameAsync(user.UserName!))
+                .ReturnsAsync((User?)null);
 
             _userManagerMock
                 .Setup(x => x.CreateAsync(user, password))
@@ -80,9 +188,29 @@ namespace School.Tests.Services
 
             // Assert
             result.Should().Be("Success");
+            _unitOfWorkMock.Verify(u => u.BeginTransactionAsync(), Times.Once);
+            _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
         }
 
+        [Fact]
+        public async Task AddUserAsync_Exception_ShouldRollbackAndReturnFailed()
+        {
+            // Arrange
+            var user = UserFixture.CreateUser();
+            var password = "Password123!";
 
+            _userManagerMock
+                .Setup(x => x.FindByEmailAsync(user.Email!))
+                .ThrowsAsync(new Exception("Database Error"));
+
+            // Act
+            var result = await _userServiceMock.AddUserAsync(user, password);
+
+            // Assert
+            result.Should().Be("Failed");
+            _unitOfWorkMock.Verify(u => u.BeginTransactionAsync(), Times.Once);
+            _unitOfWorkMock.Verify(u => u.RollbackAsync(), Times.Once);
+        }
         #endregion
 
 

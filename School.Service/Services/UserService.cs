@@ -40,25 +40,40 @@ namespace School.Service.Services
                 //Search the user using email
                 var existUser = await _userManager.FindByEmailAsync(user.Email);
                 //failed if email is exist
-                if (existUser != null) return "EmailIsExist";
+                if (existUser != null)
+                {
+                    await _unitOfWork.RollbackAsync();
+                    return "EmailIsExist";
+                }
 
                 //Search the user using username i
                 var userByUserName = await _userManager.FindByNameAsync(user.UserName);
                 //failed if username is Exist
-                if (userByUserName != null) return "UserNameIsExist";
+                if (userByUserName != null)
+                {
+                    await _unitOfWork.RollbackAsync();
+                    return "UserNameIsExist";
+                }
 
                 //Create user
                 var createResult = await _userManager.CreateAsync(user, password);
                 //handle create failed
                 if (!createResult.Succeeded)
+                {
+                    await _unitOfWork.RollbackAsync();
                     return string.Join(",", createResult.Errors.Select(x => x.Description).ToList());
+                }
                 //give it a 
                 await _userManager.AddToRoleAsync(user, AppRolesConstants.User);
 
                 //Send Confirm Email to the user
                 var sendEmailResult = await _emailsService.SendEmailConfirmationMail(user);
 
-                if (!sendEmailResult) return "Failed";
+                if (!sendEmailResult)
+                {
+                    await _unitOfWork.RollbackAsync();
+                    return "Failed";
+                }
 
 
                 await _unitOfWork.CommitAsync();
