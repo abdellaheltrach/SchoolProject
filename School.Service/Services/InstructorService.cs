@@ -59,7 +59,7 @@ END
         public async Task<bool> IsNameArExist(string nameAr)
         {
             //Check if the name is Exist Or not
-            var student = _instructorsRepository.GetTableNoTracking().Where(x => x.InstructorNameAr.Equals(nameAr)).FirstOrDefault();
+            var student = await _instructorsRepository.GetTableNoTracking().Where(x => x.InstructorNameAr.Equals(nameAr)).FirstOrDefaultAsync();
             if (student == null) return false;
             return true;
         }
@@ -67,7 +67,7 @@ END
         public async Task<bool> IsNameArExistExcludeSelf(string nameAr, int id)
         {
             //Check if the name is Exist Or not
-            var student = _instructorsRepository.GetTableNoTracking().Where(x => x.InstructorNameAr.Equals(nameAr) & x.InstructorId != id).FirstOrDefault();
+            var student = await _instructorsRepository.GetTableNoTracking().Where(x => x.InstructorNameAr.Equals(nameAr) & x.InstructorId != id).FirstOrDefaultAsync();
             if (student == null) return false;
             return true;
         }

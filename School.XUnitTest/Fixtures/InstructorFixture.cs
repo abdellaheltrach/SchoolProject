@@ -6,13 +6,16 @@ namespace School.Tests.Fixtures
     {
         public static Instructor CreateValidInstructor(
             Department department,
-            string nameEn = "Test Instructor",
+            int? id = null,
+            string? nameEn = null,
+            string? nameAr = null,
             Instructor? supervisor = null)
         {
             return new Instructor
             {
-                InstructorNameEn = nameEn,
-                InstructorNameAr = "مدرس اختبار",
+                InstructorId = id ?? 1,
+                InstructorNameEn = nameEn ?? "Test Instructor",
+                InstructorNameAr = nameAr ?? "مدرس اختبار",
                 Address = "Instructor Address",
                 Position = "Lecturer",
                 Salary = 5000,
