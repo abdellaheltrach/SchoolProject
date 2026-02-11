@@ -31,7 +31,7 @@ namespace School.Service.Services
 
         public async Task<Student> GetStudentByIdWithNoTrachingAsync(int ID)
         {
-            var student = _studentRepository.GetTableNoTracking().Include(s => s.Department).Where(s => s.StudentID.Equals(ID)).FirstOrDefault();
+            var student = await _studentRepository.GetTableNoTracking().Include(s => s.Department).Where(s => s.StudentID.Equals(ID)).FirstOrDefaultAsync();
             return student;
         }
 
@@ -47,9 +47,10 @@ namespace School.Service.Services
             try
             {
                 //student is already in the system 
-                var existingStudent = _studentRepository.GetTableNoTracking().Where(s => s.NameEn.Equals(student.NameEn)).FirstOrDefault();
+                var existingStudent = await _studentRepository.GetTableNoTracking().Where(s => s.NameEn.Equals(student.NameEn)).FirstOrDefaultAsync();
                 if (existingStudent != null)
                 {
+                    await _unitOfWork.RollbackAsync();
                     return (false, "The student already exists!");
                 }
                 //Student not in the System
@@ -93,7 +94,7 @@ namespace School.Service.Services
         public async Task<bool> IsNameEnExistExcludeSelf(string nameEn, int id)
         {
             //Check if the name is Exist Or not
-            var student = await _studentRepository.GetTableNoTracking().Where(x => x.NameAr.Equals(nameEn) & !x.StudentID.Equals(id)).FirstOrDefaultAsync();
+            var student = await _studentRepository.GetTableNoTracking().Where(x => x.NameEn.Equals(nameEn) & !x.StudentID.Equals(id)).FirstOrDefaultAsync();
             if (student == null) return false;
             return true;
         }

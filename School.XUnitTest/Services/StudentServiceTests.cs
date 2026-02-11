@@ -126,6 +126,7 @@ namespace School.Tests.Services
             // Assert
             result.success.Should().BeTrue();
             result.message.Should().Be("Student Added Successfully!");
+            _unitOfWorkMock.Verify(u => u.BeginTransactionAsync(), Times.Once);
             _studentGenericRepoMock.Verify(r => r.AddAsync(student), Times.Once);
             _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
         }
@@ -147,7 +148,9 @@ namespace School.Tests.Services
             // Assert
             result.success.Should().BeFalse();
             result.message.Should().Be("The student already exists!");
+            _unitOfWorkMock.Verify(u => u.BeginTransactionAsync(), Times.Once);
             _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Never);
+            _unitOfWorkMock.Verify(u => u.RollbackAsync(), Times.Once);
         }
 
         [Fact]
@@ -166,6 +169,8 @@ namespace School.Tests.Services
             // Assert
             result.success.Should().BeFalse();
             result.message.Should().Be("Failed to add student");
+            _unitOfWorkMock.Verify(u => u.BeginTransactionAsync(), Times.Once);
+            _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Never);
             _unitOfWorkMock.Verify(u => u.RollbackAsync(), Times.Once);
         }
         #endregion
@@ -185,6 +190,7 @@ namespace School.Tests.Services
 
             // Assert
             result.Should().Be("Success");
+            _unitOfWorkMock.Verify(u => u.BeginTransactionAsync(), Times.Once);
             _studentGenericRepoMock.Verify(r => r.UpdateAsync(student), Times.Once);
             _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
         }
@@ -203,6 +209,7 @@ namespace School.Tests.Services
 
             // Assert
             result.Should().Be("Failed");
+            _unitOfWorkMock.Verify(u => u.BeginTransactionAsync(), Times.Once);
             _unitOfWorkMock.Verify(u => u.RollbackAsync(), Times.Once);
         }
         #endregion
@@ -222,6 +229,7 @@ namespace School.Tests.Services
 
             // Assert
             result.Should().BeTrue();
+            _unitOfWorkMock.Verify(u => u.BeginTransactionAsync(), Times.Once);
             _studentGenericRepoMock.Verify(r => r.DeleteAsync(student), Times.Once);
             _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
         }
@@ -240,11 +248,12 @@ namespace School.Tests.Services
 
             // Assert
             result.Should().BeFalse();
+            _unitOfWorkMock.Verify(u => u.BeginTransactionAsync(), Times.Once);
             _unitOfWorkMock.Verify(u => u.RollbackAsync(), Times.Once);
         }
         #endregion
 
-        #region Name Existence Tests
+        #region IsNameArExistExcludeSelf Tests
         [Fact]
         public async Task IsNameArExistExcludeSelf_ShouldReturnTrue_WhenNameExistsInOtherStudent()
         {
@@ -273,13 +282,15 @@ namespace School.Tests.Services
             // Assert
             result.Should().BeFalse();
         }
+        #endregion
 
+        #region IsNameEnExistExcludeSelf Tests
         [Fact]
         public async Task IsNameEnExistExcludeSelf_ShouldReturnTrue_WhenNameExistsInOtherStudent()
         {
             // Arrange
             var department = DepartmentFixture.CreateValidDepartment();
-            var students = new List<Student> { StudentFixture.CreateValidStudent(department, id: 2, nameAr: "Existing") }.BuildMock(); // Note: Service code uses NameAr for both Ar and En methods
+            var students = new List<Student> { StudentFixture.CreateValidStudent(department, id: 2, nameEn: "Existing") }.BuildMock();
             _studentRepositoryMock.Setup(r => r.GetTableNoTracking()).Returns(students);
 
             // Act
@@ -320,7 +331,7 @@ namespace School.Tests.Services
             _studentRepositoryMock.Setup(r => r.GetTableNoTracking()).Returns(students);
 
             // Act
-            var result = _studentService.FilterStudentPaginatedQuerable(null, ordering, sortDesc).ToList();
+            var result = _studentService.FilterStudentPaginatedQuerable(null!, ordering, sortDesc).ToList();
 
             // Assert
             result[0].NameEn.Should().Be(expectedFirst);
