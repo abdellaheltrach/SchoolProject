@@ -71,7 +71,7 @@ namespace School.Service.Services
             //success
             if (result.Succeeded) return "Success";
             //problem
-            var errors = string.Join("-", result.Errors);
+            var errors = string.Join("-", result.Errors.Select(x => x.Description));
             return errors;
 
         }
