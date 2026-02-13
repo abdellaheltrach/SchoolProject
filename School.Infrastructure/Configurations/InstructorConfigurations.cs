@@ -27,7 +27,7 @@ public class InstructorConfiguration : IEntityTypeConfiguration<Instructor>
         // Changed to Restrict to avoid cascade conflicts
         builder.HasOne(i => i.Department)
                .WithMany(d => d.Instructors)
-               .HasForeignKey(i => i.DepartementId)
+               .HasForeignKey(i => i.DepartmentId)
                .OnDelete(DeleteBehavior.Restrict);
 
         // Instructor → Managed Department (1–0..1)

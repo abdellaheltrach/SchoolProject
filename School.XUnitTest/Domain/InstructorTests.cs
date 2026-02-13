@@ -34,7 +34,7 @@ namespace School.XUnitTest.Domain
                 SupervisorId = 2,
                 Salary = 1000m,
                 Image = "Image.png",
-                DepartementId = 1
+                DepartmentId = 1
             };
 
             // Assert
@@ -46,7 +46,7 @@ namespace School.XUnitTest.Domain
             instructor.SupervisorId.Should().Be(2);
             instructor.Salary.Should().Be(1000m);
             instructor.Image.Should().Be("Image.png");
-            instructor.DepartementId.Should().Be(1);
+            instructor.DepartmentId.Should().Be(1);
         }
     }
 }

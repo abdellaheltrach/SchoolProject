@@ -28,12 +28,12 @@ namespace School.Infrastructure.Context
         }
         public DbSet<User> Users { get; set; }
         public DbSet<UserRefreshToken> userRefreshTokens { get; set; }
-        public DbSet<Department> departments { get; set; }
-        public DbSet<Student> students { get; set; }
-        public DbSet<DepartmentSubject> departmetSubjects { get; set; }
-        public DbSet<Subject> subjects { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<Student> Students { get; set; }
+        public DbSet<DepartmentSubject> DepartmentSubjects { get; set; }
+        public DbSet<Subject> Subjects { get; set; }
         public DbSet<StudentSubject> studentSubjects { get; set; }
-        public DbSet<Instructor> instructors { get; set; }
+        public DbSet<Instructor> Instructors { get; set; }
         public DbSet<InstructorSubject> instructorSubjects { get; set; }
 
         //view

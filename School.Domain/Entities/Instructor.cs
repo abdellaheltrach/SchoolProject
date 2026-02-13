@@ -16,7 +16,7 @@
         public int? SupervisorId { get; set; }
         public decimal? Salary { get; set; }
         public string? Image { get; set; }
-        public int DepartementId { get; set; }
+        public int DepartmentId { get; set; }
 
         public virtual Department? Department { get; set; }
         public virtual Department? ManagedDepartment { get; set; }
