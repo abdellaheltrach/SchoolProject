@@ -4,5 +4,5 @@
   <Project Path="School.Domain/School.Domain.csproj" />
   <Project Path="School.Infrastructure/School.Infrastructure.csproj" />
   <Project Path="School.Service/School.Service.csproj" />
-  <Project Path="School.XUnitTest/School.UnitTests.csproj" Id="c03136b7-45e3-4a78-ad9a-3e50040d1067" />
+  <Project Path="School.XUnitTest/School.Tests.csproj" Id="c03136b7-45e3-4a78-ad9a-3e50040d1067" />
 </Solution>
