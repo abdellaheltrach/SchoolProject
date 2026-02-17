@@ -6,12 +6,14 @@ using School.Core;
 using School.Core.Filters;
 using School.Core.MiddleWare;
 using School.Domain.Entities.Identity;
+using School.Domain.Helpers;
 using School.Infrastructure;
 using School.Infrastructure.Context;
 using School.Infrastructure.Seeders;
 using School.Service;
 using Serilog;
 using System.Globalization;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,91 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
            .ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning)));
+
+#region Add rate limiting service
+builder.Services.AddRateLimiter(options =>
+{
+
+    //  Policy 1: Login endpoint (5 requests per minute per IP)
+    options.AddPolicy("loginLimiter", httpContext =>
+    {
+        var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+        return RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: ip,
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            });
+    });
+
+    //  Policy 2: Refresh endpoint (10 requests per minute per IP)
+    options.AddPolicy("refreshLimiter", httpContext =>
+    {
+        var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+        return RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: ip,
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            });
+    });
+
+    //  Policy 3: Other authenticated endpoints (60 requests per minute per user)
+    options.AddPolicy("authenticatedLimiter", httpContext =>
+    {
+        var userId = httpContext.User.FindFirst(nameof(UserClaimModel.Id))?.Value;
+
+        var partitionKey = string.IsNullOrEmpty(userId)
+            ? httpContext.Connection.RemoteIpAddress?.ToString() ?? "anonymous"
+            : userId;
+
+        return RateLimitPartition.GetSlidingWindowLimiter(
+            partitionKey: partitionKey,
+            factory: _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = 60,
+                Window = TimeSpan.FromMinutes(1),
+                SegmentsPerWindow = 8,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0
+            });
+    });
+
+
+
+
+
+    // costum response when rate limit exceeded
+    options.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+
+        // Add Retry-After header (when to retry)
+        if (context.Lease.TryGetMetadata(
+            MetadataName.RetryAfter, out var retryAfter))
+        {
+            context.HttpContext.Response.Headers.RetryAfter =
+                ((int)retryAfter.TotalSeconds).ToString();
+        }
+
+        // Return your custom message
+        await context.HttpContext.Response.WriteAsJsonAsync(
+            new
+            {
+                success = false,
+                message = "Too many attempts. Please try again later."
+            },
+            cancellationToken: token);
+    };
+});
+#endregion
+
 
 #region add Dependencies
 builder.Services.AddInfrastructureDependencies()
@@ -99,6 +186,7 @@ builder.Services.AddSerilog();
 
 var app = builder.Build();
 
+
 #region Apply EF Core Migrations
 using (var scope = app.Services.CreateScope())
 {
@@ -137,7 +225,7 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 #endregion
 
 
-if (!app.Environment.IsEnvironment("Development") || 
+if (!app.Environment.IsEnvironment("Development") ||
     string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER")))
 {
     app.UseHttpsRedirection();
@@ -149,8 +237,13 @@ app.UseCors(CORS);
 
 app.UseStaticFiles();
 
+app.UseRouting();
+
+
+app.UseAuthentication();
 app.UseAuthorization();
-app.UseAuthorization();
+
+app.UseRateLimiter();
 
 app.MapControllers();
 

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using School.Api.Base;
 using School.Core.Base.ApiResponse;
 using School.Core.Features.Authentication.Commands.Models;
@@ -24,6 +25,7 @@ namespace School.Api.Controllers
 
         [HttpPost(AppRouter.AuthenticationRouting.SignIn)]
         [AllowAnonymous]
+        [EnableRateLimiting("loginLimiter")]  //  5 per minute per IP
         [ProducesResponseType(typeof(ApiResponse<TokenResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<TokenResponse>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromForm] SignInCommand command)
@@ -33,6 +35,7 @@ namespace School.Api.Controllers
         }
 
         [HttpPost(AppRouter.AuthenticationRouting.Logout)]
+        [EnableRateLimiting("refreshLimiter")]  //  5 per minute per IP
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Logout()
@@ -42,6 +45,7 @@ namespace School.Api.Controllers
         }
 
         [HttpPost(AppRouter.AuthenticationRouting.RefreshToken)]
+        [EnableRateLimiting("refreshLimiter")]  //  10 per minute per IP
         [ProducesResponseType(typeof(ApiResponse<TokenResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<TokenResponse>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RefreshToken([FromForm] RefreshTokenCommand command)
@@ -51,7 +55,7 @@ namespace School.Api.Controllers
         }
 
         [HttpGet(AppRouter.AuthenticationRouting.ConfirmEmail)]
-        [AllowAnonymous]
+        [EnableRateLimiting("authenticatedLimiter")]  //  60 per minute per user
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ConfirmEmail([FromQuery] EmailConfirmationQuery query)
@@ -62,6 +66,7 @@ namespace School.Api.Controllers
 
         [HttpPost(AppRouter.AuthenticationRouting.SendResetPasswordCode)]
         [AllowAnonymous]
+        [EnableRateLimiting("authenticatedLimiter")]  //  60 per minute per user
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SendResetPassword([FromQuery] SendResetPasswordCommand command)
@@ -70,6 +75,7 @@ namespace School.Api.Controllers
             return NewResult(response);
         }
         [HttpGet(AppRouter.AuthenticationRouting.ConfirmResetPasswordCode)]
+        [EnableRateLimiting("authenticatedLimiter")]  //  60 per minute per user
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ConfirmResetPassword([FromQuery] ConfirmResetPasswordQuery query)
@@ -78,6 +84,7 @@ namespace School.Api.Controllers
             return NewResult(response);
         }
         [HttpPost(AppRouter.AuthenticationRouting.ResetPassword)]
+        [EnableRateLimiting("authenticatedLimiter")]  //  60 per minute per user
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordCommand command)
@@ -86,8 +93,9 @@ namespace School.Api.Controllers
             return NewResult(response);
         }
 
-        [HttpGet("verify")]
+        [HttpGet(AppRouter.AuthenticationRouting.Verify)]
         [Authorize]
+        [EnableRateLimiting("authenticatedLimiter")]  //  60 per minute per user
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
         public IActionResult VerifyToken()

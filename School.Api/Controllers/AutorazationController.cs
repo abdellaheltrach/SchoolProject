@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using School.Api.Base;
 using School.Core.Base.ApiResponse;
 using School.Core.Features.Autorazation.Commands.Models;
@@ -14,6 +15,7 @@ namespace School.Api.Controllers
 {
     [ApiController]
     [Authorize(Roles = AppRolesConstants.Admin)]
+    [EnableRateLimiting("authenticatedLimiter")]  //  60 per minute per user
     public class AutorazationController : AppBaseController
     {
         public AutorazationController(IMediator mediator) : base(mediator)

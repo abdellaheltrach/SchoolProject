@@ -1,14 +1,16 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using School.Api.Base;
-using School.Core.Features.Emails.Commands.Models;
 using School.Core.Base.ApiResponse;
+using School.Core.Features.Emails.Commands.Models;
 using School.Domain.AppRoutes;
 
 namespace School.Api.Controllers
 {
     [Authorize]
+    [EnableRateLimiting("authenticatedLimiter")]  //  60 per minute per user
     public class EmailsController : AppBaseController
     {
         public EmailsController(IMediator mediator) : base(mediator)
