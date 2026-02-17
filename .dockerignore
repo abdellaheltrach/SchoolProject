@@ -1,0 +1,14 @@
+**/.git
+**/.vs
+**/.vscode
+**/bin
+**/obj
+**/.gitignore
+**/.gitattributes
+**/README.md
+**/.github
+**/School.Tests
+**/School.IntegrationTests
+**/docker-compose*.yml
+**/.dockerignore
+**/Dockerfile

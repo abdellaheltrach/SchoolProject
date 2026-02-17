@@ -24,7 +24,8 @@ builder.Services.AddEndpointsApiExplorer();
 
 //Add dbcontext
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+           .ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning)));
 
 #region add Dependencies
 builder.Services.AddInfrastructureDependencies()
@@ -79,13 +80,32 @@ builder.Services.AddTransient<ValidateUserRoleFilter>();
 
 
 #region Serilog Configuration
-Log.Logger = new LoggerConfiguration()
-              .ReadFrom.Configuration(builder.Configuration).CreateLogger();
+try
+{
+    Log.Logger = new LoggerConfiguration()
+                  .ReadFrom.Configuration(builder.Configuration).CreateLogger();
+}
+catch (Exception ex)
+{
+    // Fallback to console-only logging if SQL Server sink fails (e.g. DB not yet created)
+    Log.Logger = new LoggerConfiguration()
+                  .WriteTo.Console()
+                  .CreateLogger();
+    Log.Warning(ex, "Failed to configure Serilog from configuration, falling back to console-only logging.");
+}
 builder.Services.AddSerilog();
 #endregion
 
 
 var app = builder.Build();
+
+#region Apply EF Core Migrations
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await dbContext.Database.MigrateAsync();
+}
+#endregion
 
 #region Seeding application Default user and Roles 
 using (var scope = app.Services.CreateScope())
@@ -117,7 +137,11 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 #endregion
 
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsEnvironment("Development") || 
+    string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER")))
+{
+    app.UseHttpsRedirection();
+}
 
 #region Apply CORS
 app.UseCors(CORS);
