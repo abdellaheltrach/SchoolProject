@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using School.Domain.Entities;
 using School.Domain.enums;
+using School.Infrastructure.Bases.UnitOfWork;
 using School.Infrastructure.Reposetries.Interfaces;
 using School.Service.Services.Interfaces;
 
@@ -10,13 +11,15 @@ namespace School.Service.Services
     {
         #region fields
         private readonly IStudentRepository _studentRepository;
+        private readonly IUnitOfWork _unitOfWork;
         #endregion
 
 
         #region constructors
-        public StudentService(IStudentRepository studentRepository)
+        public StudentService(IStudentRepository studentRepository, IUnitOfWork unitOfWork)
         {
-            this._studentRepository = studentRepository;
+            _studentRepository = studentRepository;
+            _unitOfWork = unitOfWork;
         }
         #endregion
 
@@ -28,7 +31,7 @@ namespace School.Service.Services
 
         public async Task<Student> GetStudentByIdWithNoTrachingAsync(int ID)
         {
-            var student = _studentRepository.GetTableNoTracking().Include(s => s.Department).Where(s => s.StudentID.Equals(ID)).FirstOrDefault();
+            var student = await _studentRepository.GetTableNoTracking().Include(s => s.Department).Where(s => s.StudentID.Equals(ID)).FirstOrDefaultAsync();
             return student;
         }
 
@@ -40,22 +43,44 @@ namespace School.Service.Services
 
         public async Task<(bool success, string message)> AddStudentAsync(Student student)
         {
-            //student is already in the system 
-            var existingStudent = _studentRepository.GetTableNoTracking().Where(s => s.NameEn.Equals(student.NameEn)).FirstOrDefault();
-            if (existingStudent != null)
+            var trans = await _unitOfWork.BeginTransactionAsync();
+            try
             {
-                return (false, "The student already exists!");
+                //student is already in the system 
+                var existingStudent = await _studentRepository.GetTableNoTracking().Where(s => s.NameEn.Equals(student.NameEn)).FirstOrDefaultAsync();
+                if (existingStudent != null)
+                {
+                    await _unitOfWork.RollbackAsync();
+                    return (false, "The student already exists!");
+                }
+                //Student not in the System
+                var studentRepo = _unitOfWork.Repository<Student>();
+                await studentRepo.AddAsync(student);
+                await _unitOfWork.CommitAsync();
+                return (true, "Student Added Successfully!");
             }
-            //Student not in the System
-            await _studentRepository.AddAsync(student);
-
-            return (true, "Student Added Successfully!");
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                return (false, "Failed to add student");
+            }
         }
 
         public async Task<string> EditAsync(Student student)
         {
-            await _studentRepository.UpdateAsync(student);
-            return "Success";
+            var trans = await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var studentRepo = _unitOfWork.Repository<Student>();
+                await studentRepo.UpdateAsync(student);
+                await _unitOfWork.CommitAsync();
+                return "Success";
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                return "Failed";
+            }
         }
 
         public async Task<bool> IsNameArExistExcludeSelf(string nameAr, int id)
@@ -69,23 +94,25 @@ namespace School.Service.Services
         public async Task<bool> IsNameEnExistExcludeSelf(string nameEn, int id)
         {
             //Check if the name is Exist Or not
-            var student = await _studentRepository.GetTableNoTracking().Where(x => x.NameAr.Equals(nameEn) & !x.StudentID.Equals(id)).FirstOrDefaultAsync();
+            var student = await _studentRepository.GetTableNoTracking().Where(x => x.NameEn.Equals(nameEn) & !x.StudentID.Equals(id)).FirstOrDefaultAsync();
             if (student == null) return false;
             return true;
         }
 
         public async Task<bool> DeleteAsync(Student student)
         {
-            var trans = _studentRepository.BeginTransaction();
+            var trans = await _unitOfWork.BeginTransactionAsync();
             try
             {
-                await _studentRepository.DeleteAsync(student);
-                await trans.CommitAsync();
+                var studentRepo = _unitOfWork.Repository<Student>();
+
+                await studentRepo.DeleteAsync(student);
+                await _unitOfWork.CommitAsync();
                 return true;
             }
             catch (Exception ex)
             {
-                await trans.RollbackAsync();
+                await _unitOfWork.RollbackAsync();
                 return false;
             }
         }

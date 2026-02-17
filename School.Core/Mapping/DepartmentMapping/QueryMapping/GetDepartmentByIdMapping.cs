@@ -22,7 +22,7 @@ namespace School.Core.Mapping.DepartmentMapping
                  //need map between Instructor and InstructorResponse
                  .ForMember(dest => dest.InstructorList, opt => opt.MapFrom(src => src.Instructors));
 
-            CreateMap<DepartmetSubject, SubjectResponse>()
+            CreateMap<DepartmentSubject, SubjectResponse>()
                  .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                  .ForMember(dest => dest.Name, opt => opt.MapFrom(src => LocalizationHelper.GetLocalizedName(src.Subject.SubjectNameAr, src.Subject.SubjectNameEn)));
 

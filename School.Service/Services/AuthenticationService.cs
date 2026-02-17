@@ -5,7 +5,7 @@ using School.Domain.Entities.Identity;
 using School.Domain.Helpers;
 using School.Domain.Options;
 using School.Domain.Results;
-using School.Infrastructure.Context;
+using School.Infrastructure.Bases.UnitOfWork;
 using School.Infrastructure.Repositories.Interfaces;
 using School.Service.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
@@ -22,7 +22,7 @@ namespace School.Service.Services
         private readonly IUserRefreshTokenRepository _userRefreshTokenRepository;
         private readonly UserManager<User> _userManager;
         private readonly IEmailsService _emailsService;
-        private readonly AppDbContext _applicationDBContext;
+        private readonly IUnitOfWork _unitOfWork;
         #endregion
 
 
@@ -30,7 +30,7 @@ namespace School.Service.Services
         public AuthenticationService(JwtSettings jwtSettings,
                                      CookieSettings cookieSettings,
                                      UserManager<User> userManager,
-                                     AppDbContext applicationDBContext,
+                                     IUnitOfWork unitOfWork,
                                      IEmailsService emailsService,
                                      IUserRefreshTokenRepository userRefreshTokenRepository)
         {
@@ -39,7 +39,7 @@ namespace School.Service.Services
             _userManager = userManager;
             _cookieSettings = cookieSettings;
             _emailsService = emailsService;
-            _applicationDBContext = applicationDBContext;
+            _unitOfWork = unitOfWork;
         }
         #endregion
 
@@ -52,33 +52,46 @@ namespace School.Service.Services
             var refreshTokenString = GenerateRefreshTokenString();
 
             var userRefreshToken = await _userRefreshTokenRepository.GetByIdAsync(user.Id);
-            if (userRefreshToken == null)
-            {
-                userRefreshToken = new UserRefreshToken
-                {
-                    UserId = user.Id,
-                    AccessToken = accessTokenString,
-                    RefreshToken = refreshTokenString,  // Use the string directly
-                    JwtId = jwtToken.Id,
-                    ExpiryDate = DateTime.UtcNow.AddDays(_cookieSettings.RefreshTokenExpirationTimeInDays),
-                    AddedTime = DateTime.UtcNow,
-                    IsUsed = false,
-                    IsRevoked = false
-                };
-                await _userRefreshTokenRepository.AddAsync(userRefreshToken);
-            }
-            else
-            {
-                userRefreshToken.AccessToken = accessTokenString;
-                userRefreshToken.RefreshToken = refreshTokenString;
-                userRefreshToken.JwtId = jwtToken.Id;
-                userRefreshToken.ExpiryDate = DateTime.UtcNow.AddDays(_cookieSettings.RefreshTokenExpirationTimeInDays);
-                userRefreshToken.AddedTime = DateTime.UtcNow;
-                userRefreshToken.IsUsed = false;
-                userRefreshToken.IsRevoked = false;
-                await _userRefreshTokenRepository.UpdateAsync(userRefreshToken);
-            }
 
+            var trans = await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var refreshTokenRepo = _unitOfWork.Repository<UserRefreshToken>();
+
+                if (userRefreshToken == null)
+                {
+                    userRefreshToken = new UserRefreshToken
+                    {
+                        UserId = user.Id,
+                        AccessToken = accessTokenString,
+                        RefreshToken = refreshTokenString,
+                        JwtId = jwtToken.Id,
+                        ExpiryDate = DateTime.UtcNow.AddDays(_cookieSettings.RefreshTokenExpirationTimeInDays),
+                        AddedTime = DateTime.UtcNow,
+                        IsUsed = false,
+                        IsRevoked = false
+                    };
+                    await refreshTokenRepo.AddAsync(userRefreshToken);
+                }
+                else
+                {
+                    userRefreshToken.AccessToken = accessTokenString;
+                    userRefreshToken.RefreshToken = refreshTokenString;
+                    userRefreshToken.JwtId = jwtToken.Id;
+                    userRefreshToken.ExpiryDate = DateTime.UtcNow.AddDays(_cookieSettings.RefreshTokenExpirationTimeInDays);
+                    userRefreshToken.AddedTime = DateTime.UtcNow;
+                    userRefreshToken.IsUsed = false;
+                    userRefreshToken.IsRevoked = false;
+                    await refreshTokenRepo.UpdateAsync(userRefreshToken);
+                }
+
+                await _unitOfWork.CommitAsync();
+            }
+            catch
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
 
             return new JwtAuthResult
             {
@@ -189,13 +202,24 @@ namespace School.Service.Services
                 var newRefreshTokenString = GenerateRefreshTokenString();
 
                 // Update database record with new tokens
-                storedTokenRecord.AccessToken = newAccessTokenString;
-                storedTokenRecord.RefreshToken = newRefreshTokenString;
-                storedTokenRecord.JwtId = jwtToken.Id;
-                storedTokenRecord.ExpiryDate = DateTime.UtcNow.AddDays(_cookieSettings.RefreshTokenExpirationTimeInDays);
-                storedTokenRecord.AddedTime = DateTime.UtcNow;
+                var trans = await _unitOfWork.BeginTransactionAsync();
+                try
+                {
+                    var refreshTokenRepo = _unitOfWork.Repository<UserRefreshToken>();
+                    storedTokenRecord.AccessToken = newAccessTokenString;
+                    storedTokenRecord.RefreshToken = newRefreshTokenString;
+                    storedTokenRecord.JwtId = jwtToken.Id;
+                    storedTokenRecord.ExpiryDate = DateTime.UtcNow.AddDays(_cookieSettings.RefreshTokenExpirationTimeInDays);
+                    storedTokenRecord.AddedTime = DateTime.UtcNow;
 
-                await _userRefreshTokenRepository.UpdateAsync(storedTokenRecord);
+                    await refreshTokenRepo.UpdateAsync(storedTokenRecord);
+                    await _unitOfWork.CommitAsync();
+                }
+                catch
+                {
+                    await _unitOfWork.RollbackAsync();
+                    throw;
+                }
 
                 // Return new tokens
                 return new JwtAuthResult
@@ -237,7 +261,7 @@ namespace School.Service.Services
 
         public async Task<string> SendResetPasswordCode(string Email)
         {
-            var trans = await _applicationDBContext.Database.BeginTransactionAsync();
+            var trans = await _unitOfWork.BeginTransactionAsync();
             try
             {
                 //user
@@ -261,12 +285,12 @@ namespace School.Service.Services
                 var message = "Code To Reset Passsword : " + user.Code;
                 //Send Code To  Email 
                 await _emailsService.SendEmail(user.Email, message, "Reset Password");
-                await trans.CommitAsync();
+                await _unitOfWork.CommitAsync();
                 return "Success";
             }
             catch (Exception ex)
             {
-                await trans.RollbackAsync();
+                await _unitOfWork.RollbackAsync();
                 return "Failed";
             }
         }
@@ -290,7 +314,7 @@ namespace School.Service.Services
         public async Task<string> ResetPassword(string Email, string Password)
         {
 
-            var trans = await _applicationDBContext.Database.BeginTransactionAsync();
+            var trans = await _unitOfWork.BeginTransactionAsync();
             try
             {
                 //Get User
@@ -303,12 +327,12 @@ namespace School.Service.Services
                 {
                     await _userManager.AddPasswordAsync(user, Password);
                 }
-                await trans.CommitAsync();
+                await _unitOfWork.CommitAsync();
                 return "Success";
             }
             catch (Exception ex)
             {
-                await trans.RollbackAsync();
+                await _unitOfWork.RollbackAsync();
                 return "Failed";
             }
         }

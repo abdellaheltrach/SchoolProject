@@ -38,7 +38,7 @@ public class DepartmentConfiguration : IEntityTypeConfiguration<Department>
         // Instructors (1-many)
         builder.HasMany(d => d.Instructors)
                .WithOne(i => i.Department)
-               .HasForeignKey(i => i.DepartementId)
+               .HasForeignKey(i => i.DepartmentId)
                .OnDelete(DeleteBehavior.Restrict);
     }
 }

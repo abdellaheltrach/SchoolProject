@@ -9,7 +9,7 @@ using School.Service.Services.Interfaces;
 
 namespace School.Core.Features.Instructors.Commands.Handlers
 {
-    internal class InstructorCommandHandler : ApiResponseHandler,
+    public class InstructorCommandHandler : ApiResponseHandler,
                           IRequestHandler<AddInstructorCommand, ApiResponse<string>>
     {
 

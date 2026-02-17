@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using School.Domain.Entities;
-using School.Infrastructure.Bases;
+using School.Infrastructure.Bases.GenericRepository;
 using School.Infrastructure.Context;
 using School.Infrastructure.Repositories.Interfaces;
 

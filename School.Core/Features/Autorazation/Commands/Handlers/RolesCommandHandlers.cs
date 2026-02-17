@@ -14,8 +14,8 @@ namespace School.Core.Features.Autorazation.Commands.Handlers
         , IRequestHandler<UpdateUserRolesCommand, ApiResponse<string>>
 
     {
-        private readonly IAuthorizationService _authorizationService;
         #region Fields
+        private readonly IAuthorizationService _authorizationService;
         private readonly IStringLocalizer<SharedResources> _stringLocalizer;
         #endregion
 

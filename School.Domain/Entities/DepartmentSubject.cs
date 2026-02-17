@@ -1,6 +1,6 @@
 ﻿namespace School.Domain.Entities
 {
-    public class DepartmetSubject
+    public class DepartmentSubject
     {
         public int Id { get; set; }
         public int DepartementId { get; set; }

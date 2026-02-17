@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using School.Domain.Entities;
-using School.Infrastructure.Context;
-using School.Infrastructure.Repositories._Interfaces;
+using School.Infrastructure.Bases.UnitOfWork;
+using School.Infrastructure.Repositories.Interfaces;
 using School.Infrastructure.Repositories.Interfaces.Functions;
 using School.Service.Services._Interfaces;
 using School.Service.Services.Interfaces;
@@ -13,21 +13,21 @@ namespace School.Service.Services
     public class InstructorService : IInstructorService
     {
         #region Fileds
-        private readonly AppDbContext _dbContext;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IInstructorFunctionsRepository _instructorFunctionsRepository;
-        private readonly IInstructorsRepository _instructorsRepository;
+        private readonly IInstructorRepository _instructorsRepository;
         private readonly IFileService _fileService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         #endregion
         #region Constructors
-        public InstructorService(AppDbContext dbContext,
-                                 IInstructorsRepository instructorsRepository,
+        public InstructorService(IUnitOfWork unitOfWork,
+                                 IInstructorRepository instructorsRepository,
                                  IInstructorFunctionsRepository instructorFunctionsRepository,
                                  IFileService fileService,
                                  IHttpContextAccessor httpContextAccessor)
         {
-            _dbContext = dbContext;
+            _unitOfWork = unitOfWork;
             _instructorFunctionsRepository = instructorFunctionsRepository;
             _instructorsRepository = instructorsRepository;
             _fileService = fileService;
@@ -59,7 +59,7 @@ END
         public async Task<bool> IsNameArExist(string nameAr)
         {
             //Check if the name is Exist Or not
-            var student = _instructorsRepository.GetTableNoTracking().Where(x => x.InstructorNameAr.Equals(nameAr)).FirstOrDefault();
+            var student = await _instructorsRepository.GetTableNoTracking().Where(x => x.InstructorNameAr.Equals(nameAr)).FirstOrDefaultAsync();
             if (student == null) return false;
             return true;
         }
@@ -67,7 +67,7 @@ END
         public async Task<bool> IsNameArExistExcludeSelf(string nameAr, int id)
         {
             //Check if the name is Exist Or not
-            var student = _instructorsRepository.GetTableNoTracking().Where(x => x.InstructorNameAr.Equals(nameAr) & x.InstructorId != id).FirstOrDefault();
+            var student = await _instructorsRepository.GetTableNoTracking().Where(x => x.InstructorNameAr.Equals(nameAr) & x.InstructorId != id).FirstOrDefaultAsync();
             if (student == null) return false;
             return true;
         }
@@ -98,13 +98,18 @@ END
                 case "FailedToUploadImage": return "FailedToUploadImage";
             }
             instructor.Image = baseUrl + imageUrl;
+
+            var trans = await _unitOfWork.BeginTransactionAsync();
             try
             {
-                await _instructorsRepository.AddAsync(instructor);
+                var instructorRepo = _unitOfWork.Repository<Instructor>();
+                await instructorRepo.AddAsync(instructor);
+                await _unitOfWork.CommitAsync();
                 return "Success";
             }
             catch (Exception)
             {
+                await _unitOfWork.RollbackAsync();
                 return "FailedInAdd";
             }
         }

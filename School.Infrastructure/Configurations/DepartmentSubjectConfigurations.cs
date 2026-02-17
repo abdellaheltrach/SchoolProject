@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using School.Domain.Entities;
 
-public class DepartmetSubjectConfiguration : IEntityTypeConfiguration<DepartmetSubject>
+public class DepartmetSubjectConfiguration : IEntityTypeConfiguration<DepartmentSubject>
 {
-    public void Configure(EntityTypeBuilder<DepartmetSubject> builder)
+    public void Configure(EntityTypeBuilder<DepartmentSubject> builder)
     {
         // Primary key
         builder.HasKey(ds => ds.Id);

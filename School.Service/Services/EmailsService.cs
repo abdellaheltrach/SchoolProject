@@ -16,18 +16,21 @@ namespace School.Service.Services
         private readonly UserManager<User> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUrlHelper _urlHelper;
+        private readonly IEmailSender _emailSender;
 
 
         #endregion
         #region Constructors
         public EmailsService(EmailSettings emailSettings, UserManager<User> userManager,
             IHttpContextAccessor httpContextAccessor,
-            IUrlHelper urlHelper)
+            IUrlHelper urlHelper,
+            IEmailSender emailSender)
         {
             _emailSettings = emailSettings;
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
             _urlHelper = urlHelper;
+            _emailSender = emailSender;
         }
 
         #endregion
@@ -38,25 +41,20 @@ namespace School.Service.Services
             try
             {
                 //sending the Message of passwordResetLink
-                using (var client = new SmtpClient())
+                var bodybuilder = new BodyBuilder
                 {
-                    await client.ConnectAsync(_emailSettings.Host, _emailSettings.Port, true);
-                    client.Authenticate(_emailSettings.FromEmail, _emailSettings.Password);
-                    var bodybuilder = new BodyBuilder
-                    {
-                        HtmlBody = $"{Message}",
-                        TextBody = "wellcome",
-                    };
-                    var message = new MimeMessage
-                    {
-                        Body = bodybuilder.ToMessageBody()
-                    };
-                    message.From.Add(new MailboxAddress("School Team", _emailSettings.FromEmail));
-                    message.To.Add(new MailboxAddress("testing", email));
-                    message.Subject = reason == null ? "No Submitted" : reason;
-                    await client.SendAsync(message);
-                    await client.DisconnectAsync(true);
-                }
+                    HtmlBody = $"{Message}",
+                    TextBody = "wellcome",
+                };
+                var message = new MimeMessage
+                {
+                    Body = bodybuilder.ToMessageBody()
+                };
+                message.From.Add(new MailboxAddress("School Team", _emailSettings.FromEmail));
+                message.To.Add(new MailboxAddress("testing", email));
+                message.Subject = reason == null ? "No Submitted" : reason;
+
+                await _emailSender.SendAsync(message);
                 //end of sending email
                 return true;
             }

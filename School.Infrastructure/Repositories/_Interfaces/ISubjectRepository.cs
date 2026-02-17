@@ -1,5 +1,5 @@
 ﻿using School.Domain.Entities;
-using School.Infrastructure.Bases;
+using School.Infrastructure.Bases.GenericRepository;
 
 namespace School.Infrastructure.Repositories.Interfaces
 {

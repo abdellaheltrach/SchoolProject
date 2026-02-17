@@ -5,7 +5,7 @@
         public Department()
         {
             Students = new HashSet<Student>();
-            DepartmentSubjects = new HashSet<DepartmetSubject>();
+            DepartmentSubjects = new HashSet<DepartmentSubject>();
             Instructors = new HashSet<Instructor>();
         }
 
@@ -15,7 +15,7 @@
         public int? InstructorManagerId { get; set; }
 
         public virtual ICollection<Student> Students { get; set; }
-        public virtual ICollection<DepartmetSubject> DepartmentSubjects { get; set; }
+        public virtual ICollection<DepartmentSubject> DepartmentSubjects { get; set; }
         public virtual ICollection<Instructor> Instructors { get; set; }
         public virtual Instructor? InstructorManager { get; set; }
     }

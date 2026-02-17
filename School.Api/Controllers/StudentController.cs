@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using School.Api.Base;
 using School.Core.Features.Students.Commands.Models;
 using School.Core.Features.Students.Queries.Models;
+using School.Core.Features.Students.Queries.QueriesResponse;
+using School.Core.Features.Students.Queries.Response;
+using School.Core.Base.ApiResponse;
+using School.Core.Base.Wrappers;
 using School.Domain.AppRoutes;
 
 namespace School.Api.Controllers
@@ -21,6 +25,7 @@ namespace School.Api.Controllers
 
         [AllowAnonymous]
         [HttpGet(AppRouter.StudentRouting.GetStudentList)]
+        [ProducesResponseType(typeof(ApiResponse<List<GetStudentListResponse>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetStudentList()
         {
             var Reponse = await _mediator.Send(new GetStudentListQuery());
@@ -28,6 +33,7 @@ namespace School.Api.Controllers
         }
         [AllowAnonymous]
         [HttpGet(AppRouter.StudentRouting.Paginated)]
+        [ProducesResponseType(typeof(ApiResponse<PaginatedResult<GetStudentPaginatedListResponse>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Paginated([FromQuery] GetStudentPaginatedListQuery query)
         {
             var response = await _mediator.Send(query);
@@ -35,6 +41,8 @@ namespace School.Api.Controllers
         }
 
         [HttpGet(AppRouter.StudentRouting.GetStudentByID)]
+        [ProducesResponseType(typeof(ApiResponse<GetStudentByIdResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<GetStudentByIdResponse>), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetStudentById(int Id)
         {
             var Reponse = await _mediator.Send(new GetStudentByIdQuery(Id));
@@ -43,6 +51,8 @@ namespace School.Api.Controllers
 
         [Authorize(Policy = "CreateStudent")]
         [HttpPost(AppRouter.StudentRouting.AddStudent)]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] AddStudentCommand command)
         {
             Console.WriteLine(command);
@@ -52,6 +62,9 @@ namespace School.Api.Controllers
 
         [Authorize(Policy = "EditStudent")]
         [HttpPut(AppRouter.StudentRouting.EditStudent)]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Edit([FromBody] EditStudentCommand command)
         {
             var response = await _mediator.Send(command);
@@ -59,6 +72,9 @@ namespace School.Api.Controllers
         }
         [Authorize(Policy = "DeleteStudent")]
         [HttpDelete(AppRouter.StudentRouting.DeleteStudent)]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             return NewResult(await _mediator.Send(new DeleteStudentCommand(id)));
