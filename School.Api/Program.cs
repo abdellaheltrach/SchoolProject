@@ -225,11 +225,7 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 #endregion
 
 
-if (!app.Environment.IsEnvironment("Development") ||
-    string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER")))
-{
-    app.UseHttpsRedirection();
-}
+app.UseHttpsRedirection();
 
 #region Apply CORS
 app.UseCors(CORS);
