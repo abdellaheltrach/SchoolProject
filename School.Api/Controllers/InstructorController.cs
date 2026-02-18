@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using School.Api.Base;
@@ -10,6 +11,7 @@ using School.Domain.AppRoutes;
 namespace School.Api.Controllers
 {
     [ApiController]
+    [Authorize]
     [EnableRateLimiting("authenticatedLimiter")]  //  60 per minute per user
     public class InstructorController : AppBaseController
     {

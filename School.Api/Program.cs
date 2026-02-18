@@ -114,7 +114,7 @@ builder.Services.AddRateLimiter(options =>
 #endregion
 
 
-#region add Dependencies
+#region add Dependencies from other layers
 builder.Services.AddInfrastructureDependencies()
                 .AddServiceDependencies()
                 .AddCoreDependencies()

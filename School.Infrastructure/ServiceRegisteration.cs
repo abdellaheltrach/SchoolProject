@@ -53,7 +53,7 @@ namespace School.Infrastructure
 
             #region Authentication Service
 
-            //read JWT settings from appsettings.json file and bind it to JwtSettings class
+            //read JWT settings from appsettings.json file and bind it to Settings classes
             var JwtSettings = new JwtSettings();
             var CookieSettings = new CookieSettings();
             var EmailSettings = new EmailSettings();
