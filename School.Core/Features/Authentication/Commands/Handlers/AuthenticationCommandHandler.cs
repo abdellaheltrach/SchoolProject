@@ -91,15 +91,8 @@ namespace School.Core.Features.Authentication.Commands.Handlers
             var result = await _authenticationService.GenerateJwtTokenAsync(user);
 
             // Set refresh token as HTTP-only cookie
-            var httpContext = _httpContextAccessor.HttpContext;
-            httpContext.Response.Cookies.Append(_refreshTokenCookieName, result.RefreshToken,
-                new CookieOptions
-                {
-                    HttpOnly = _cookieSettings.HttpOnly,
-                    Secure = _cookieSettings.Secure,
-                    SameSite = Enum.Parse<SameSiteMode>(_cookieSettings.SameSite),
-                    Expires = DateTimeOffset.UtcNow.AddDays(_cookieSettings.RefreshTokenExpirationTimeInDays)
-                });
+            SetRefreshTokenCookie(result.RefreshToken);
+
             //return response with access token
             var response = new TokenResponse
             {
@@ -178,6 +171,9 @@ namespace School.Core.Features.Authentication.Commands.Handlers
                     return BadRequest<TokenResponse>(_stringLocalizer[SharedResourcesKeys.InvalidRefreshToken]);
                 }
 
+                // Set new refresh token cookie
+                SetRefreshTokenCookie(result.RefreshToken);
+
                 // Return response with new access token
                 return Success(new TokenResponse { AccessToken = result.AccessToken });
             }
@@ -217,6 +213,24 @@ namespace School.Core.Features.Authentication.Commands.Handlers
 
 
 
+        #endregion
+
+        #region Helpers
+        private void SetRefreshTokenCookie(string refreshToken)
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext != null)
+            {
+                httpContext.Response.Cookies.Append(_refreshTokenCookieName, refreshToken,
+                    new CookieOptions
+                    {
+                        HttpOnly = _cookieSettings.HttpOnly,
+                        Secure = _cookieSettings.Secure,
+                        SameSite = Enum.Parse<SameSiteMode>(_cookieSettings.SameSite),
+                        Expires = DateTimeOffset.UtcNow.AddDays(_cookieSettings.RefreshTokenExpirationTimeInDays)
+                    });
+            }
+        }
         #endregion
 
 

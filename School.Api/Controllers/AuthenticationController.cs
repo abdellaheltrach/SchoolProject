@@ -45,6 +45,7 @@ namespace School.Api.Controllers
         }
 
         [HttpPost(AppRouter.AuthenticationRouting.RefreshToken)]
+        [AllowAnonymous]
         [EnableRateLimiting("refreshLimiter")]  //  10 per minute per IP
         [ProducesResponseType(typeof(ApiResponse<TokenResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<TokenResponse>), StatusCodes.Status400BadRequest)]
