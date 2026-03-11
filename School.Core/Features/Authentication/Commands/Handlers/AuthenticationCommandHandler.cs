@@ -117,7 +117,8 @@ namespace School.Core.Features.Authentication.Commands.Handlers
                 if (!httpContext.User.Identity?.IsAuthenticated ?? false)
                 {
                     _logger.Warning("Logout attempt by unauthenticated user");
-                    return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.BadRequest]);
+                    // return success even if user is not authenticated to prevent token enumeration attacks
+                    return Success<string>(_stringLocalizer[SharedResourcesKeys.Success]);
                 }
 
                 // Sign out user
@@ -132,8 +133,9 @@ namespace School.Core.Features.Authentication.Commands.Handlers
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error during logout");
-                return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.BadRequest]);
+                _logger.Error(ex, "Error during logout" + ex.Message.ToString());
+
+                return Success<string>(_stringLocalizer[SharedResourcesKeys.Success]);
             }
 
         }
